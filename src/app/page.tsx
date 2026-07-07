@@ -106,7 +106,7 @@ export default function Accueil() {
         </div>
       </section>
 
-      {/* Méthode en trois temps (§8). */}
+      {/* Méthode en trois temps (§8) — numéros dorés décoratifs (aria-hidden). */}
       <section className="mx-auto w-full max-w-grid px-6 py-24">
         <h2 className="font-serif text-3xl font-medium tracking-tight text-night">
           Notre méthode
@@ -114,7 +114,9 @@ export default function Accueil() {
         <ol className="mt-10 grid gap-10 md:grid-cols-3">
           {METHODE.map((etape, index) => (
             <li key={etape.titre}>
-              <span className="text-sm text-gold">{`0${index + 1}`}</span>
+              <span aria-hidden="true" className="text-sm text-gold">
+                {`0${index + 1}`}
+              </span>
               <h3 className="mt-2 font-serif text-xl text-night">{etape.titre}</h3>
               <p className="mt-3 text-sm text-slate-soft">{etape.texte}</p>
             </li>
@@ -144,7 +146,7 @@ export default function Accueil() {
           <ul className="mt-10 grid gap-8 md:grid-cols-3">
             {derniersArticles.map(({ frontmatter }) => (
               <li key={`${frontmatter.categorie}/${frontmatter.slug}`}>
-                <p className="text-sm text-gold">
+                <p className="text-sm uppercase tracking-wide text-slate-soft">
                   {CATEGORIE_LABELS[frontmatter.categorie]}
                 </p>
                 <h3 className="mt-2 font-serif text-xl text-night">

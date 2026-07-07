@@ -101,7 +101,9 @@ export default async function PageExpertise({ params }: Params) {
         <ol className="mt-6 space-y-4">
           {[1, 2, 3].map((etape) => (
             <li key={etape} className="flex gap-4">
-              <span className="text-sm text-gold">{`0${etape}`}</span>
+              <span aria-hidden="true" className="text-sm text-gold">
+                {`0${etape}`}
+              </span>
               <p className="text-sm text-slate-soft">{PLACEHOLDER}</p>
             </li>
           ))}

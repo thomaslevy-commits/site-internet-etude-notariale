@@ -40,7 +40,7 @@ export default function IndexBlog() {
             key={`${frontmatter.categorie}/${frontmatter.slug}`}
             className="border-b border-line pb-8"
           >
-            <p className="text-sm text-gold">
+            <p className="text-sm uppercase tracking-wide text-slate-soft">
               {CATEGORIE_LABELS[frontmatter.categorie]}
             </p>
             <h2 className="mt-2 font-serif text-2xl text-night">
