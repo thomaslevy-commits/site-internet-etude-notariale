@@ -54,6 +54,12 @@ export const expertiseFrontmatterSchema = z.object({
   slug: slugSchema,
   description: z.string().min(1),
   related: z.array(slugSchema).min(3).max(5),
+  /** Problématiques types rencontrées — liste à puces du gabarit §8. */
+  problematiques: z.array(z.string().min(1)).optional(),
+  /** L'approche de l'étude — un paragraphe. */
+  approche: z.string().min(1).optional(),
+  /** Déroulement d'un dossier — étapes numérotées par le gabarit. */
+  etapes: z.array(z.string().min(1)).optional(),
   faq: z
     .array(z.object({ question: z.string().min(1), reponse: z.string().min(1) }))
     .default([]),
