@@ -1,13 +1,13 @@
 /**
  * Source unique des coordonnées et informations de l'étude (CLAUDE.md §7).
  * Aucune coordonnée ne doit figurer en dur dans un composant : tout provient d'ici.
- * Les valeurs sont des placeholders bloquants au build de production (§9).
+ * Le NAP reste en placeholder — à renseigner par le notaire (bloquant en production).
  */
 export const PLACEHOLDER_ETUDE = "[CONTENU À VALIDER — NE PAS PUBLIER]";
 
 export const etude = {
-  nom: "Étude notariale — Paris",
-  denominationComplete: PLACEHOLDER_ETUDE,
+  nom: "Étude Thomas Lévy — Notaire à Paris",
+  denominationComplete: "Maître Thomas Lévy, notaire à Paris",
   adresse: {
     ligne1: PLACEHOLDER_ETUDE,
     codePostal: PLACEHOLDER_ETUDE,
@@ -16,8 +16,8 @@ export const etude = {
   },
   telephone: PLACEHOLDER_ETUDE,
   email: PLACEHOLDER_ETUDE,
-  horaires: PLACEHOLDER_ETUDE,
-  langues: ["français"],
+  horaires: "Du lundi au vendredi, de 9 h à 19 h, sur rendez-vous.",
+  langues: ["français", "anglais"],
   liens: {
     /** Fiche Google Maps de l'étude (lien statique — pas d'iframe, §8). */
     googleMaps: "https://maps.google.com/?cid=15064672117259351290",
