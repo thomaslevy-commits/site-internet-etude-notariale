@@ -4,7 +4,7 @@
  */
 export default function Accueil() {
   return (
-    <main className="mx-auto flex min-h-screen w-full max-w-grid flex-col items-center justify-center px-6 py-24 text-center">
+    <main className="mx-auto flex w-full max-w-grid flex-col items-center justify-center px-6 py-24 text-center">
       <p className="text-sm uppercase tracking-widest text-gold">
         Site en construction
       </p>
