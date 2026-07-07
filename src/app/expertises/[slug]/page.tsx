@@ -3,6 +3,7 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 import { CtaRendezVous } from "@/components/cta-rdv";
 import { FilAriane } from "@/components/fil-ariane";
+import { JsonLd, schemaFaq, schemaFilAriane } from "@/components/json-ld";
 import {
   EXPERTISE_SLUGS,
   loadExpertise,
@@ -26,7 +27,11 @@ export async function generateMetadata({ params }: Params): Promise<Metadata> {
   const { slug } = await params;
   if (!estSlugValide(slug)) return {};
   const { frontmatter } = loadExpertise(slug);
-  return { title: `${frontmatter.title} — Étude notariale, Paris` };
+  return {
+    title: frontmatter.title,
+    description: frontmatter.description,
+    alternates: { canonical: `/expertises/${slug}` },
+  };
 }
 
 /**
@@ -46,6 +51,16 @@ export default async function PageExpertise({ params }: Params) {
 
   return (
     <main className="mx-auto w-full max-w-grid px-6 py-16">
+      <JsonLd
+        data={schemaFilAriane([
+          { href: "/expertises", label: "Expertises" },
+          { label: frontmatter.title },
+        ])}
+      />
+      {frontmatter.faq.length > 0 ? (
+        <JsonLd data={schemaFaq(frontmatter.faq)} />
+      ) : null}
+
       <FilAriane
         maillons={[
           { href: "/expertises", label: "Expertises" },

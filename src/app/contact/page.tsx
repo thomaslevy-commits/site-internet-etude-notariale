@@ -1,15 +1,19 @@
 import type { Metadata } from "next";
 import { FormulaireContact } from "@/components/formulaire-contact";
+import { JsonLd, schemaNotary } from "@/components/json-ld";
 import { PLACEHOLDER } from "@/lib/content";
 import { etude } from "@/config/etude";
 
 export const metadata: Metadata = {
-  title: "Contact — Étude notariale, Paris",
+  title: "Contact",
+  description: PLACEHOLDER,
+  alternates: { canonical: "/contact" },
 };
 
 export default function PageContact() {
   return (
     <main className="mx-auto w-full max-w-grid px-6 py-24">
+      <JsonLd data={schemaNotary()} />
       <h1 className="font-serif text-4xl font-medium tracking-tight text-night">
         Contact
       </h1>

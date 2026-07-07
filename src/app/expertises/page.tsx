@@ -1,9 +1,11 @@
 import type { Metadata } from "next";
 import Link from "next/link";
-import { loadExpertise, type ExpertiseSlug } from "@/lib/content";
+import { loadExpertise, PLACEHOLDER, type ExpertiseSlug } from "@/lib/content";
 
 export const metadata: Metadata = {
-  title: "Expertises — Étude notariale, Paris",
+  title: "Expertises",
+  description: PLACEHOLDER,
+  alternates: { canonical: "/expertises" },
 };
 
 /** Regroupement éditorial des 18 expertises par familles. */

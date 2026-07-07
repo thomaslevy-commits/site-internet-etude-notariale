@@ -2,7 +2,9 @@ import type { Metadata } from "next";
 import { PLACEHOLDER } from "@/lib/content";
 
 export const metadata: Metadata = {
-  title: "Honoraires — Étude notariale, Paris",
+  title: "Honoraires",
+  description: PLACEHOLDER,
+  alternates: { canonical: "/honoraires" },
 };
 
 /**

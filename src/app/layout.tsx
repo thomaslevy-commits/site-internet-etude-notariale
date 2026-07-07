@@ -4,6 +4,8 @@ import { SiteHeader } from "@/components/site-header";
 import { SiteFooter } from "@/components/site-footer";
 import "./globals.css";
 
+const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL ?? "http://localhost:3000";
+
 /**
  * Polices auto-hébergées via next/font (téléchargées au build, servies
  * depuis le domaine — aucune requête externe à l'exécution). CLAUDE.md §4-5.
@@ -21,14 +23,31 @@ const inter = Inter({
   display: "swap",
 });
 
+/**
+ * Métadonnées globales (§7) : gabarit de titre « {Sujet} — Étude notariale,
+ * Paris », Open Graph et Twitter Card ; les pages fournissent leur titre,
+ * leur description et leur canonical.
+ */
 export const metadata: Metadata = {
-  title: "Étude notariale — Paris",
+  metadataBase: new URL(SITE_URL),
+  title: {
+    default: "Étude notariale — Paris",
+    template: "%s — Étude notariale, Paris",
+  },
   description:
     "[CONTENU À VALIDER — NE PAS PUBLIER] Description à fournir avant mise en ligne.",
   // Le site n'est pas publié : aucune indexation avant validation.
   robots: { index: false, follow: false },
   alternates: {
     types: { "application/rss+xml": "/rss.xml" },
+  },
+  openGraph: {
+    type: "website",
+    locale: "fr_FR",
+    siteName: "Étude notariale — Paris",
+  },
+  twitter: {
+    card: "summary_large_image",
   },
 };
 

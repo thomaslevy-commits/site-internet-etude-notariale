@@ -4,10 +4,13 @@ import {
   CATEGORIE_LABELS,
   CATEGORIES,
   loadAllArticles,
+  PLACEHOLDER,
 } from "@/lib/content";
 
 export const metadata: Metadata = {
-  title: "Blog — Étude notariale, Paris",
+  title: "Blog",
+  description: PLACEHOLDER,
+  alternates: { canonical: "/blog" },
 };
 
 export default function IndexBlog() {
