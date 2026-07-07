@@ -1,5 +1,7 @@
+import type { Metadata } from "next";
 import Link from "next/link";
 import { CtaRendezVous } from "@/components/cta-rdv";
+import { JsonLd, schemaNotary } from "@/components/json-ld";
 import { etude } from "@/config/etude";
 import {
   CATEGORIE_LABELS,
@@ -8,6 +10,10 @@ import {
   PLACEHOLDER,
   type ExpertiseSlug,
 } from "@/lib/content";
+
+export const metadata: Metadata = {
+  alternates: { canonical: "/" },
+};
 
 /** Sélection de 8 expertises pour la grille d'accueil (§8). */
 const EXPERTISES_ACCUEIL: ExpertiseSlug[] = [
@@ -33,6 +39,7 @@ export default function Accueil() {
 
   return (
     <main>
+      <JsonLd data={schemaNotary()} />
       {/* Héros — photographie à fournir ; voile night en dégradé (§5). */}
       <section className="relative bg-night">
         <div
