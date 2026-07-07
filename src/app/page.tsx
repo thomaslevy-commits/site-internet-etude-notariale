@@ -1,7 +1,13 @@
 import Link from "next/link";
 import { CtaRendezVous } from "@/components/cta-rdv";
 import { etude } from "@/config/etude";
-import { loadExpertise, PLACEHOLDER, type ExpertiseSlug } from "@/lib/content";
+import {
+  CATEGORIE_LABELS,
+  loadAllArticles,
+  loadExpertise,
+  PLACEHOLDER,
+  type ExpertiseSlug,
+} from "@/lib/content";
 
 /** Sélection de 8 expertises pour la grille d'accueil (§8). */
 const EXPERTISES_ACCUEIL: ExpertiseSlug[] = [
@@ -23,6 +29,7 @@ const METHODE = [
 
 export default function Accueil() {
   const expertises = EXPERTISES_ACCUEIL.map((slug) => loadExpertise(slug));
+  const derniersArticles = loadAllArticles().slice(0, 3);
 
   return (
     <main>
@@ -121,14 +128,37 @@ export default function Accueil() {
         </div>
       </section>
 
-      {/* Derniers articles — alimenté en phase 3. */}
+      {/* Derniers articles (§8). */}
       <section className="mx-auto w-full max-w-grid px-6 py-24">
         <h2 className="font-serif text-3xl font-medium tracking-tight text-night">
           Actualités
         </h2>
-        <p className="mt-6 text-sm text-slate-soft">
-          Les articles du blog seront publiés prochainement.
-        </p>
+        {derniersArticles.length > 0 ? (
+          <ul className="mt-10 grid gap-8 md:grid-cols-3">
+            {derniersArticles.map(({ frontmatter }) => (
+              <li key={`${frontmatter.categorie}/${frontmatter.slug}`}>
+                <p className="text-sm text-gold">
+                  {CATEGORIE_LABELS[frontmatter.categorie]}
+                </p>
+                <h3 className="mt-2 font-serif text-xl text-night">
+                  <Link
+                    href={`/blog/${frontmatter.categorie}/${frontmatter.slug}`}
+                    className="decoration-gold underline-offset-4 hover:underline"
+                  >
+                    {frontmatter.title}
+                  </Link>
+                </h3>
+                <p className="mt-2 text-sm text-slate-soft">
+                  <time dateTime={frontmatter.date}>{frontmatter.date}</time>
+                </p>
+              </li>
+            ))}
+          </ul>
+        ) : (
+          <p className="mt-6 text-sm text-slate-soft">
+            Les articles du blog seront publiés prochainement.
+          </p>
+        )}
       </section>
 
       {/* Bloc contact (§8) — lien statique vers Google Maps, pas d'iframe. */}
