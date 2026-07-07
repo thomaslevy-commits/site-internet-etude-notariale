@@ -48,9 +48,9 @@ export default function PageHonoraires() {
         Honoraires
       </h1>
       <p className="mt-6 max-w-3xl text-slate-soft">
-        Le coût d'un acte notarié obéit à des règles précises. Il se compose de
-        quatre éléments de nature différente, présentés ci-dessous, dont un
-        seul constitue la rémunération de l'étude.
+        Le coût d&apos;un acte notarié obéit à des règles précises. Il se
+        compose de quatre éléments de nature différente, présentés ci-dessous,
+        dont un seul constitue la rémunération de l&apos;étude.
       </p>
       {SECTIONS.map((section) => (
         <section key={section.titre} className="mt-14 max-w-3xl">
