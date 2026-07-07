@@ -36,6 +36,7 @@ export function schemaNotary(): Record<string, unknown> {
     },
     areaServed: "Paris",
     knowsLanguage: [...etude.langues],
+    ...(etude.liens.googleMaps ? { hasMap: etude.liens.googleMaps } : {}),
   };
 }
 

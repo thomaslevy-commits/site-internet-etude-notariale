@@ -19,8 +19,10 @@ export const etude = {
   horaires: PLACEHOLDER_ETUDE,
   langues: ["français"],
   liens: {
-    googleMaps: "",
-    ficheGoogle: "",
+    /** Fiche Google Maps de l'étude (lien statique — pas d'iframe, §8). */
+    googleMaps: "https://maps.google.com/?cid=15064672117259351290",
+    /** Fiche Google Business Profile (avis) — même fiche que Maps. */
+    ficheGoogle: "https://maps.google.com/?cid=15064672117259351290",
   },
 } as const;
 
