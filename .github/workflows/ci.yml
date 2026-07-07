@@ -39,13 +39,17 @@ jobs:
         run: npm run start &
       - name: Attendre le serveur
         run: npx wait-on http://localhost:3000 --timeout 60000
+      - name: Installer Chrome et ChromeDriver synchronisés
+        run: npx browser-driver-manager install chrome
       - name: Audit axe-core
         run: >-
+          source ~/.browser-driver-manager/.env &&
           npx @axe-core/cli
           http://localhost:3000
           http://localhost:3000/expertises/vefa
           http://localhost:3000/faq
           http://localhost:3000/contact
+          --chromedriver-path "$CHROMEDRIVER_TEST_PATH"
           --exit
       - name: Lighthouse CI
         run: npx @lhci/cli autorun
