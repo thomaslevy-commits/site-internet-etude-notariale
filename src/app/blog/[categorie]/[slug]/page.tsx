@@ -3,6 +3,11 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 import { FilAriane } from "@/components/fil-ariane";
 import {
+  JsonLd,
+  schemaArticle,
+  schemaFilAriane,
+} from "@/components/json-ld";
+import {
   CATEGORIE_LABELS,
   CATEGORIES,
   loadAllArticles,
@@ -32,7 +37,10 @@ export async function generateMetadata({ params }: Params): Promise<Metadata> {
     (a) => a.frontmatter.categorie === categorie && a.frontmatter.slug === slug,
   );
   if (!article) return {};
-  return { title: `${article.frontmatter.title} — Étude notariale, Paris` };
+  return {
+    title: article.frontmatter.title,
+    alternates: { canonical: `/blog/${categorie}/${slug}` },
+  };
 }
 
 /** Gabarit article : contenu MDX, expertise pilier, articles connexes (§6). */
@@ -59,6 +67,15 @@ export default async function PageArticle({ params }: Params) {
 
   return (
     <main className="mx-auto w-full max-w-grid px-6 py-16">
+      <JsonLd data={schemaArticle(frontmatter)} />
+      <JsonLd
+        data={schemaFilAriane([
+          { href: "/blog", label: "Blog" },
+          { label: CATEGORIE_LABELS[categorie] },
+          { label: frontmatter.title },
+        ])}
+      />
+
       <FilAriane
         maillons={[
           { href: "/blog", label: "Blog" },

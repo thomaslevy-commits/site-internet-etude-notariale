@@ -1,9 +1,12 @@
 import type { Metadata } from "next";
 import { AccordeonFaq } from "@/components/accordeon-faq";
-import { loadFaq } from "@/lib/content";
+import { JsonLd, schemaFaq } from "@/components/json-ld";
+import { loadFaq, PLACEHOLDER } from "@/lib/content";
 
 export const metadata: Metadata = {
-  title: "FAQ — Étude notariale, Paris",
+  title: "FAQ",
+  description: PLACEHOLDER,
+  alternates: { canonical: "/faq" },
 };
 
 /**
@@ -12,9 +15,11 @@ export const metadata: Metadata = {
  */
 export default function PageFaq() {
   const faq = loadFaq();
+  const toutesLesQuestions = faq.themes.flatMap((theme) => theme.questions);
 
   return (
     <main className="mx-auto w-full max-w-grid px-6 py-24">
+      <JsonLd data={schemaFaq(toutesLesQuestions)} />
       <h1 className="font-serif text-4xl font-medium tracking-tight text-night">
         Questions fréquentes
       </h1>
