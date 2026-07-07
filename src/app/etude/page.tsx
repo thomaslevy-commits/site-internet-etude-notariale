@@ -3,7 +3,9 @@ import { PLACEHOLDER } from "@/lib/content";
 import { etude } from "@/config/etude";
 
 export const metadata: Metadata = {
-  title: "L'étude — Étude notariale, Paris",
+  title: "L'étude",
+  description: PLACEHOLDER,
+  alternates: { canonical: "/etude" },
 };
 
 const SECTIONS = [

@@ -2,7 +2,8 @@ import type { Metadata } from "next";
 import { PageLegale } from "@/components/page-legale";
 
 export const metadata: Metadata = {
-  title: "Gestion des cookies — Étude notariale, Paris",
+  title: "Gestion des cookies",
+  alternates: { canonical: "/cookies" },
 };
 
 export default function Cookies() {
