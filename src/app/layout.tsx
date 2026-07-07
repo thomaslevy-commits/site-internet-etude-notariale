@@ -57,8 +57,16 @@ export default function RootLayout({
   return (
     <html lang="fr" className={`${cormorant.variable} ${inter.variable}`}>
       <body className="flex min-h-screen flex-col font-sans text-base sm:text-lg">
+        <a
+          href="#contenu"
+          className="sr-only focus:not-sr-only focus:absolute focus:left-4 focus:top-4 focus:z-50 focus:rounded-sm focus:bg-night focus:px-4 focus:py-2 focus:text-sm focus:text-ivory"
+        >
+          Aller au contenu
+        </a>
         <SiteHeader />
-        <div className="flex-1">{children}</div>
+        <div id="contenu" className="flex-1">
+          {children}
+        </div>
         <SiteFooter />
       </body>
     </html>

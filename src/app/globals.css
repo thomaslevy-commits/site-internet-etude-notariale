@@ -7,4 +7,38 @@
     @apply bg-ivory text-anthracite antialiased;
     line-height: 1.6;
   }
+
+  /* États de focus visibles — RGAA/WCAG AA (§10). */
+  :focus-visible {
+    outline: 2px solid theme("colors.night");
+    outline-offset: 2px;
+  }
+
+  /* Apparition discrète des titres — fondu ≤ 300 ms (§5). */
+  @keyframes apparition {
+    from {
+      opacity: 0;
+      transform: translateY(8px);
+    }
+    to {
+      opacity: 1;
+      transform: none;
+    }
+  }
+
+  main h1 {
+    animation: apparition 300ms ease-out both;
+  }
+
+  /* Respect strict de prefers-reduced-motion (§4). */
+  @media (prefers-reduced-motion: reduce) {
+    *,
+    *::before,
+    *::after {
+      animation-duration: 0.01ms !important;
+      animation-iteration-count: 1 !important;
+      transition-duration: 0.01ms !important;
+      scroll-behavior: auto !important;
+    }
+  }
 }
