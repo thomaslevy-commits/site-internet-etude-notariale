@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import Image from "next/image";
 import Link from "next/link";
 import { CtaRendezVous } from "@/components/cta-rdv";
 import { JsonLd, schemaNotary } from "@/components/json-ld";
@@ -7,11 +8,12 @@ import {
   CATEGORIE_LABELS,
   loadAllArticles,
   loadExpertise,
-  PLACEHOLDER,
   type ExpertiseSlug,
 } from "@/lib/content";
 
 export const metadata: Metadata = {
+  description:
+    "Étude notariale à Paris : immobilier complexe, structuration patrimoniale, successions internationales, conseil aux entreprises et aux family offices.",
   alternates: { canonical: "/" },
 };
 
@@ -28,9 +30,21 @@ const EXPERTISES_ACCUEIL: ExpertiseSlug[] = [
 ];
 
 const METHODE = [
-  { titre: "Comprendre", texte: PLACEHOLDER },
-  { titre: "Structurer", texte: PLACEHOLDER },
-  { titre: "Sécuriser", texte: PLACEHOLDER },
+  {
+    titre: "Comprendre",
+    texte:
+      "Chaque dossier commence par vos objectifs. Avant toute règle de droit, l'étude identifie les intérêts en présence, les contraintes et les marges de manœuvre.",
+  },
+  {
+    titre: "Structurer",
+    texte:
+      "L'opération est ensuite construite : choix des techniques juridiques, articulation civile et fiscale, calendrier. La meilleure architecture est souvent la plus simple.",
+  },
+  {
+    titre: "Sécuriser",
+    texte:
+      "Les actes traduisent cette analyse. Chaque clause a une raison d'être ; les formalités et la publicité foncière sont conduites jusqu'à leur complet accomplissement.",
+  },
 ] as const;
 
 export default function Accueil() {
@@ -40,17 +54,29 @@ export default function Accueil() {
   return (
     <main>
       <JsonLd data={schemaNotary()} />
-      {/* Héros — photographie à fournir ; voile night en dégradé (§5). */}
+      {/* Héros — bannière de l'étude, voile night en dégradé (§5). */}
       <section className="relative bg-night">
+        <Image
+          src="/images/banniere.jpg"
+          alt=""
+          fill
+          priority
+          sizes="100vw"
+          className="object-cover"
+        />
         <div
           aria-hidden="true"
-          className="absolute inset-0 bg-gradient-to-b from-night/60 to-night"
+          className="absolute inset-0 bg-gradient-to-b from-night/40 to-night/90"
         />
         <div className="relative mx-auto flex min-h-[70vh] w-full max-w-grid flex-col items-start justify-center px-6 py-24">
           <h1 className="max-w-2xl font-serif text-4xl font-medium tracking-tight text-ivory sm:text-5xl">
-            {PLACEHOLDER}
+            Le conseil notarial pour les opérations immobilières et
+            patrimoniales complexes
           </h1>
-          <p className="mt-6 max-w-xl text-ivory/80">{PLACEHOLDER}</p>
+          <p className="mt-6 max-w-xl text-ivory/80">
+            À Paris et à l&apos;international, l&apos;étude accompagne
+            particuliers, investisseurs, entreprises et family offices.
+          </p>
           <div className="mt-10 flex flex-wrap gap-4">
             <CtaRendezVous surFondSombre />
             <Link
@@ -69,9 +95,22 @@ export default function Accueil() {
           L&apos;étude
         </h2>
         <div className="mt-8 grid gap-8 md:grid-cols-3">
-          <p className="text-slate-soft">{PLACEHOLDER}</p>
-          <p className="text-slate-soft">{PLACEHOLDER}</p>
-          <p className="text-slate-soft">{PLACEHOLDER}</p>
+          <p className="text-slate-soft">
+            Établie à Paris sous la responsabilité de Maître Thomas Lévy,
+            l&apos;étude concentre sa pratique sur l&apos;immobilier complexe,
+            la structuration patrimoniale, les successions et le conseil aux
+            entreprises.
+          </p>
+          <p className="text-slate-soft">
+            Le rôle du notaire ne se réduit pas à la rédaction d&apos;actes :
+            il consiste à comprendre une opération, à en anticiper les
+            difficultés et à construire une architecture juridique solide.
+          </p>
+          <p className="text-slate-soft">
+            Les dossiers civils, fiscaux et sociétaires sont traités de
+            manière croisée, en liaison avec vos conseils habituels — avocats,
+            experts-comptables, banquiers privés et gestionnaires de fortune.
+          </p>
         </div>
       </section>
 
@@ -106,7 +145,7 @@ export default function Accueil() {
         </div>
       </section>
 
-      {/* Méthode en trois temps (§8) — numéros dorés décoratifs, taille large (AA). */}
+      {/* Méthode en trois temps (§8) — numéros décoratifs, taille large (AA). */}
       <section className="mx-auto w-full max-w-grid px-6 py-24">
         <h2 className="font-serif text-3xl font-medium tracking-tight text-night">
           Notre méthode
@@ -133,9 +172,15 @@ export default function Accueil() {
           <h2 className="font-serif text-2xl font-medium tracking-tight text-ivory">
             Une pratique internationale
           </h2>
-          <p className="mt-4 max-w-2xl text-sm text-ivory/80">{PLACEHOLDER}</p>
+          <p className="mt-4 max-w-2xl text-sm text-ivory/80">
+            Successions comportant des éléments d&apos;extranéité,
+            acquisitions par des non-résidents, expatriation et retour en
+            France : l&apos;étude traite les dossiers internationaux en
+            coordination avec des correspondants étrangers lorsque la
+            situation l&apos;exige.
+          </p>
           <p className="mt-4 text-sm text-ivory/70">
-            Langues : {etude.langues.join(", ")}
+            Langues : {etude.langues.join(", ")}
           </p>
         </div>
       </section>
