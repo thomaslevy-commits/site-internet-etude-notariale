@@ -27,6 +27,9 @@ export const metadata: Metadata = {
     "[CONTENU À VALIDER — NE PAS PUBLIER] Description à fournir avant mise en ligne.",
   // Le site n'est pas publié : aucune indexation avant validation.
   robots: { index: false, follow: false },
+  alternates: {
+    types: { "application/rss+xml": "/rss.xml" },
+  },
 };
 
 export default function RootLayout({
