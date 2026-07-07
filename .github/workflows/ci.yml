@@ -22,3 +22,30 @@ jobs:
         run: npm run typecheck
       - name: Lint
         run: npm run lint
+
+  recette:
+    name: Accessibilité et performances
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - name: Installer les dépendances
+        run: npm install
+      - name: Build
+        run: npm run build
+      - name: Démarrer le serveur
+        run: npm run start &
+      - name: Attendre le serveur
+        run: npx wait-on http://localhost:3000 --timeout 60000
+      - name: Audit axe-core
+        run: >-
+          npx @axe-core/cli
+          http://localhost:3000
+          http://localhost:3000/expertises/vefa
+          http://localhost:3000/faq
+          http://localhost:3000/contact
+          --exit
+      - name: Lighthouse CI
+        run: npx @lhci/cli autorun
