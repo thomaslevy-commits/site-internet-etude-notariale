@@ -85,7 +85,9 @@ export default async function PageArticle({ params }: Params) {
       />
 
       <article className="mt-8 max-w-3xl">
-        <p className="text-sm text-gold">{CATEGORIE_LABELS[categorie]}</p>
+        <p className="text-sm uppercase tracking-wide text-slate-soft">
+          {CATEGORIE_LABELS[categorie]}
+        </p>
         <h1 className="mt-2 font-serif text-4xl font-medium tracking-tight text-night">
           {frontmatter.title}
         </h1>
