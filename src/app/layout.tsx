@@ -31,11 +31,11 @@ const inter = Inter({
 export const metadata: Metadata = {
   metadataBase: new URL(SITE_URL),
   title: {
-    default: "Étude notariale — Paris",
-    template: "%s — Étude notariale, Paris",
+    default: "Étude Thomas Lévy — Notaire à Paris",
+    template: "%s — Étude Thomas Lévy, notaire à Paris",
   },
   description:
-    "[CONTENU À VALIDER — NE PAS PUBLIER] Description à fournir avant mise en ligne.",
+    "Étude notariale à Paris : immobilier complexe, structuration patrimoniale, successions internationales, conseil aux entreprises et aux family offices.",
   // Le site n'est pas publié : aucune indexation avant validation.
   robots: { index: false, follow: false },
   alternates: {
@@ -44,7 +44,7 @@ export const metadata: Metadata = {
   openGraph: {
     type: "website",
     locale: "fr_FR",
-    siteName: "Étude notariale — Paris",
+    siteName: "Étude Thomas Lévy — Notaire à Paris",
   },
   twitter: {
     card: "summary_large_image",

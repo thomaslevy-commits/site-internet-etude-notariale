@@ -48,6 +48,7 @@ export default async function PageExpertise({ params }: Params) {
     .split(/\n\n+/)
     .map((p) => p.trim())
     .filter(Boolean);
+  const etapes = frontmatter.etapes ?? [PLACEHOLDER, PLACEHOLDER, PLACEHOLDER];
 
   return (
     <main className="mx-auto w-full max-w-grid px-6 py-16">
@@ -84,14 +85,27 @@ export default async function PageExpertise({ params }: Params) {
         <h2 className="font-serif text-2xl text-night">
           Problématiques rencontrées
         </h2>
-        <p className="mt-4 text-slate-soft">{PLACEHOLDER}</p>
+        {frontmatter.problematiques ? (
+          <ul className="mt-4 space-y-3">
+            {frontmatter.problematiques.map((probleme) => (
+              <li key={probleme.slice(0, 40)} className="flex gap-3">
+                <span aria-hidden="true" className="mt-3 h-px w-4 shrink-0 bg-gold" />
+                <span className="text-slate-soft">{probleme}</span>
+              </li>
+            ))}
+          </ul>
+        ) : (
+          <p className="mt-4 text-slate-soft">{PLACEHOLDER}</p>
+        )}
       </section>
 
       <section className="mt-16 max-w-3xl">
         <h2 className="font-serif text-2xl text-night">
           L&apos;approche de l&apos;étude
         </h2>
-        <p className="mt-4 text-slate-soft">{PLACEHOLDER}</p>
+        <p className="mt-4 text-slate-soft">
+          {frontmatter.approche ?? PLACEHOLDER}
+        </p>
       </section>
 
       <section className="mt-16 max-w-3xl">
@@ -99,15 +113,15 @@ export default async function PageExpertise({ params }: Params) {
           Déroulement d&apos;un dossier
         </h2>
         <ol className="mt-6 space-y-4">
-          {[1, 2, 3].map((etape) => (
-            <li key={etape} className="flex items-start gap-4">
+          {etapes.map((etape, index) => (
+            <li key={etape.slice(0, 40)} className="flex items-start gap-4">
               <span
                 aria-hidden="true"
                 className="font-serif text-2xl leading-none text-gold"
               >
-                {`0${etape}`}
+                {`0${index + 1}`}
               </span>
-              <p className="text-sm text-slate-soft">{PLACEHOLDER}</p>
+              <p className="text-sm text-slate-soft">{etape}</p>
             </li>
           ))}
         </ol>
