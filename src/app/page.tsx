@@ -4,6 +4,7 @@ import Link from "next/link";
 import { CtaRendezVous } from "@/components/cta-rdv";
 import { JsonLd, schemaNotary } from "@/components/json-ld";
 import { etude } from "@/config/etude";
+import { cheminPublic } from "@/lib/chemins";
 import {
   CATEGORIE_LABELS,
   loadAllArticles,
@@ -57,7 +58,7 @@ export default function Accueil() {
       {/* Héros — bannière de l'étude, voile night en dégradé (§5). */}
       <section className="relative bg-night">
         <Image
-          src="/images/banniere.jpg"
+          src={cheminPublic("/images/banniere.jpg")}
           alt=""
           fill
           priority
@@ -180,7 +181,7 @@ export default function Accueil() {
             situation l&apos;exige.
           </p>
           <p className="mt-4 text-sm text-ivory/70">
-            Langues : {etude.langues.join(", ")}
+            Langues : {etude.langues.join(", ")}
           </p>
         </div>
       </section>
