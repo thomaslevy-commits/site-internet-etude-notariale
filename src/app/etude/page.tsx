@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import Image from "next/image";
 import { etude } from "@/config/etude";
+import { cheminPublic } from "@/lib/chemins";
 
 export const metadata: Metadata = {
   title: "L'étude",
@@ -66,7 +67,7 @@ export default function PageEtude() {
         <div className="flex flex-col gap-8">
           <figure>
             <Image
-              src="/images/portrait.jpg"
+              src={cheminPublic("/images/portrait.jpg")}
               alt="Maître Thomas Lévy, notaire à Paris"
               width={880}
               height={1322}
@@ -78,7 +79,7 @@ export default function PageEtude() {
             </figcaption>
           </figure>
           <Image
-            src="/images/panonceau.jpg"
+            src={cheminPublic("/images/panonceau.jpg")}
             alt="Panonceau de notaire à l'effigie de la République française"
             width={680}
             height={1025}
