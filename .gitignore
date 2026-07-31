@@ -1,27 +1,82 @@
-# dépendances
+# ============================================================
+# .gitignore — Site internet de l'étude notariale
+# Version renforcée : exclusions techniques Next.js
+# + exclusions de confidentialité notariale (secret professionnel)
+# ============================================================
+
+# --- Dépendances ---
 /node_modules
 
-# next.js
+# --- Next.js ---
 /.next/
 /out/
 
-# production
+# --- Production ---
 /build
 
-# divers
+# --- Divers ---
 .DS_Store
+Thumbs.db
 *.pem
 
-# logs
+# --- Logs ---
 npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
+pnpm-debug.log*
 
-# env
-.env*.local
+# --- Environnement (secrets, clés API) ---
+.env
+.env.*
+!.env.example
 
-# vercel
+# --- Vercel ---
 .vercel
 
-# typescript
+# --- TypeScript ---
 *.tsbuildinfo
+next-env.d.ts
+
+# ============================================================
+# CONFIDENTIALITÉ NOTARIALE — NE JAMAIS VERSIONNER
+# Aucun document client, acte, projet d'acte ou pièce de dossier
+# ne doit figurer dans ce dépôt. L'historique Git est permanent.
+# ============================================================
+
+# Documents bureautiques et actes (aucun n'a sa place dans le code)
+*.pdf
+*.doc
+*.docx
+*.odt
+*.rtf
+*.xls
+*.xlsx
+*.ods
+*.msg
+*.eml
+
+# Exception : documents publics du site expressément destinés au téléchargement
+!public/documents/**/*.pdf
+
+# Répertoires de travail susceptibles de contenir des pièces de dossiers
+dossiers/
+clients/
+actes/
+projets-actes/
+pieces/
+scans/
+courriers/
+inot-export/
+septeo/
+
+# Archives (risque d'inclusion involontaire de pièces)
+*.zip
+*.rar
+*.7z
+*.tar
+*.tar.gz
+
+# Sauvegardes et fichiers temporaires
+*.bak
+*.tmp
+*~
