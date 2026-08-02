@@ -23,8 +23,8 @@ const adresseCourte = etude.adresse.ligne1.split(" — ")[0];
 
 /**
  * En-tête global : identité et badge notaires.fr à gauche, coordonnées
- * condensées et navigation à droite, menu repliable accessible au clavier
- * sur mobile. Coordonnées exclusivement depuis etude.ts (§7).
+ * condensées (≥ xl) et navigation (≥ lg) à droite, menu repliable accessible
+ * au clavier en deçà. Coordonnées exclusivement depuis etude.ts (§7).
  * Textes dorés sur ivoire en gold-ink — contraste WCAG AA.
  */
 export function SiteHeader() {
@@ -61,7 +61,7 @@ export function SiteHeader() {
           </span>
         </div>
 
-        <div className="ml-6 mr-5 hidden flex-col items-end whitespace-nowrap border-r border-gold/35 pr-5 leading-tight lg:flex">
+        <div className="ml-6 mr-5 hidden flex-col items-end whitespace-nowrap border-r border-gold/35 pr-5 leading-tight xl:flex">
           <span className="text-[0.8rem] text-anthracite">
             {adresseCourte} — {etude.adresse.codePostal} {etude.adresse.ville}
           </span>
@@ -73,7 +73,7 @@ export function SiteHeader() {
           </a>
         </div>
 
-        <nav aria-label="Navigation principale" className="hidden md:block">
+        <nav aria-label="Navigation principale" className="hidden lg:block">
           <div className="flex flex-col items-end gap-2">
             <ul className="flex items-center gap-5">
               {navigation.map((item) => (
@@ -115,7 +115,7 @@ export function SiteHeader() {
 
         <button
           type="button"
-          className="text-sm text-night md:hidden"
+          className="text-sm text-night lg:hidden"
           aria-expanded={ouvert}
           aria-controls="menu-mobile"
           onClick={() => setOuvert(!ouvert)}
@@ -128,7 +128,7 @@ export function SiteHeader() {
         <nav
           id="menu-mobile"
           aria-label="Navigation principale"
-          className="border-t border-line px-6 py-4 md:hidden"
+          className="border-t border-line px-6 py-4 lg:hidden"
         >
           <ul className="flex flex-col gap-4">
             {navigationMobile.map((item) => (
