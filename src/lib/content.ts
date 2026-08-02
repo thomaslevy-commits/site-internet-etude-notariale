@@ -52,6 +52,8 @@ const slugSchema = z.enum(EXPERTISE_SLUGS);
 export const expertiseFrontmatterSchema = z.object({
   title: z.string().min(1),
   slug: slugSchema,
+  /** Balise title dédiée au SEO (≤ 60 caractères) ; à défaut, `title`. */
+  seoTitle: z.string().max(60).optional(),
   description: z.string().min(1),
   related: z.array(slugSchema).min(3).max(5),
   /** Problématiques types rencontrées — liste à puces du gabarit §8. */
