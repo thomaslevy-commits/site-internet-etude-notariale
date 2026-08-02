@@ -1,7 +1,8 @@
 /**
  * Source unique des coordonnées et informations de l'étude (CLAUDE.md §7).
  * Aucune coordonnée ne doit figurer en dur dans un composant : tout provient d'ici.
- * NAP complet renseigné le 2 août 2026 (adresse, téléphone et e-mail fournis par le notaire).
+ * NAP complet validé le 2 août 2026 par le notaire (adresse, téléphone, e-mail, URL canonique).
+ * Code postal officiel La Poste du boulevard Flandrin : 75116 (16e arr., partie nord).
  */
 export const PLACEHOLDER_ETUDE = "[CONTENU À VALIDER — NE PAS PUBLIER]";
 
@@ -18,6 +19,8 @@ export const etude = {
   /** Format E.164 pour les liens tel: et les données structurées Schema.org. */
   telephoneE164: "+33140750555",
   email: "contact@levy-notaires.fr",
+  /** URL canonique du site — base du sitemap, des balises Open Graph et du JSON-LD. */
+  siteUrl: "https://www.levy-notaires.fr",
   horaires: "Du lundi au vendredi, de 9 h à 19 h, sur rendez-vous.",
   langues: ["français", "anglais"],
   liens: {
