@@ -25,6 +25,7 @@ const adresseCourte = etude.adresse.ligne1.split(" — ")[0];
  * En-tête global : identité et badge notaires.fr à gauche, coordonnées
  * condensées et navigation à droite, menu repliable accessible au clavier
  * sur mobile. Coordonnées exclusivement depuis etude.ts (§7).
+ * Textes dorés sur ivoire en gold-ink — contraste WCAG AA.
  */
 export function SiteHeader() {
   const [ouvert, setOuvert] = useState(false);
@@ -47,7 +48,7 @@ export function SiteHeader() {
               title="notaires.fr — Portail officiel du notariat"
               className="hidden items-center gap-1.5 whitespace-nowrap rounded-[2px] border border-gold px-2 py-[3px] leading-none sm:inline-flex"
             >
-              <span className="flex h-3.5 w-3.5 items-center justify-center rounded-full border-[1.5px] border-gold font-serif text-[10px] font-semibold text-gold">
+              <span className="flex h-3.5 w-3.5 items-center justify-center rounded-full border-[1.5px] border-gold font-serif text-[10px] font-semibold text-gold-ink">
                 N
               </span>
               <span className="text-[0.68rem] font-medium tracking-wide text-night">
@@ -55,7 +56,7 @@ export function SiteHeader() {
               </span>
             </a>
           </div>
-          <span className="mt-0.5 font-serif text-[0.72rem] uppercase tracking-[0.18em] text-gold">
+          <span className="mt-0.5 font-serif text-[0.72rem] uppercase tracking-[0.18em] text-gold-ink">
             Étude notariale depuis 1896
           </span>
         </div>
@@ -94,7 +95,7 @@ export function SiteHeader() {
                 </Link>
               </li>
             </ul>
-            <div className="flex items-center gap-3 text-[0.72rem] uppercase tracking-[0.05em] text-gold">
+            <div className="flex items-center gap-3 text-[0.72rem] uppercase tracking-[0.05em] text-gold-ink">
               <Link
                 href="/data-room"
                 className="border-b border-transparent pb-px no-underline transition-colors hover:border-gold"
