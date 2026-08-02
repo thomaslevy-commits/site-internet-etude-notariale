@@ -1,20 +1,23 @@
 /**
  * Source unique des coordonnées et informations de l'étude (CLAUDE.md §7).
  * Aucune coordonnée ne doit figurer en dur dans un composant : tout provient d'ici.
- * Le NAP reste en placeholder — à renseigner par le notaire (bloquant en production).
+ * NAP renseigné le 2 août 2026 (adresse et téléphone fournis par le notaire).
+ * L'email reste en placeholder — à renseigner par le notaire (bloquant en production).
  */
 export const PLACEHOLDER_ETUDE = "[CONTENU À VALIDER — NE PAS PUBLIER]";
 
 export const etude = {
-  nom: "Étude Thomas Lévy — Notaire à Paris",
+  nom: "Étude Notariale Thomas Lévy — Paris 16",
   denominationComplete: "Maître Thomas Lévy, notaire à Paris",
   adresse: {
-    ligne1: PLACEHOLDER_ETUDE,
-    codePostal: PLACEHOLDER_ETUDE,
+    ligne1: "11, boulevard Flandrin — 2ᵉ étage",
+    codePostal: "75116",
     ville: "Paris",
     pays: "France",
   },
-  telephone: PLACEHOLDER_ETUDE,
+  telephone: "01 40 75 05 55",
+  /** Format E.164 pour les liens tel: et les données structurées Schema.org. */
+  telephoneE164: "+33140750555",
   email: PLACEHOLDER_ETUDE,
   horaires: "Du lundi au vendredi, de 9 h à 19 h, sur rendez-vous.",
   langues: ["français", "anglais"],
