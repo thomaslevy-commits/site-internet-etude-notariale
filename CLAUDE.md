@@ -6,33 +6,46 @@ Ce fichier est le cahier des charges permanent du projet. Toute session de trava
 
 ## 1. Objet du projet
 
-Site vitrine premium d'une étude notariale parisienne positionnée sur l'immobilier complexe, la structuration patrimoniale, les successions internationales et le conseil aux entreprises et family offices.
+Site premium d'une étude notariale parisienne positionnée sur l'immobilier complexe, la structuration patrimoniale, les successions internationales et le conseil aux entreprises et family offices.
 
 Objectifs, par ordre de priorité :
 1. Crédibilité institutionnelle immédiate (le visiteur type gère des enjeux de plusieurs millions d'euros).
 2. Référencement naturel sur les requêtes notariales et patrimoniales parisiennes.
 3. Conversion sobre : prise de rendez-vous et prise de contact.
-
-Le site n'est ni un outil transactionnel ni un espace client.
+4. Espace client sécurisé (phase 2) : dépôt de documents, suivi de dossiers, signature électronique, paiement des provisions.
 
 ---
 
 ## 2. Périmètre
 
-### Inclus
+### Inclus — site vitrine (phase 1)
 - Accueil, L'étude, pages d'expertise (une par domaine), Honoraires, Blog juridique, FAQ, Contact, Mentions légales, Politique de confidentialité, Gestion des cookies, Déclaration d'accessibilité.
 - SEO technique complet (métadonnées, données structurées, sitemap, flux RSS du blog).
 - Formulaire de contact simple (nom, coordonnées, objet, message) avec consentement RGPD explicite.
 - Lien de prise de rendez-vous vers un outil externe (variable d'environnement `NEXT_PUBLIC_BOOKING_URL`).
 
-### Exclus — ne jamais développer, même sur demande ponctuelle
-- Espace client, dépôt de documents, suivi de dossiers : renvoyer aux outils métier de l'étude.
-- Signature électronique : compétence des plateformes agréées de la profession.
-- Paiement en ligne.
-- Authentification, comptes utilisateurs, base de données.
-- Chat, chatbot, avis intégrés autres que le lien vers la fiche Google.
+### Inclus — espace client (phase 2 ; exclusion levée par décision du notaire le 2 août 2026)
+- Espace client sécurisé avec comptes utilisateurs et authentification forte (MFA).
+- Dépôt et échange de documents chiffrés entre le client et l'étude.
+- Suivi de l'avancement des dossiers : statuts et étapes publiés par l'étude, sans jamais exposer le contenu des actes dans les notifications.
+- Signature électronique via un prestataire qualifié eIDAS, pour les documents **non authentiques** uniquement (lettres de mission, conventions d'honoraires, documents préparatoires). L'acte authentique électronique (AAE) reste signé exclusivement via les outils agréés de la profession — ce n'est pas une fonctionnalité du site et aucun développement ne doit le laisser croire.
+- Paiement en ligne sécurisé des provisions sur frais et honoraires via un prestataire de services de paiement agréé, avec rapprochement comptable par l'étude. Les fonds réglementés (prix de vente, fonds de tiers) continuent de transiter exclusivement par la comptabilité de l'étude et la Caisse des Dépôts — jamais par le site.
+- Base de données PostgreSQL hébergée en Union européenne.
+
+### Exclus
+- Chat, chatbot.
+- Avis intégrés autres que le lien vers la fiche Google.
+- Toute conservation en ligne d'actes authentiques : le minutier reste dans les systèmes agréés de la profession.
 
 Si une fonctionnalité exclue semble nécessaire, s'arrêter et poser la question.
+
+### Exigences de sécurité et de conformité de la phase 2 — non négociables
+- Hébergement, base de données, stockage de fichiers et journaux exclusivement en Union européenne ; chiffrement en transit et au repos ; journalisation des accès aux documents.
+- Authentification forte (MFA) pour les clients comme pour les collaborateurs ; sessions courtes ; moindre privilège ; aucun compte partagé.
+- Analyse d'impact RGPD (AIPD) réalisée et registre des traitements mis à jour **avant** la mise en production de l'espace client ; politique de rétention et de purge des documents écrite et appliquée.
+- Le secret professionnel prime sur tout : les e-mails et notifications ne contiennent jamais le contenu d'un dossier, seulement une invitation à se connecter.
+- Audit de sécurité (ou test d'intrusion) avant ouverture au public ; sauvegardes chiffrées, testées par des restaurations régulières.
+- Prestataires (signature eIDAS, paiement) : choix soumis à validation écrite du notaire, contrats de sous-traitance RGPD (art. 28) vérifiés.
 
 ---
 
@@ -55,15 +68,17 @@ Chaque page de fond porte en pied la mention : « Les informations publiées sur
 
 ## 4. Pile technique
 
-- **Next.js** (App Router), rendu statique (`generateStaticParams`, ISR uniquement si justifié).
+- **Next.js** (App Router). Site vitrine : rendu statique (`generateStaticParams`, ISR uniquement si justifié). Espace client : Route Handlers (API REST) avec validation Zod et limitation de débit.
 - **TypeScript** en mode `strict`, aucun `any` non justifié par un commentaire.
 - **Tailwind CSS** avec design tokens définis en §5 — aucune couleur ou taille arbitraire hors tokens.
-- **Contenu en MDX** dans `/content` (frontmatter typé avec Zod). Pas de base de données. Pas de CMS dans un premier temps.
+- **Contenu éditorial en MDX** dans `/content` (frontmatter typé avec Zod). La base de données est réservée à l'espace client — le contenu éditorial reste en MDX, sans CMS dans un premier temps.
+- **PostgreSQL** (phase 2) hébergé en UE, accédé via un ORM typé (Prisma ou Drizzle) ; migrations versionnées ; aucun SQL construit par concaténation.
+- **Authentification** (phase 2) : solution éprouvée (Auth.js ou équivalent), MFA, mots de passe hachés par algorithme moderne — jamais d'implémentation maison de la cryptographie.
 - **Framer Motion** limité : fondus et translations ≤ 300 ms, respect strict de `prefers-reduced-motion`.
 - Images : `next/image`, AVIF/WebP, dimensionnement explicite, lazy loading hors héros.
 - Polices : `next/font`, auto-hébergées, `display: swap`.
 - Déploiement cible : Vercel, région `cdg1` (Paris) — données et logs en Union européenne.
-- Aucun script tiers hors outil de mesure d'audience exempté de consentement (Plausible ou Matomo auto-hébergé). Pas de Google Analytics par défaut.
+- Aucun script tiers hors outil de mesure d'audience exempté de consentement (Plausible ou Matomo auto-hébergé) et prestataires de la phase 2 (signature, paiement) chargés uniquement sur leurs pages.
 
 ---
 
@@ -107,6 +122,7 @@ Contraste : tout couple texte/fond respecte WCAG AA au minimum (vérifier `gold`
 /blog/[categorie]/[slug]           Articles
 /faq                               FAQ générale (les FAQ spécialisées vivent sur les pages d'expertise)
 /contact                           Contact et accès
+/espace-client                     Espace client (phase 2 — connexion, dossiers, documents, signature, paiement)
 /mentions-legales
 /politique-de-confidentialite
 /cookies
@@ -116,7 +132,7 @@ Contraste : tout couple texte/fond respecte WCAG AA au minimum (vérifier `gold`
 Slugs d'expertise (un fichier MDX par slug) :
 `immobilier-residentiel`, `immobilier-commercial`, `vefa`, `promotion-immobiliere`, `marchands-de-biens`, `sci`, `fiscalite-immobiliere`, `successions`, `successions-internationales`, `donations`, `partage`, `divorce`, `structuration-patrimoniale`, `transmission-entreprise`, `baux-commerciaux`, `expatries`, `investisseurs-etrangers`, `family-office`.
 
-Règles d'URL : minuscules, tirets, sans article, sans date, stables. Toute modification d'URL exige une redirection 301 dans `next.config`.
+Règles d'URL : minuscules, tirets, sans article, sans date, stables. Toute modification d'URL exige une redirection 301 dans `next.config`. Les pages de l'espace client sont exclues de l'indexation (`noindex`, hors sitemap).
 
 ### Maillage interne
 - Chaque page d'expertise renvoie vers 3–5 expertises connexes (champ `related` du frontmatter) et vers les articles de sa catégorie de blog.
@@ -172,6 +188,7 @@ Chaque phase se conclut par ces vérifications, résultats à l'appui :
 - Accessibilité RGAA/WCAG 2.1 AA : navigation clavier complète, focus visibles, landmarks, alt pertinents, formulaire étiqueté, `prefers-reduced-motion` respecté. Audit axe-core sans erreur critique.
 - `tsc --noEmit` et lint sans erreur.
 - Aucun texte contrevenant au §3 (relire chaque chaîne ajoutée).
+- Espace client (phase 2) : en plus, revue de sécurité de chaque sous-lot (authentification, contrôle d'accès, chiffrement, journalisation) avant fusion.
 
 ---
 
@@ -184,6 +201,7 @@ Travailler par phases, dans l'ordre, une branche par phase, sans anticiper :
 3. **Blog et FAQ** : index, catégories, gabarit article, flux RSS, FAQ.
 4. **SEO** : métadonnées, JSON-LD, sitemap, OG images, redirections.
 5. **Finitions** : animations, états de focus, audit accessibilité, optimisation des performances, recette complète du §10.
+6. **Espace client** (après mise en ligne du site vitrine, sous-lots dans cet ordre) : modèle de données et infrastructure → authentification (MFA) → dossiers et suivi → dépôt de documents chiffrés → signature électronique (prestataire eIDAS) → paiement des provisions (PSP). Chaque sous-lot passe la revue de sécurité du §10 et les exigences du §2 avant ouverture ; AIPD et audit de sécurité avant toute mise en production.
 
 À la fin de chaque phase : récapitulatif des choix effectués, points d'attention, questions ouvertes.
 
