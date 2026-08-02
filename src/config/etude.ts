@@ -1,8 +1,7 @@
 /**
  * Source unique des coordonnées et informations de l'étude (CLAUDE.md §7).
  * Aucune coordonnée ne doit figurer en dur dans un composant : tout provient d'ici.
- * NAP renseigné le 2 août 2026 (adresse et téléphone fournis par le notaire).
- * L'email reste en placeholder — à renseigner par le notaire (bloquant en production).
+ * NAP complet renseigné le 2 août 2026 (adresse, téléphone et e-mail fournis par le notaire).
  */
 export const PLACEHOLDER_ETUDE = "[CONTENU À VALIDER — NE PAS PUBLIER]";
 
@@ -18,7 +17,7 @@ export const etude = {
   telephone: "01 40 75 05 55",
   /** Format E.164 pour les liens tel: et les données structurées Schema.org. */
   telephoneE164: "+33140750555",
-  email: PLACEHOLDER_ETUDE,
+  email: "contact@levy-notaires.fr",
   horaires: "Du lundi au vendredi, de 9 h à 19 h, sur rendez-vous.",
   langues: ["français", "anglais"],
   liens: {
