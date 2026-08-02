@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import Image from "next/image";
 import Link from "next/link";
 import { CtaRendezVous } from "@/components/cta-rdv";
+import { EtudeSection } from "@/components/etude-section";
 import { JsonLd, schemaNotary } from "@/components/json-ld";
 import { etude } from "@/config/etude";
 import { cheminPublic } from "@/lib/chemins";
@@ -90,30 +91,8 @@ export default function Accueil() {
         </div>
       </section>
 
-      {/* Présentation de l'étude — trois paragraphes (§8). */}
-      <section className="mx-auto w-full max-w-grid px-6 py-24">
-        <h2 className="font-serif text-3xl font-medium tracking-tight text-night">
-          L&apos;étude
-        </h2>
-        <div className="mt-8 grid gap-8 md:grid-cols-3">
-          <p className="text-slate-soft">
-            Établie à Paris sous la responsabilité de Maître Thomas Lévy,
-            l&apos;étude concentre sa pratique sur l&apos;immobilier complexe,
-            la structuration patrimoniale, les successions et le conseil aux
-            entreprises.
-          </p>
-          <p className="text-slate-soft">
-            Le rôle du notaire ne se réduit pas à la rédaction d&apos;actes :
-            il consiste à comprendre une opération, à en anticiper les
-            difficultés et à construire une architecture juridique solide.
-          </p>
-          <p className="text-slate-soft">
-            Les dossiers civils, fiscaux et sociétaires sont traités de
-            manière croisée, en liaison avec vos conseils habituels — avocats,
-            experts-comptables, banquiers privés et gestionnaires de fortune.
-          </p>
-        </div>
-      </section>
+      {/* Section « L'étude » — photographie pleine hauteur (refonte home). */}
+      <EtudeSection />
 
       {/* Grille des expertises (§8). */}
       <section className="bg-paper">
