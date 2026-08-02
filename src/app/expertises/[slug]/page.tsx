@@ -28,7 +28,10 @@ export async function generateMetadata({ params }: Params): Promise<Metadata> {
   if (!estSlugValide(slug)) return {};
   const { frontmatter } = loadExpertise(slug);
   return {
-    title: frontmatter.title,
+    // Le seoTitle est absolu : il porte déjà la marque et la localisation.
+    title: frontmatter.seoTitle
+      ? { absolute: frontmatter.seoTitle }
+      : frontmatter.title,
     description: frontmatter.description,
     alternates: { canonical: `/expertises/${slug}` },
   };

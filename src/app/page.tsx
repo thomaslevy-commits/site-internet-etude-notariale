@@ -14,7 +14,7 @@ import {
 
 export const metadata: Metadata = {
   description:
-    "Étude notariale à Paris : immobilier complexe, structuration patrimoniale, successions internationales, conseil aux entreprises et aux family offices.",
+    "Étude notariale à Paris 16ᵉ. Immobilier, successions, structuration patrimoniale, entreprise et clientèle internationale. Consultations sur rendez-vous.",
   alternates: { canonical: "/" },
 };
 
