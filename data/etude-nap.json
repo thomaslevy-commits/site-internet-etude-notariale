@@ -1,0 +1,29 @@
+{
+  "generatedFrom": "src/config/etude.ts",
+  "dateValidation": "2026-08-02",
+  "usage": "Source de vérité NAP pour les workflows n8n (préparation d'annuaires, surveillance de cohérence). Ne jamais modifier ce fichier directement : répercuter d'abord dans src/config/etude.ts.",
+  "nap": {
+    "nom": "Étude Notariale Thomas Lévy — Paris 16",
+    "denominationComplete": "Maître Thomas Lévy, notaire à Paris",
+    "adresse": {
+      "voie": "11, boulevard Flandrin",
+      "complement": "2e étage",
+      "codePostal": "75116",
+      "ville": "Paris",
+      "pays": "France"
+    },
+    "telephone": "01 40 75 05 55",
+    "telephoneE164": "+33140750555",
+    "email": "contact@levy-notaires.fr",
+    "siteUrl": "https://www.levy-notaires.fr",
+    "horaires": "Du lundi au vendredi, de 9 h à 19 h, sur rendez-vous.",
+    "langues": ["français", "anglais"],
+    "googleMapsCid": "15064672117259351290",
+    "googleMapsUrl": "https://maps.google.com/?cid=15064672117259351290"
+  },
+  "referentiels": {
+    "notairesFr": "https://www.notaires.fr/fr/notaire/thomas-levy",
+    "chambreParis": "https://paris.notaires.fr/fr/annuaire/thomas-levy-notaire",
+    "annuaireEntreprises": "https://annuaire-entreprises.data.gouv.fr/entreprise/395244536"
+  }
+}
