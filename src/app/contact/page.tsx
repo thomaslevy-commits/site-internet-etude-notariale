@@ -5,8 +5,9 @@ import { PLACEHOLDER } from "@/lib/content";
 import { etude } from "@/config/etude";
 
 export const metadata: Metadata = {
-  title: "Contact",
-  description: PLACEHOLDER,
+  title: { absolute: "Contact et rendez-vous — Étude Thomas Lévy, Paris 16" },
+  description:
+    "Prendre rendez-vous avec l'étude notariale Thomas Lévy : 11 boulevard Flandrin, 75116 Paris — 01 40 75 05 55. L'étude reçoit du lundi au vendredi, sur rendez-vous.",
   alternates: { canonical: "/contact" },
 };
 

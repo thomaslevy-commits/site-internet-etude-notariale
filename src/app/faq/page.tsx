@@ -1,11 +1,14 @@
 import type { Metadata } from "next";
 import { AccordeonFaq } from "@/components/accordeon-faq";
 import { JsonLd, schemaFaq } from "@/components/json-ld";
-import { loadFaq, PLACEHOLDER } from "@/lib/content";
+import { loadFaq } from "@/lib/content";
 
 export const metadata: Metadata = {
-  title: "FAQ",
-  description: PLACEHOLDER,
+  title: {
+    absolute: "Questions fréquentes — Étude notariale Thomas Lévy, Paris",
+  },
+  description:
+    "Frais de notaire, achat immobilier, succession, donation, SCI, international : les réponses de l'étude aux questions les plus fréquentes de ses clients.",
   alternates: { canonical: "/faq" },
 };
 
