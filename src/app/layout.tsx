@@ -2,9 +2,8 @@ import type { Metadata } from "next";
 import { Cormorant_Garamond, Inter } from "next/font/google";
 import { SiteHeader } from "@/components/site-header";
 import { SiteFooter } from "@/components/site-footer";
+import { SITE_URL } from "@/config/site";
 import "./globals.css";
-
-const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL ?? "http://localhost:3000";
 
 /**
  * Polices auto-hébergées via next/font (téléchargées au build, servies
@@ -31,11 +30,11 @@ const inter = Inter({
 export const metadata: Metadata = {
   metadataBase: new URL(SITE_URL),
   title: {
-    default: "Étude Thomas Lévy — Notaire à Paris",
+    default: "Notaire à Paris 16 — Étude notariale Thomas Lévy",
     template: "%s — Étude Thomas Lévy, notaire à Paris",
   },
   description:
-    "Étude notariale à Paris : immobilier complexe, structuration patrimoniale, successions internationales, conseil aux entreprises et aux family offices.",
+    "Étude notariale à Paris 16ᵉ. Immobilier, successions, structuration patrimoniale, entreprise et clientèle internationale. Consultations sur rendez-vous.",
   // Le site n'est pas publié : aucune indexation avant validation.
   robots: { index: false, follow: false },
   alternates: {
@@ -44,7 +43,7 @@ export const metadata: Metadata = {
   openGraph: {
     type: "website",
     locale: "fr_FR",
-    siteName: "Étude Thomas Lévy — Notaire à Paris",
+    siteName: "Étude Notariale Thomas Lévy — Paris 16",
   },
   twitter: {
     card: "summary_large_image",
