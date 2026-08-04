@@ -4,6 +4,7 @@ import { notFound } from "next/navigation";
 import { CtaRendezVous } from "@/components/cta-rdv";
 import { FilAriane } from "@/components/fil-ariane";
 import { JsonLd, schemaFaq, schemaFilAriane } from "@/components/json-ld";
+import { SEO_TITLES } from "@/config/seo";
 import {
   EXPERTISE_SLUGS,
   loadExpertise,
@@ -28,7 +29,8 @@ export async function generateMetadata({ params }: Params): Promise<Metadata> {
   if (!estSlugValide(slug)) return {};
   const { frontmatter } = loadExpertise(slug);
   return {
-    title: frontmatter.title,
+    // Title absolu : il porte déjà la marque et la localisation (§7).
+    title: { absolute: frontmatter.seoTitle ?? SEO_TITLES[slug] },
     description: frontmatter.description,
     alternates: { canonical: `/expertises/${slug}` },
   };

@@ -4,12 +4,12 @@ import {
   CATEGORIE_LABELS,
   CATEGORIES,
   loadAllArticles,
-  PLACEHOLDER,
 } from "@/lib/content";
 
 export const metadata: Metadata = {
-  title: "Blog",
-  description: PLACEHOLDER,
+  title: { absolute: "Blog juridique — Étude notariale Thomas Lévy, Paris 16" },
+  description:
+    "Analyses et repères en droit immobilier, successions, patrimoine et entreprise, rédigés par l'étude notariale Thomas Lévy à Paris. Informations à caractère général.",
   alternates: { canonical: "/blog" },
 };
 

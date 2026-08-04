@@ -1,10 +1,11 @@
 import type { Metadata } from "next";
 import Link from "next/link";
-import { loadExpertise, PLACEHOLDER, type ExpertiseSlug } from "@/lib/content";
+import { loadExpertise, type ExpertiseSlug } from "@/lib/content";
 
 export const metadata: Metadata = {
-  title: "Expertises",
-  description: PLACEHOLDER,
+  title: { absolute: "Nos expertises — Étude notariale Thomas Lévy, Paris 16" },
+  description:
+    "Domaines d'intervention de l'étude : immobilier résidentiel et professionnel, successions, donations, SCI, entreprise, opérations internationales, family office.",
   alternates: { canonical: "/expertises" },
 };
 

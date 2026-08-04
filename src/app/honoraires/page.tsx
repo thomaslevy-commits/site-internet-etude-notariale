@@ -1,7 +1,9 @@
 import type { Metadata } from "next";
 
 export const metadata: Metadata = {
-  title: "Honoraires",
+  title: {
+    absolute: "Tarifs et émoluments du notaire — Étude Thomas Lévy, Paris",
+  },
   description:
     "Comprendre le coût d'un acte notarié : émoluments réglementés, débours, droits et taxes, honoraires libres. Une information claire avant tout engagement.",
   alternates: { canonical: "/honoraires" },

@@ -4,9 +4,9 @@ import { etude } from "@/config/etude";
 import { cheminPublic } from "@/lib/chemins";
 
 export const metadata: Metadata = {
-  title: "L'étude",
+  title: { absolute: "L'étude — Étude notariale Thomas Lévy, Paris 16" },
   description:
-    "Une étude notariale parisienne dédiée à l'immobilier complexe, à la structuration patrimoniale et aux dossiers internationaux. Méthode, équipe et engagements.",
+    "Histoire, méthode de travail et équipe de l'étude notariale Thomas Lévy, à Paris 16ᵉ. Une pratique dédiée à l'immobilier et au patrimoine, en français et en anglais.",
   alternates: { canonical: "/etude" },
 };
 

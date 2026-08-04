@@ -1,7 +1,6 @@
 import { etude } from "@/config/etude";
+import { SITE_URL } from "@/config/site";
 import type { ArticleFrontmatter } from "@/lib/content";
-
-const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL ?? "http://localhost:3000";
 
 /**
  * Sérialisation JSON-LD unique (§7) — échappement de « < » pour
@@ -25,7 +24,7 @@ export function schemaNotary(): Record<string, unknown> {
     "@type": "Notary",
     name: etude.nom,
     url: SITE_URL,
-    telephone: etude.telephone,
+    telephone: etude.telephoneE164,
     email: etude.email,
     address: {
       "@type": "PostalAddress",
@@ -34,8 +33,22 @@ export function schemaNotary(): Record<string, unknown> {
       addressLocality: etude.adresse.ville,
       addressCountry: "FR",
     },
-    areaServed: "Paris",
-    knowsLanguage: [...etude.langues],
+    openingHoursSpecification: {
+      "@type": "OpeningHoursSpecification",
+      dayOfWeek: [...etude.horairesSchema.jours],
+      opens: etude.horairesSchema.ouverture,
+      closes: etude.horairesSchema.fermeture,
+    },
+    founder: {
+      "@type": "Person",
+      name: etude.nomNotaire,
+      jobTitle: "Notaire",
+    },
+    areaServed: {
+      "@type": "AdministrativeArea",
+      name: "Paris et Île-de-France",
+    },
+    knowsLanguage: [...etude.languesIso],
     ...(etude.liens.googleMaps ? { hasMap: etude.liens.googleMaps } : {}),
   };
 }
