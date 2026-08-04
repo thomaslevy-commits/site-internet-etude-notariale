@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { AccessMap } from "@/components/access-map";
 import { etude } from "@/config/etude";
 
 const liensLegaux = [
@@ -9,13 +10,14 @@ const liensLegaux = [
 ] as const;
 
 /**
- * Pied de page global : fond night, rappel NAP depuis etude.ts,
- * liens légaux et mention obligatoire du §3 de CLAUDE.md.
+ * Pied de page global : plan d'accès, fond night, rappel NAP depuis
+ * etude.ts, liens légaux et mention obligatoire du §3 de CLAUDE.md.
  */
 export function SiteFooter() {
   return (
     <footer className="bg-night text-ivory">
       <div className="mx-auto w-full max-w-grid px-6 py-16">
+        <AccessMap />
         <div className="flex flex-col gap-10 md:flex-row md:justify-between">
           <div>
             <p className="font-serif text-lg">{etude.nom}</p>
