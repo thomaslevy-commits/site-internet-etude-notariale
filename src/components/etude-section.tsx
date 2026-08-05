@@ -3,8 +3,9 @@ import { cheminPublic } from "@/lib/chemins";
 
 /**
  * Section « L'étude » de l'accueil : photographie pleine hauteur, voile
- * night en dégradé et phrase signature. La photographie attendue est
- * public/images/salle-etude.jpg — à déposer avant fusion (voir PR).
+ * night en dégradé et phrase signature. Le h2 reprend le traitement en
+ * capitales dorées de l'en-tête, pour nommer la section sans concurrencer
+ * la phrase (hiérarchie du §7 ; gold sur night = 5,5:1, conforme AA).
  * Pas de priority : l'image est sous la ligne de flottaison (§4).
  */
 export function EtudeSection() {
@@ -26,6 +27,9 @@ export function EtudeSection() {
         }}
       />
       <div className="absolute inset-x-0 bottom-0 mx-auto w-full max-w-grid px-6 pb-14">
+        <h2 className="mb-3 font-serif text-[0.8rem] uppercase tracking-[0.18em] text-gold">
+          L&rsquo;étude
+        </h2>
         <span className="mb-4 block h-0.5 w-[72px] bg-gold" />
         <p
           className="max-w-[34ch] font-serif font-medium text-ivory"
@@ -35,8 +39,7 @@ export function EtudeSection() {
             textShadow: "0 2px 20px rgba(16,28,44,0.6)",
           }}
         >
-          Depuis 1896, une étude où chaque patrimoine se transmet comme une
-          œuvre d&rsquo;exception.
+          Office notarial parisien depuis 1896.
         </p>
       </div>
     </section>
