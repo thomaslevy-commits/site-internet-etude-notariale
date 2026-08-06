@@ -22,6 +22,14 @@ const navigationMobile = [
 const adresseCourte = etude.adresse.ligne1.split(" — ")[0];
 
 /**
+ * Nom de l'étude avec l'arrondissement rendu insécable : replié sur un
+ * téléphone, « Paris 16 » se coupait sinon en laissant « 16 » seul sur une
+ * ligne. Transformation d'affichage seulement — la valeur de référence de
+ * etude.ts, qui alimente les métadonnées et le JSON-LD, reste intacte (§7).
+ */
+const nomAffiche = etude.nom.replace(/\s(\d+)$/, "\u00A0$1");
+
+/**
  * En-tête global : identité et badge notaires.fr à gauche, coordonnées
  * condensées (≥ xl) et navigation (≥ lg) à droite, menu repliable accessible
  * au clavier en deçà. Coordonnées exclusivement depuis etude.ts (§7).
@@ -35,11 +43,14 @@ export function SiteHeader() {
       <div className="mx-auto flex w-full max-w-grid items-center justify-between gap-6 px-6 py-5">
         <div className="flex flex-col">
           <div className="flex items-center gap-3">
+            {/* Le nom se replie sous sm : maintenu insécable, sa largeur
+                incompressible dépassait la largeur d'un téléphone une fois
+                le bouton de menu placé, et la page défilait latéralement. */}
             <Link
               href="/"
-              className="whitespace-nowrap font-serif text-xl font-medium tracking-tight text-night"
+              className="text-balance font-serif text-base font-medium tracking-tight text-night sm:whitespace-nowrap sm:text-xl"
             >
-              {etude.nom}
+              {nomAffiche}
             </Link>
             <a
               href="https://www.notaires.fr"
