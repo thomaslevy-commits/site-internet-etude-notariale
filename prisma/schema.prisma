@@ -1,0 +1,810 @@
+// =============================================================================
+// Modèle de données PostgreSQL de la plateforme de prise de rendez-vous.
+//
+// SOURCE DE VÉRITÉ
+// Ce schéma reflète src/rendez-vous/types.ts, qui fait autorité sur le modèle
+// de domaine. Toute évolution doit être portée aux deux endroits ; les valeurs
+// des énumérations ci-dessous sont identiques, caractère pour caractère, à
+// celles des types TypeScript (voir les `@map`).
+//
+// MIGRATIONS
+// Les migrations sont versionnées et suivies dans le dépôt
+// (prisma/migrations/**, générées par `prisma migrate dev`, appliquées en
+// production par `prisma migrate deploy`). Aucune modification de schéma n'est
+// appliquée hors migration, et aucune migration n'est générée par cette
+// session : ce fichier est la cible, la première migration reste à produire.
+//
+// PRINCIPES IMPOSÉS PAR LE CAHIER DES CHARGES (CLAUDE.md §2)
+//  1. Minimisation : aucune donnée collectée « au cas où ». Les champs
+//     facultatifs le restent en base et ne sont demandés que si une règle de
+//     qualification les justifie.
+//  2. Séparation : les données d'identité (table `coordonnees`) sont isolées
+//     des métadonnées de fichier (table `fichiers_stockes`), qui ne
+//     contiennent ni nom, ni adresse, ni nom de fichier d'origine.
+//  3. Aucun binaire en base : les pièces déposées vivent dans un stockage
+//     objet chiffré, hébergé en Union européenne. La base ne conserve qu'une
+//     référence d'emplacement, une empreinte et la référence de la clé.
+//  4. Secret professionnel : la base ne conserve ni le corps des e-mails, ni
+//     le contenu des dossiers dans les journaux. Les envois ne portent que
+//     l'identifiant du gabarit et l'état technique de l'envoi.
+//  5. Traçabilité : les accès aux documents sont journalisés (table en ajout
+//     seul), de même que les synchronisations CRM et les consentements.
+//  6. Conservation : chaque catégorie de données porte une échéance de purge
+//     explicite, exploitée par une tâche planifiée. Voir
+//     docs/rendez-vous/02-modele-de-donnees.md, section « Conservation ».
+//
+// Hébergement : PostgreSQL en Union européenne, chiffrement au repos et en
+// transit, sauvegardes chiffrées (CLAUDE.md §2 et §4).
+// =============================================================================
+
+generator client {
+  provider = "prisma-client-js"
+  // Aucun `previewFeatures` : on se limite au socle stable de Prisma.
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+  // Connexion directe, sans pooling, réservée à l'exécution des migrations.
+  // Les deux variables sont à documenter dans .env.example (CLAUDE.md §12).
+  directUrl = env("DATABASE_URL_MIGRATION")
+}
+
+// =============================================================================
+// Énumérations — miroir de src/rendez-vous/types.ts
+// =============================================================================
+
+/// Motif de rendez-vous. Les douze catégories retenues par le notaire.
+/// Miroir de `MotifId`.
+enum MotifId {
+  AchatImmobilier    @map("achat-immobilier")
+  VenteImmobiliere   @map("vente-immobiliere")
+  Succession         @map("succession")
+  Donation           @map("donation")
+  ContratDeMariage   @map("contrat-de-mariage")
+  Pacs               @map("pacs")
+  DivorceSeparation  @map("divorce-separation")
+  Entreprise         @map("entreprise")
+  Procuration        @map("procuration")
+  ConseilPatrimonial @map("conseil-patrimonial")
+  QuestionGenerale   @map("question-generale")
+  Autre              @map("autre")
+
+  @@map("motif_id")
+}
+
+/// Statuts du parcours. Miroir exact de `StatutDemande` : les valeurs
+/// stockées sont celles du type TypeScript, sans transformation.
+enum StatutDemande {
+  Brouillon             @map("brouillon")
+  QualificationEnCours  @map("qualification-en-cours")
+  AttenteDocuments      @map("attente-documents")
+  PreteAPlanifier       @map("prete-a-planifier")
+  RendezVousConfirme    @map("rendez-vous-confirme")
+  RendezVousAValider    @map("rendez-vous-a-valider")
+  RendezVousRealise     @map("rendez-vous-realise")
+  Annule                @map("annule")
+  SansSuite             @map("sans-suite")
+  ConvertiEnDossier     @map("converti-en-dossier")
+
+  @@map("statut_demande")
+}
+
+/// Compétences déclarées par les professionnels. Miroir de `CompetenceId`.
+enum CompetenceId {
+  Immobilier    @map("immobilier")
+  Succession    @map("succession")
+  Famille       @map("famille")
+  Entreprise    @map("entreprise")
+  Patrimoine    @map("patrimoine")
+  International @map("international")
+
+  @@map("competence_id")
+}
+
+/// Formats de rendez-vous. Miroir de `FormatRendezVous`.
+enum FormatRendezVous {
+  Etude           @map("etude")
+  Visioconference @map("visioconference")
+  Telephone       @map("telephone")
+  Exterieur       @map("exterieur")
+
+  @@map("format_rendez_vous")
+}
+
+/// Civilités proposées. Miroir de `Civilite`.
+enum Civilite {
+  Madame       @map("madame")
+  Monsieur     @map("monsieur")
+  NonPrecisee  @map("non-precisee")
+
+  @@map("civilite")
+}
+
+/// Moyen de contact préféré. Miroir de `Coordonnees.moyenContactPrefere`.
+enum MoyenContact {
+  Email     @map("email")
+  Telephone @map("telephone")
+
+  @@map("moyen_contact")
+}
+
+/// Niveaux restitués par le moteur. Miroir de `NiveauUrgence`.
+enum NiveauUrgence {
+  Standard    @map("standard")
+  Prioritaire @map("prioritaire")
+  Urgent      @map("urgent")
+
+  @@map("niveau_urgence")
+}
+
+/// Miroir de `NiveauComplexite` (les accents sont conservés en base).
+enum NiveauComplexite {
+  Simple        @map("simple")
+  Intermediaire @map("intermédiaire")
+  Elevee        @map("élevée")
+
+  @@map("niveau_complexite")
+}
+
+/// Types de champs du formulaire dynamique. Miroir de `TypeQuestion` ; sert
+/// à savoir quelle colonne de valeur lit une réponse.
+enum TypeQuestion {
+  ChoixUnique   @map("choix-unique")
+  ChoixMultiple @map("choix-multiple")
+  OuiNon        @map("oui-non")
+  TexteCourt    @map("texte-court")
+  TexteLong     @map("texte-long")
+  Nombre        @map("nombre")
+  Montant       @map("montant")
+  Date          @map("date")
+  CodePostal    @map("code-postal")
+
+  @@map("type_question")
+}
+
+// =============================================================================
+// Énumérations propres à la persistance (sans équivalent dans types.ts)
+// =============================================================================
+
+/// Chemin emprunté par le demandeur. Les motifs dont les questions ne sont pas
+/// validées par le notaire n'ouvrent pas le questionnaire : le parcours bascule
+/// vers une demande de rappel (voir qualification/moteur.ts,
+/// `parcoursDisponible`). La distinction est conservée pour le tableau de bord.
+enum TypeParcours {
+  Complet @map("complet")
+  Rappel  @map("rappel")
+
+  @@map("type_parcours")
+}
+
+/// État d'un créneau de l'agenda interne.
+enum StatutCreneau {
+  Libre    @map("libre")
+  Retenu   @map("retenu") // réservation temporaire pendant le parcours
+  Reserve  @map("reserve")
+  Bloque   @map("bloque")
+  Expire   @map("expire")
+
+  @@map("statut_creneau")
+}
+
+/// Cycle de vie d'une pièce demandée au demandeur.
+enum StatutDocument {
+  Attendu   @map("attendu")
+  Depose    @map("depose")
+  Refuse    @map("refuse") // format, taille ou analyse antivirus
+  Supprime  @map("supprime") // retiré par le demandeur ou par l'étude
+  Purge     @map("purge") // échéance de conservation atteinte
+
+  @@map("statut_document")
+}
+
+/// Résultat de l'analyse antivirus préalable à toute mise à disposition.
+enum StatutAnalyse {
+  EnAttente @map("en-attente")
+  Sain      @map("sain")
+  Suspect   @map("suspect")
+  Echec     @map("echec")
+
+  @@map("statut_analyse")
+}
+
+/// Nature de l'acteur à l'origine d'un accès journalisé.
+enum TypeActeur {
+  Client        @map("client")
+  Professionnel @map("professionnel")
+  Systeme       @map("systeme")
+
+  @@map("type_acteur")
+}
+
+/// Action tracée sur une pièce déposée (CLAUDE.md §2 : journalisation des
+/// accès aux documents).
+enum ActionDocument {
+  Depot         @map("depot")
+  Consultation  @map("consultation")
+  Telechargement @map("telechargement")
+  Suppression   @map("suppression")
+  Purge         @map("purge")
+
+  @@map("action_document")
+}
+
+/// Issue d'un accès : les refus sont journalisés au même titre que les
+/// autorisations — ils sont le signal le plus utile en cas d'incident.
+enum ResultatAcces {
+  Autorise @map("autorise")
+  Refuse   @map("refuse")
+
+  @@map("resultat_acces")
+}
+
+/// État d'un envoi d'e-mail transactionnel.
+enum StatutEnvoiEmail {
+  AEnvoyer  @map("a-envoyer")
+  Envoye    @map("envoye")
+  Remis     @map("remis")
+  Echec     @map("echec")
+  Abandonne @map("abandonne") // nombre maximal de tentatives atteint
+
+  @@map("statut_envoi_email")
+}
+
+/// État d'une opération de synchronisation vers le CRM de l'étude.
+enum StatutSynchronisation {
+  AFaire      @map("a-faire")
+  EnCours     @map("en-cours")
+  Reussie     @map("reussie")
+  Echec       @map("echec")
+  Abandonnee  @map("abandonnee")
+
+  @@map("statut_synchronisation")
+}
+
+/// Opération portée vers le CRM.
+enum OperationCrm {
+  CreationContact @map("creation-contact")
+  MiseAJourContact @map("mise-a-jour-contact")
+  CreationDemande @map("creation-demande")
+  MiseAJourStatut @map("mise-a-jour-statut")
+  Suppression     @map("suppression") // propagation d'un effacement RGPD
+
+  @@map("operation_crm")
+}
+
+/// Finalités faisant l'objet d'un consentement distinct. Le consentement au
+/// traitement de la demande est indispensable ; les autres sont libres et leur
+/// refus n'empêche jamais la prise de rendez-vous.
+enum TypeConsentement {
+  TraitementDemande     @map("traitement-demande")
+  DepotDocuments        @map("depot-documents")
+  ContactTelephonique   @map("contact-telephonique")
+  ConservationProlongee @map("conservation-prolongee")
+
+  @@map("type_consentement")
+}
+
+// =============================================================================
+// Parcours : demande, réponses, évaluation, coordonnées
+// =============================================================================
+
+/// Une demande de rendez-vous, du brouillon à la conversion en dossier.
+/// Table centrale du parcours ; elle ne porte aucune donnée d'identité, qui
+/// vit exclusivement dans `coordonnees`.
+model Demande {
+  id        String        @id @default(uuid()) @db.Uuid
+  /// Référence lisible communiquée au demandeur (ex. « RDV-2026-0042 »).
+  /// Générée par l'application, jamais devinable par incrément seul.
+  reference String        @unique @db.VarChar(32)
+  statut    StatutDemande @default(Brouillon)
+  motif     MotifId
+  parcours  TypeParcours  @default(Complet)
+  format    FormatRendezVous?
+
+  /// Jeton opaque remis au demandeur pour reprendre ou consulter sa demande
+  /// sans compte. Stocké haché : la base ne permet pas de le reconstituer.
+  jetonSuiviEmpreinte String?   @unique @map("jeton_suivi_empreinte") @db.VarChar(64)
+  jetonSuiviExpireLe  DateTime? @map("jeton_suivi_expire_le")
+
+  professionnelId String?        @map("professionnel_id") @db.Uuid
+  professionnel   Professionnel? @relation(fields: [professionnelId], references: [id], onDelete: SetNull)
+
+  /// `creneauDebut` et `creneauFin` de types.ts sont lus sur le créneau lié :
+  /// une seule source pour l'horaire, pas de recopie à maintenir.
+  creneau Creneau?
+
+  coordonnees Coordonnees?
+  evaluation  Evaluation?
+
+  reponses      ReponseQualification[]
+  documents     DocumentDemande[]
+  envois        EnvoiEmail[]
+  consentements Consentement[]
+  synchronisations SynchronisationCrm[]
+  accesDocuments   JournalAccesDocument[]
+
+  /// Note interne de l'étude. Jamais affichée au demandeur, jamais reprise
+  /// dans un e-mail (CLAUDE.md §2 : secret professionnel).
+  noteInterne String? @map("note_interne") @db.Text
+
+  creeLe     DateTime  @default(now()) @map("cree_le")
+  modifieLe  DateTime  @updatedAt @map("modifie_le")
+  /// Date d'entrée dans un statut terminal (réalisé, annulé, sans suite,
+  /// converti). Sert d'ancre au calcul des échéances de conservation.
+  termineeLe DateTime? @map("terminee_le")
+  /// Échéance de purge, calculée à l'écriture et indexée : la tâche de purge
+  /// n'a jamais à parcourir toute la table.
+  purgePrevueLe DateTime? @map("purge_prevue_le")
+  /// Horodatage de l'anonymisation effective (coordonnées effacées, demande
+  /// conservée à l'état statistique).
+  anonymiseeLe DateTime? @map("anonymisee_le")
+
+  @@index([statut, creeLe])
+  @@index([professionnelId, statut])
+  @@index([purgePrevueLe])
+  @@index([motif, creeLe])
+  @@map("demandes")
+}
+
+/// Coordonnées du demandeur. Table isolée pour trois raisons : contrôle
+/// d'accès plus fin, anonymisation possible sans perdre l'historique
+/// statistique de la demande, et purge indépendante des métadonnées de
+/// fichier. Miroir de `Coordonnees`.
+model Coordonnees {
+  id        String  @id @default(uuid()) @db.Uuid
+  demandeId String  @unique @map("demande_id") @db.Uuid
+  demande   Demande @relation(fields: [demandeId], references: [id], onDelete: Cascade)
+
+  civilite  Civilite @default(NonPrecisee)
+  prenom    String   @db.VarChar(120)
+  nom       String   @db.VarChar(120)
+  email     String   @db.VarChar(254)
+  telephone String   @db.VarChar(32)
+
+  /// Champs facultatifs : demandés uniquement lorsque le motif ou une règle
+  /// les justifie (minimisation). Ne jamais les rendre obligatoires côté
+  /// formulaire sans décision écrite.
+  adresse    String?   @db.VarChar(255)
+  codePostal String?   @map("code_postal") @db.VarChar(16)
+  ville      String?   @db.VarChar(120)
+  /// Date de naissance : donnée d'identité sensible, collectée seulement
+  /// lorsque l'acte envisagé l'exige. Type `date`, sans heure ni fuseau.
+  dateNaissance DateTime? @map("date_naissance") @db.Date
+
+  /// Code de langue BCP 47 (« fr », « en », « it »…). Sert à choisir la langue
+  /// des e-mails et à orienter vers un professionnel compétent.
+  langue              String       @default("fr") @db.VarChar(16)
+  moyenContactPrefere MoyenContact @default(Email) @map("moyen_contact_prefere")
+
+  // `Coordonnees.consentement` de types.ts n'est pas dupliqué ici : il se lit
+  // dans la table `consentements` (type `traitement-demande`), qui porte la
+  // preuve horodatée. Une seule source, pas de divergence possible.
+
+  /// Empreinte de l'adresse e-mail normalisée. Permet de rapprocher deux
+  /// demandes ou de traiter une demande d'effacement après anonymisation,
+  /// sans conserver l'adresse en clair. Sel applicatif hors base.
+  emailEmpreinte String? @map("email_empreinte") @db.VarChar(64)
+
+  creeLe    DateTime @default(now()) @map("cree_le")
+  modifieLe DateTime @updatedAt @map("modifie_le")
+
+  @@index([emailEmpreinte])
+  @@map("coordonnees")
+}
+
+/// Réponses au questionnaire de qualification, une ligne par question.
+/// Le stockage ligne à ligne (plutôt qu'un unique document JSON) permet
+/// d'effacer une réponse précise, d'indexer les questions utiles au tableau
+/// de bord et de repérer les champs jamais renseignés — donc à supprimer du
+/// formulaire. Miroir de `Reponses` (Record<string, ReponseValeur>).
+model ReponseQualification {
+  id        String  @id @default(uuid()) @db.Uuid
+  demandeId String  @map("demande_id") @db.Uuid
+  demande   Demande @relation(fields: [demandeId], references: [id], onDelete: Cascade)
+
+  /// Identifiant stable de la question (voir qualification/regles.ts). Non
+  /// contraint par une clé étrangère : le catalogue des questions vit dans le
+  /// code, versionné avec lui, et une question retirée ne doit pas invalider
+  /// les demandes passées.
+  questionId String       @map("question_id") @db.VarChar(64)
+  type       TypeQuestion
+
+  /// Une seule colonne est renseignée, selon `type`. `valeurListe` couvre les
+  /// choix multiples ; une réponse nulle se traduit par l'absence de ligne.
+  valeurTexte   String?   @map("valeur_texte") @db.Text
+  valeurNombre  Decimal?  @map("valeur_nombre") @db.Decimal(16, 2)
+  valeurBooleen Boolean?  @map("valeur_booleen")
+  valeurDate    DateTime? @map("valeur_date") @db.Date
+  valeurListe   String[]  @map("valeur_liste")
+
+  creeLe    DateTime @default(now()) @map("cree_le")
+  modifieLe DateTime @updatedAt @map("modifie_le")
+
+  @@unique([demandeId, questionId])
+  @@index([questionId])
+  @@map("reponses_qualification")
+}
+
+/// Résultat de l'évaluation par le moteur de qualification, figé au moment du
+/// dépôt de la demande. Conservé plutôt que recalculé : le moteur évolue, et
+/// l'étude doit pouvoir justifier l'orientation retenue à l'époque.
+/// Miroir de `Evaluation`.
+model Evaluation {
+  id        String  @id @default(uuid()) @db.Uuid
+  demandeId String  @unique @map("demande_id") @db.Uuid
+  demande   Demande @relation(fields: [demandeId], references: [id], onDelete: Cascade)
+
+  motif           MotifId
+  urgence         NiveauUrgence
+  complexite      NiveauComplexite
+  /// Scores bruts, conservés pour le tri du tableau de bord interne.
+  scoreUrgence    Int              @map("score_urgence")
+  scoreComplexite Int              @map("score_complexite")
+  competence      CompetenceId
+  dureeMinutes    Int              @map("duree_minutes")
+
+  /// Identifiants du catalogue (documents.ts), dédupliqués.
+  documents        String[]
+  /// Intitulés des règles déclenchées — trace lisible pour l'étude, jamais
+  /// affichée au demandeur.
+  motifsDeclenches String[] @map("motifs_declenches")
+
+  /// Version du moteur et des règles ayant produit ce résultat : sans elle,
+  /// on ne peut pas rejouer une évaluation ancienne à l'identique.
+  versionMoteur String   @default("0") @map("version_moteur") @db.VarChar(32)
+  evalueeLe     DateTime @default(now()) @map("evaluee_le")
+
+  @@index([urgence, complexite])
+  @@map("evaluations")
+}
+
+// =============================================================================
+// Agenda : professionnels, disponibilités, créneaux
+// =============================================================================
+
+/// Professionnel de l'étude pouvant recevoir un rendez-vous.
+/// Miroir de `Professionnel`. Données professionnelles uniquement : aucune
+/// donnée personnelle hors nom et fonction, déjà publiques sur le site.
+model Professionnel {
+  id       String @id @default(uuid()) @db.Uuid
+  nom      String @db.VarChar(120)
+  fonction String @db.VarChar(120)
+
+  competences CompetenceId[]
+  /// Codes de langue BCP 47.
+  langues     String[]
+  /// Chemin d'une photo dans /public, facultatif.
+  photo       String?            @db.VarChar(255)
+  formats     FormatRendezVous[]
+  /// Complexité maximale traitée — un clerc ne prend pas un dossier élevé.
+  complexiteMaximale NiveauComplexite @map("complexite_maximale")
+
+  /// Un professionnel qui quitte l'étude est désactivé, jamais supprimé :
+  /// les demandes passées conservent leur affectation.
+  actif           Boolean @default(true)
+  ordreAffichage  Int     @default(0) @map("ordre_affichage")
+
+  demandes         Demande[]
+  reglesDisponibilite RegleDisponibilite[]
+  indisponibilites Indisponibilite[]
+  creneaux         Creneau[]
+  accesDocuments   JournalAccesDocument[]
+
+  creeLe    DateTime @default(now()) @map("cree_le")
+  modifieLe DateTime @updatedAt @map("modifie_le")
+
+  @@index([actif])
+  @@map("professionnels")
+}
+
+/// Règle de disponibilité récurrente, par professionnel et par jour de la
+/// semaine. Les créneaux concrets en sont dérivés par une tâche de
+/// génération ; la règle reste la source, le créneau le résultat.
+model RegleDisponibilite {
+  id              String        @id @default(uuid()) @db.Uuid
+  professionnelId String        @map("professionnel_id") @db.Uuid
+  professionnel   Professionnel @relation(fields: [professionnelId], references: [id], onDelete: Cascade)
+
+  /// 1 = lundi … 7 = dimanche (ISO-8601).
+  jourSemaine Int @map("jour_semaine") @db.SmallInt
+  /// Minutes depuis minuit, dans le fuseau `Europe/Paris`. Des entiers plutôt
+  /// qu'un type horaire : pas d'ambiguïté de fuseau au passage à l'heure d'été.
+  minuteDebut Int @map("minute_debut") @db.SmallInt
+  minuteFin   Int @map("minute_fin") @db.SmallInt
+
+  /// Durée du pas de génération des créneaux, en minutes.
+  pasMinutes Int                @default(15) @map("pas_minutes") @db.SmallInt
+  formats    FormatRendezVous[]
+
+  /// Période de validité de la règle (une règle est modifiée en la clôturant
+  /// et en en créant une nouvelle — l'historique des agendas reste lisible).
+  valableDu DateTime  @map("valable_du") @db.Date
+  valableAu DateTime? @map("valable_au") @db.Date
+
+  creeLe    DateTime @default(now()) @map("cree_le")
+  modifieLe DateTime @updatedAt @map("modifie_le")
+
+  @@index([professionnelId, jourSemaine])
+  @@map("regles_disponibilite")
+}
+
+/// Absence ponctuelle : congé, audience, rendez-vous extérieur. Prime sur les
+/// règles de disponibilité lors de la génération des créneaux.
+model Indisponibilite {
+  id              String        @id @default(uuid()) @db.Uuid
+  professionnelId String        @map("professionnel_id") @db.Uuid
+  professionnel   Professionnel @relation(fields: [professionnelId], references: [id], onDelete: Cascade)
+
+  debut DateTime @db.Timestamptz(3)
+  fin   DateTime @db.Timestamptz(3)
+  /// Libellé interne, sobre : « congé », « formation ». Aucun nom de client,
+  /// aucun élément de dossier.
+  libelle String? @db.VarChar(120)
+
+  creeLe DateTime @default(now()) @map("cree_le")
+
+  @@index([professionnelId, debut])
+  @@map("indisponibilites")
+}
+
+/// Créneau proposé au client. Miroir de `Creneau`, augmenté de l'état de
+/// réservation. L'unicité (professionnel, début) et la relation unique vers
+/// la demande interdisent structurellement la double réservation.
+model Creneau {
+  id              String        @id @default(uuid()) @db.Uuid
+  professionnelId String        @map("professionnel_id") @db.Uuid
+  professionnel   Professionnel @relation(fields: [professionnelId], references: [id], onDelete: Cascade)
+
+  /// Horodatages avec fuseau : la restitution ISO 8601 attendue par types.ts
+  /// est produite à la lecture.
+  debut DateTime @db.Timestamptz(3)
+  fin   DateTime @db.Timestamptz(3)
+
+  formats FormatRendezVous[]
+  statut  StatutCreneau      @default(Libre)
+
+  /// Réservation temporaire pendant que le demandeur termine son parcours.
+  /// Passée cette date, une tâche replace le créneau en `libre`.
+  retenuJusquA DateTime? @map("retenu_jusqu_a")
+
+  demandeId String?  @unique @map("demande_id") @db.Uuid
+  demande   Demande? @relation(fields: [demandeId], references: [id], onDelete: SetNull)
+
+  creeLe    DateTime @default(now()) @map("cree_le")
+  modifieLe DateTime @updatedAt @map("modifie_le")
+
+  @@unique([professionnelId, debut])
+  @@index([statut, debut])
+  @@index([debut])
+  @@map("creneaux")
+}
+
+// =============================================================================
+// Documents : lien métier et métadonnées techniques, séparés
+// =============================================================================
+
+/// Pièce attendue ou déposée pour une demande. Table métier : elle dit quelle
+/// pièce du catalogue est réclamée et où en est son dépôt. Elle ne contient
+/// aucune métadonnée technique de fichier ni aucune donnée d'identité.
+model DocumentDemande {
+  id        String  @id @default(uuid()) @db.Uuid
+  demandeId String  @map("demande_id") @db.Uuid
+  demande   Demande @relation(fields: [demandeId], references: [id], onDelete: Cascade)
+
+  /// Identifiant du catalogue (src/rendez-vous/documents.ts). Comme pour les
+  /// questions, le catalogue vit dans le code : pas de clé étrangère.
+  definitionId String         @map("definition_id") @db.VarChar(64)
+  obligatoire  Boolean        @default(false)
+  statut       StatutDocument @default(Attendu)
+
+  /// Fichier effectivement déposé, s'il existe. Séparation volontaire : la
+  /// purge du fichier n'efface pas la trace que la pièce avait été réclamée.
+  fichier FichierStocke?
+
+  demandeLe DateTime  @default(now()) @map("demande_le")
+  deposeLe  DateTime? @map("depose_le")
+
+  @@unique([demandeId, definitionId])
+  @@index([statut])
+  @@map("documents_demande")
+}
+
+/// Métadonnées techniques d'un fichier déposé. AUCUN BINAIRE EN BASE : le
+/// contenu réside dans un stockage objet chiffré hébergé en Union européenne
+/// (CLAUDE.md §2). Cette table ne contient ni nom, ni adresse, ni nom de
+/// fichier d'origine — celui-ci révélerait souvent l'identité du demandeur
+/// (« CNI-<nom>.pdf ») et n'a aucune utilité fonctionnelle.
+model FichierStocke {
+  id                String          @id @default(uuid()) @db.Uuid
+  documentDemandeId String          @unique @map("document_demande_id") @db.Uuid
+  documentDemande   DocumentDemande @relation(fields: [documentDemandeId], references: [id], onDelete: Cascade)
+
+  /// Clé d'objet dans le stockage chiffré. Opaque, sans partie signifiante :
+  /// elle ne doit rien laisser deviner du demandeur ni du motif.
+  cleObjet String @unique @map("cle_objet") @db.VarChar(255)
+  /// Identifiant logique du dépôt (compartiment ou volume), pour permettre une
+  /// migration de prestataire sans réécrire les clés.
+  emplacement String @db.VarChar(64)
+  /// Référence de la clé de chiffrement dans le gestionnaire de clés. Ce n'est
+  /// PAS la clé : aucun secret ne figure en base (CLAUDE.md §12).
+  referenceCle String @map("reference_cle") @db.VarChar(128)
+
+  typeMime      String @map("type_mime") @db.VarChar(128)
+  tailleOctets  Int    @map("taille_octets")
+  /// Empreinte SHA-256 du contenu déposé : contrôle d'intégrité et détection
+  /// des dépôts en double.
+  empreinteSha256 String @map("empreinte_sha256") @db.VarChar(64)
+  /// Extension normalisée conservée pour la restitution (« pdf », « jpg »),
+  /// à l'exclusion du nom d'origine.
+  extension String @db.VarChar(8)
+
+  statutAnalyse StatutAnalyse @default(EnAttente) @map("statut_analyse")
+  analyseLe     DateTime?     @map("analyse_le")
+
+  deposeLe      DateTime  @default(now()) @map("depose_le")
+  /// Échéance de suppression du contenu dans le stockage objet. Indexée : la
+  /// tâche de purge n'interroge que les lignes échues.
+  purgePrevueLe DateTime  @map("purge_prevue_le")
+  /// Renseignée lorsque le contenu a effectivement été détruit ; la ligne
+  /// subsiste alors comme preuve de purge, sans référence exploitable.
+  purgeLe       DateTime? @map("purge_le")
+
+  acces JournalAccesDocument[]
+
+  @@index([purgePrevueLe])
+  @@index([statutAnalyse])
+  @@index([empreinteSha256])
+  @@map("fichiers_stockes")
+}
+
+/// Journal des accès aux documents (CLAUDE.md §2, exigence non négociable).
+/// Table en AJOUT SEUL : aucune mise à jour, aucune suppression hors purge
+/// planifiée. Les refus y figurent au même titre que les accès autorisés.
+model JournalAccesDocument {
+  id String @id @default(uuid()) @db.Uuid
+
+  fichierId String?        @map("fichier_id") @db.Uuid
+  fichier   FichierStocke? @relation(fields: [fichierId], references: [id], onDelete: SetNull)
+  demandeId String?        @map("demande_id") @db.Uuid
+  demande   Demande?       @relation(fields: [demandeId], references: [id], onDelete: SetNull)
+
+  acteur          TypeActeur
+  professionnelId String?        @map("professionnel_id") @db.Uuid
+  professionnel   Professionnel? @relation(fields: [professionnelId], references: [id], onDelete: SetNull)
+
+  action   ActionDocument
+  resultat ResultatAcces
+  /// Motif du refus, en clair et sobre : « session expirée », « hors
+  /// périmètre ». Jamais de contenu de dossier.
+  motifRefus String? @map("motif_refus") @db.VarChar(120)
+
+  /// Adresse IP tronquée (dernier octet retiré en IPv4, préfixe /48 en IPv6) :
+  /// suffisant pour caractériser un incident, moins intrusif qu'une adresse
+  /// complète.
+  adresseIpTronquee String? @map("adresse_ip_tronquee") @db.VarChar(45)
+  /// Empreinte de l'agent utilisateur, pour corréler sans profiler.
+  agentEmpreinte    String? @map("agent_empreinte") @db.VarChar(64)
+  /// Empreinte de l'identifiant de session, pour reconstituer un enchaînement.
+  sessionEmpreinte  String? @map("session_empreinte") @db.VarChar(64)
+
+  horodatageLe  DateTime @default(now()) @map("horodatage_le")
+  purgePrevueLe DateTime @map("purge_prevue_le")
+
+  @@index([fichierId, horodatageLe])
+  @@index([professionnelId, horodatageLe])
+  @@index([demandeId, horodatageLe])
+  @@index([purgePrevueLe])
+  @@map("journal_acces_documents")
+}
+
+// =============================================================================
+// Communications et intégrations
+// =============================================================================
+
+/// Journal des e-mails transactionnels. Le corps du message n'est jamais
+/// stocké : seuls l'identifiant du gabarit et l'état technique de l'envoi le
+/// sont (CLAUDE.md §2 — un e-mail ne contient jamais d'élément de dossier,
+/// seulement une invitation à se connecter ou à venir).
+model EnvoiEmail {
+  id        String   @id @default(uuid()) @db.Uuid
+  demandeId String?  @map("demande_id") @db.Uuid
+  demande   Demande? @relation(fields: [demandeId], references: [id], onDelete: SetNull)
+
+  /// Identifiant du gabarit (src/rendez-vous/emails). Le libellé et le texte
+  /// vivent dans le code, validés par le notaire.
+  gabarit String @db.VarChar(64)
+  /// « client » ou « etude ». L'adresse elle-même n'est pas recopiée ici : elle
+  /// se lit dans `coordonnees` ou dans la configuration de l'étude.
+  destinataire String @db.VarChar(16)
+  langue       String @default("fr") @db.VarChar(16)
+
+  statut     StatutEnvoiEmail @default(AEnvoyer)
+  tentatives Int              @default(0)
+  /// Message d'erreur du prestataire, tronqué et expurgé de toute donnée
+  /// personnelle avant écriture.
+  derniereErreur      String?   @map("derniere_erreur") @db.VarChar(500)
+  prochaineTentativeLe DateTime? @map("prochaine_tentative_le")
+
+  /// Identifiant retourné par le prestataire d'envoi, pour rapprochement.
+  referenceExterne String? @map("reference_externe") @db.VarChar(128)
+  /// Clé d'idempotence : interdit le double envoi en cas de rejeu de la file.
+  cleIdempotence   String  @unique @map("cle_idempotence") @db.VarChar(128)
+
+  creeLe    DateTime  @default(now()) @map("cree_le")
+  envoyeLe  DateTime? @map("envoye_le")
+  purgePrevueLe DateTime @map("purge_prevue_le")
+
+  @@index([statut, prochaineTentativeLe])
+  @@index([demandeId, creeLe])
+  @@index([purgePrevueLe])
+  @@map("envois_email")
+}
+
+/// Journal de synchronisation vers le CRM de l'étude. Une ligne par opération
+/// tentée, avec compteur de tentatives et dernière erreur : sans cette trace,
+/// une demande peut disparaître entre le site et le CRM sans que personne ne
+/// le voie. La charge utile n'est pas conservée — seule son empreinte l'est,
+/// suffisante pour détecter un rejeu ou une divergence.
+model SynchronisationCrm {
+  id        String  @id @default(uuid()) @db.Uuid
+  demandeId String  @map("demande_id") @db.Uuid
+  demande   Demande @relation(fields: [demandeId], references: [id], onDelete: Cascade)
+
+  systemeCible String       @map("systeme_cible") @db.VarChar(64)
+  operation    OperationCrm
+  statut       StatutSynchronisation @default(AFaire)
+
+  tentatives           Int       @default(0)
+  derniereErreur       String?   @map("derniere_erreur") @db.VarChar(500)
+  derniereTentativeLe  DateTime? @map("derniere_tentative_le")
+  prochaineTentativeLe DateTime? @map("prochaine_tentative_le")
+
+  /// Identifiant de l'objet créé côté CRM, pour éviter les doublons et
+  /// permettre la reprise après incident.
+  referenceExterne  String? @map("reference_externe") @db.VarChar(128)
+  /// Empreinte SHA-256 de la charge utile envoyée.
+  empreintePayload  String? @map("empreinte_payload") @db.VarChar(64)
+
+  creeLe    DateTime @default(now()) @map("cree_le")
+  modifieLe DateTime @updatedAt @map("modifie_le")
+  purgePrevueLe DateTime @map("purge_prevue_le")
+
+  @@index([statut, prochaineTentativeLe])
+  @@index([demandeId, creeLe])
+  @@index([purgePrevueLe])
+  @@map("synchronisations_crm")
+}
+
+// =============================================================================
+// Conformité : consentements
+// =============================================================================
+
+/// Consentement horodaté, une ligne par finalité et par événement. Un retrait
+/// ne modifie pas la ligne d'origine : il crée une nouvelle ligne avec
+/// `accepte = false`. L'historique est ainsi opposable et lisible.
+model Consentement {
+  id        String  @id @default(uuid()) @db.Uuid
+  demandeId String  @map("demande_id") @db.Uuid
+  demande   Demande @relation(fields: [demandeId], references: [id], onDelete: Cascade)
+
+  type    TypeConsentement
+  accepte Boolean
+
+  /// Version du texte présenté au moment du recueil (ex. « 2026-08-1 ») et
+  /// empreinte de ce texte : ensemble, ils prouvent ce qui a été accepté, sans
+  /// recopier le texte à chaque demande.
+  versionTexte   String  @map("version_texte") @db.VarChar(32)
+  empreinteTexte String? @map("empreinte_texte") @db.VarChar(64)
+
+  /// Éléments de preuve, réduits au strict nécessaire.
+  adresseIpTronquee String? @map("adresse_ip_tronquee") @db.VarChar(45)
+  agentEmpreinte    String? @map("agent_empreinte") @db.VarChar(64)
+
+  recueilliLe   DateTime @default(now()) @map("recueilli_le")
+  purgePrevueLe DateTime @map("purge_prevue_le")
+
+  @@index([demandeId, type, recueilliLe])
+  @@index([purgePrevueLe])
+  @@map("consentements")
+}

@@ -37,6 +37,11 @@ pnpm-debug.log*
 *.tsbuildinfo
 next-env.d.ts
 
+# --- Tests ---
+# Sortie de compilation des tests (npm run test:rdv) : le lanceur intégré de
+# Node exige du JavaScript, ce dossier est reconstruit à chaque exécution.
+/.tests-build/
+
 # ============================================================
 # CONFIDENTIALITÉ NOTARIALE — NE JAMAIS VERSIONNER
 # Aucun document client, acte, projet d'acte ou pièce de dossier
