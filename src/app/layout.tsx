@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { Cormorant_Garamond, Inter } from "next/font/google";
+import { SpeedInsights } from "@vercel/speed-insights/next";
 import { SiteHeader } from "@/components/site-header";
 import { SiteFooter } from "@/components/site-footer";
 import { SITE_URL } from "@/config/site";
@@ -67,6 +68,7 @@ export default function RootLayout({
           {children}
         </div>
         <SiteFooter />
+        <SpeedInsights />
       </body>
     </html>
   );
