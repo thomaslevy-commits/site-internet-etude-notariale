@@ -6,13 +6,17 @@ export const metadata: Metadata = {
   },
   description:
     "Comprendre le coût d'un acte notarié : émoluments réglementés, débours, droits et taxes, honoraires libres. Une information claire avant tout engagement.",
-  alternates: { canonical: "/honoraires" },
+  alternates: { canonical: "/tarif" },
 };
 
 /**
- * Page Honoraires (§8) : quatre sections, aucune simulation chiffrée,
- * aucun montant. Références : art. L. 444-1 et s. C. com. et arrêtés
- * tarifaires en vigueur — à vérifier avant publication.
+ * Page Tarif (§8) : quatre sections, aucune simulation chiffrée, aucun
+ * montant. Références : art. L. 444-1 et s. C. com. et arrêtés tarifaires
+ * en vigueur — à vérifier avant publication.
+ *
+ * L'URL était /honoraires : le mot ne désigne qu'une des trois composantes
+ * du coût, à côté des émoluments et des débours. Redirection 301 conservée
+ * dans next.config.ts.
  */
 const SECTIONS: { titre: string; contenu: string[] }[] = [
   {

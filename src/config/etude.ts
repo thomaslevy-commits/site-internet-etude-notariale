@@ -30,9 +30,9 @@ export const etude = {
     ouverture: "09:00",
     fermeture: "19:00",
   },
-  langues: ["français", "anglais"],
+  langues: ["français", "anglais", "allemand"],
   /** Codes BCP 47 correspondants, pour les données structurées. */
-  languesIso: ["fr", "en"],
+  languesIso: ["fr", "en", "de"],
   liens: {
     /** Fiche Google Maps de l'étude (lien statique — pas d'iframe, §8). */
     googleMaps: "https://maps.google.com/?cid=15064672117259351290",
