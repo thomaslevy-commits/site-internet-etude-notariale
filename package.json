@@ -7,7 +7,8 @@
     "build": "next build",
     "start": "next start",
     "lint": "next lint",
-    "typecheck": "tsc --noEmit"
+    "typecheck": "tsc --noEmit",
+    "test:rdv": "tsc src/rendez-vous/qualification/moteur.test.ts --outDir .tests-build --module commonjs --target es2022 --moduleResolution node --esModuleInterop --skipLibCheck --strict && node --test .tests-build/qualification/moteur.test.js"
   },
   "dependencies": {
     "@vercel/speed-insights": "^2.0.0",
