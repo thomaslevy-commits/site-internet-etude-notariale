@@ -14,6 +14,17 @@ import type { NextConfig } from "next";
  */
 const estExport = process.env.NEXT_OUTPUT === "export";
 
+/**
+ * Redirections permanentes (§6 : toute modification d'URL en exige une).
+ * /honoraires est devenue /tarif — le mot « honoraires » ne désignait
+ * qu'une des trois composantes du coût, à côté des émoluments et des
+ * débours. L'ancienne adresse a été indexée : elle doit continuer de
+ * répondre et transmettre son autorité à la nouvelle.
+ */
+const REDIRECTIONS = [
+  { source: "/honoraires", destination: "/tarif", permanent: true },
+];
+
 const nextConfig: NextConfig = {
   reactStrictMode: true,
   ...(estExport
@@ -22,7 +33,13 @@ const nextConfig: NextConfig = {
         basePath: process.env.NEXT_PUBLIC_BASE_PATH ?? "",
         images: { unoptimized: true },
       }
-    : {}),
+    : {
+        // Comme headers(), redirects() est sans effet sur un export statique :
+        // les redirections y relèvent du serveur web.
+        async redirects() {
+          return REDIRECTIONS;
+        },
+      }),
 };
 
 export default nextConfig;

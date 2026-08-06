@@ -8,7 +8,7 @@ import { etude } from "@/config/etude";
 const navigation = [
   { href: "/etude", label: "L'étude" },
   { href: "/expertises", label: "Expertises" },
-  { href: "/honoraires", label: "Honoraires" },
+  { href: "/tarif", label: "Tarif" },
   { href: "/blog", label: "Blog" },
   { href: "/faq", label: "FAQ" },
 ] as const;

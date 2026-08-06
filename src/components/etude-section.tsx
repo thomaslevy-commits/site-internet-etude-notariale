@@ -2,19 +2,32 @@ import Image from "next/image";
 import { cheminPublic } from "@/lib/chemins";
 
 /**
- * Section « L'étude » de l'accueil : photographie pleine hauteur, voile
- * night en dégradé et phrase signature. Le h2 reprend le traitement en
+ * Section « L'étude » — photographie pleine hauteur, voile night en dégradé
+ * et phrase signature. Elle ouvre désormais /etude, où elle a davantage sa
+ * place que sur l'accueil : celui-ci présente le notaire lui-même. Le h2,
+ * quand il est rendu, reprend le traitement en
  * capitales dorées de l'en-tête, pour nommer la section sans concurrencer
  * la phrase (hiérarchie du §7 ; gold sur night = 5,5:1, conforme AA).
- * Pas de priority : l'image est sous la ligne de flottaison (§4).
+ * priority : la section ouvre /etude, la photographie y est l'image de plus
+ * grand rendu et commande donc le LCP (§10).
  */
-export function EtudeSection() {
+export function EtudeSection({
+  avecTitre = true,
+}: {
+  /**
+   * Rend le titre de section. À désactiver lorsque la page porte déjà un
+   * h1 du même intitulé — sur /etude, il ferait doublon et placerait un h2
+   * avant le h1 dans le plan du document.
+   */
+  avecTitre?: boolean;
+} = {}) {
   return (
     <section className="relative min-h-[70vh] overflow-hidden bg-night">
       <Image
         src={cheminPublic("/images/salle-etude.jpg")}
         alt="Salle de réunion de l'étude notariale Thomas Lévy, Paris 16ᵉ"
         fill
+        priority
         sizes="100vw"
         className="object-cover"
       />
@@ -27,9 +40,11 @@ export function EtudeSection() {
         }}
       />
       <div className="absolute inset-x-0 bottom-0 mx-auto w-full max-w-grid px-6 pb-14">
-        <h2 className="mb-3 font-serif text-[0.8rem] uppercase tracking-[0.18em] text-gold">
-          L&rsquo;étude
-        </h2>
+        {avecTitre ? (
+          <h2 className="mb-3 font-serif text-[0.8rem] uppercase tracking-[0.18em] text-gold">
+            L&rsquo;étude
+          </h2>
+        ) : null}
         <span className="mb-4 block h-0.5 w-[72px] bg-gold" />
         <p
           className="max-w-[34ch] font-serif font-medium text-ivory"
