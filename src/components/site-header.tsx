@@ -30,9 +30,9 @@ const adresseCourte = etude.adresse.ligne1.split(" — ")[0];
 const nomAffiche = etude.nom.replace(/\s(\d+)$/, "\u00A0$1");
 
 /**
- * En-tête global : identité et badge notaires.fr à gauche, coordonnées
- * condensées (≥ xl) et navigation (≥ lg) à droite, menu repliable accessible
- * au clavier en deçà. Coordonnées exclusivement depuis etude.ts (§7).
+ * En-tête global : nom de l'étude à gauche, coordonnées condensées (≥ xl) et
+ * navigation (≥ lg) à droite, menu repliable accessible au clavier en deçà.
+ * Coordonnées exclusivement depuis etude.ts (§7).
  * Textes dorés sur ivoire en gold-ink — contraste WCAG AA.
  */
 export function SiteHeader() {
@@ -41,36 +41,15 @@ export function SiteHeader() {
   return (
     <header className="border-b border-line bg-ivory">
       <div className="mx-auto flex w-full max-w-grid items-center justify-between gap-6 px-6 py-5">
-        <div className="flex flex-col">
-          <div className="flex items-center gap-3">
-            {/* Le nom se replie sous sm : maintenu insécable, sa largeur
-                incompressible dépassait la largeur d'un téléphone une fois
-                le bouton de menu placé, et la page défilait latéralement. */}
-            <Link
-              href="/"
-              className="text-balance font-serif text-base font-medium tracking-tight text-night sm:whitespace-nowrap sm:text-xl"
-            >
-              {nomAffiche}
-            </Link>
-            <a
-              href="https://www.notaires.fr"
-              target="_blank"
-              rel="noopener noreferrer"
-              title="notaires.fr — Portail officiel du notariat"
-              className="hidden items-center gap-1.5 whitespace-nowrap rounded-[2px] border border-gold px-2 py-[3px] leading-none sm:inline-flex"
-            >
-              <span className="flex h-3.5 w-3.5 items-center justify-center rounded-full border-[1.5px] border-gold font-serif text-[10px] font-semibold text-gold-ink">
-                N
-              </span>
-              <span className="text-[0.68rem] font-medium tracking-wide text-night">
-                notaires.fr
-              </span>
-            </a>
-          </div>
-          <span className="mt-0.5 font-serif text-[0.72rem] uppercase tracking-[0.18em] text-gold-ink">
-            Étude notariale depuis 1896
-          </span>
-        </div>
+        {/* Le nom se replie sous sm : maintenu insécable, sa largeur
+            incompressible dépassait la largeur d'un téléphone une fois le
+            bouton de menu placé, et la page défilait latéralement. */}
+        <Link
+          href="/"
+          className="text-balance font-serif text-base font-medium tracking-tight text-night sm:whitespace-nowrap sm:text-xl"
+        >
+          {nomAffiche}
+        </Link>
 
         <div className="ml-6 mr-5 hidden flex-col items-end whitespace-nowrap border-r border-gold/35 pr-5 leading-tight xl:flex">
           <span className="text-[0.8rem] text-anthracite">

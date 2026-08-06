@@ -127,7 +127,7 @@ export default function Accueil() {
         <div className="relative mx-auto grid w-full max-w-grid items-center gap-16 px-6 py-24 lg:min-h-[70vh] lg:grid-cols-[minmax(0,7fr),minmax(0,5fr)] lg:py-28">
           <div>
             <p className="text-xs uppercase tracking-[0.3em] text-gold">
-              Étude notariale — Paris 16ᵉ — depuis 1896
+              Étude notariale — Paris 16ᵉ
             </p>
             <div aria-hidden="true" className="mt-6 h-px w-16 bg-gold" />
             <h1 className="mt-8 max-w-2xl text-balance font-serif text-4xl font-medium leading-tight tracking-tight text-ivory sm:text-5xl lg:text-6xl">
@@ -174,11 +174,10 @@ export default function Accueil() {
                 juridique dans laquelle chaque partie trouve sa sécurité.
               </p>
               <p>
-                L&apos;étude est établie à Paris depuis 1896. Sa pratique est
-                tournée vers les opérations immobilières complexes, la
-                structuration patrimoniale, les successions françaises et
-                internationales, et le conseil aux entreprises et aux family
-                offices.
+                L&apos;étude est établie à Paris. Sa pratique est tournée vers
+                les opérations immobilières complexes, la structuration
+                patrimoniale, les successions françaises et internationales, et
+                le conseil aux entreprises et aux family offices.
               </p>
               <p>
                 Le premier rendez-vous est un échange : il permet de poser le
@@ -200,8 +199,6 @@ export default function Accueil() {
               className="w-full max-w-sm rounded-sm"
             />
             <p className="mt-4 text-center text-sm text-slate-soft lg:text-right">
-              Étude notariale depuis 1896
-              <br />
               {ADRESSE_COURTE} — {etude.adresse.codePostal}{" "}
               {etude.adresse.ville}
             </p>
