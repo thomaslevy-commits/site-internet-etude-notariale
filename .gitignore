@@ -80,3 +80,7 @@ septeo/
 *.bak
 *.tmp
 *~
+
+# --- Tests ---
+# Sortie de compilation des tests : reconstruite a chaque execution.
+/.tests-build/

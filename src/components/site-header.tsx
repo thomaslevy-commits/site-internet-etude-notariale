@@ -86,12 +86,20 @@ export function SiteHeader() {
               </li>
             </ul>
             <div className="flex items-center gap-3 text-[0.72rem] uppercase tracking-[0.05em] text-gold-ink">
-              <Link
-                href="/data-room"
+              {/* Service externe : lien sortant, et non route interne — le
+                  chemin /data-room ne correspondait à aucune page et menait
+                  donc à une erreur 404. Ouverture dans un nouvel onglet pour
+                  que le visiteur ne perde pas le site, avec la mention
+                  correspondante restituée aux lecteurs d'écran (§10). */}
+              <a
+                href={etude.liens.dataRoom}
+                target="_blank"
+                rel="noopener noreferrer"
                 className="border-b border-transparent pb-px no-underline transition-colors hover:border-gold"
               >
                 Accès Data Room
-              </Link>
+                <span className="sr-only"> (nouvelle fenêtre)</span>
+              </a>
               <span className="opacity-60">·</span>
               <Link
                 href="/paiement"
