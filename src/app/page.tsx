@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import Image from "next/image";
 import Link from "next/link";
 import { CtaRendezVous } from "@/components/cta-rdv";
+import { EmblemeNotaire } from "@/components/embleme-notaire";
 import { JsonLd, schemaNotary } from "@/components/json-ld";
 import { etude } from "@/config/etude";
 import { cheminPublic } from "@/lib/chemins";
@@ -147,27 +148,11 @@ export default function Accueil() {
               </Link>
             </div>
           </div>
-          <div className="relative mx-auto w-56 sm:w-64 lg:w-full lg:max-w-sm">
-            {/* Double filet or filant vers la droite, écho du panonceau
-                accroché à sa potence (§5 : l'or en filets, jamais en aplat). */}
-            <div
-              aria-hidden="true"
-              className="absolute left-1/2 top-1/2 hidden w-screen -translate-y-1/2 lg:block"
-            >
-              <div className="h-px bg-gold/40" />
-              <div className="mt-2 h-px bg-gold/40" />
-            </div>
-            <figure className="relative rounded-full border border-gold/50 bg-night p-2 sm:p-3">
-              <Image
-                src={cheminPublic("/images/medaillon-notaire.png")}
-                alt="Médaillon « République française » du panonceau officiel des notaires"
-                width={428}
-                height={428}
-                priority
-                sizes="(min-width: 1024px) 24rem, 16rem"
-                className="w-full rounded-full"
-              />
-            </figure>
+          {/* Emblème doré animé, fourni par le notaire : fil de suspension,
+              apparition douce, balancement amorti et reflet métallique —
+              le composant gère lui-même prefers-reduced-motion. */}
+          <div className="mx-auto">
+            <EmblemeNotaire />
           </div>
         </div>
       </section>

@@ -1,0 +1,189 @@
+/*
+ * Emblème doré animé du héros (pack fourni par le notaire, adapté en
+ * module CSS). L'image est détourée : l'emblème repose directement sur
+ * le bleu nuit du site, sans cartouche.
+ *
+ * Minutage d'un cycle de 20 s, réglé par le notaire :
+ *   t = 2 s → 5 s   reflet métallique, 3 s, balayage lent
+ *   t = 5 s → 8 s   balancement amorti, 3 s, juste après le reflet
+ *   puis immobile jusqu'au cycle suivant.
+ * Reflet et halo sont masqués par la silhouette de l'emblème (--masque,
+ * image plate de 12 Ko plutôt que l'emblème lui-même, pour ne pas le
+ * télécharger deux fois) : la lumière ne déborde jamais sur le fond.
+ * prefers-reduced-motion : rendu statique, aucun mouvement.
+ */
+.root {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: min(var(--taille, 380px), 100%, 82vw);
+  perspective: 1100px;
+}
+
+/* Ensemble suspendu : fil et emblème oscillent d'un bloc autour du
+   point d'accroche, comme un panonceau à sa patte. */
+.pendule {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 100%;
+  transform-origin: top center;
+  animation: balancement 20s 5s ease-in-out infinite both;
+}
+
+.fil {
+  width: 1px;
+  height: 2.75rem;
+  transform: scaleY(0);
+  transform-origin: top;
+  background: linear-gradient(#d9bd73, #947331);
+  box-shadow: 0 0 7px rgba(242, 211, 133, 0.45);
+  animation: fil-deploie 1s 0.1s cubic-bezier(0.2, 0.75, 0.2, 1) forwards;
+}
+
+.medaillon {
+  position: relative;
+  width: 100%;
+  opacity: 0;
+  filter: drop-shadow(0 28px 24px rgba(0, 0, 0, 0.34))
+    drop-shadow(0 7px 8px rgba(0, 0, 0, 0.25));
+  animation: apparition 1.25s 0.18s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+.image {
+  display: block;
+  width: 100%;
+  height: auto;
+  user-select: none;
+}
+
+.halo,
+.reflet {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  -webkit-mask: var(--masque) center / contain no-repeat;
+  mask: var(--masque) center / contain no-repeat;
+}
+
+.halo {
+  opacity: 0.3;
+  mix-blend-mode: screen;
+  background: radial-gradient(
+    circle at 38% 25%,
+    rgba(255, 235, 166, 0.35),
+    transparent 38%
+  );
+}
+
+.reflet {
+  opacity: 0;
+  background: linear-gradient(
+    108deg,
+    transparent 38%,
+    rgba(255, 248, 213, 0.06) 44%,
+    rgba(255, 255, 255, 0.48) 50%,
+    rgba(255, 230, 157, 0.1) 56%,
+    transparent 62%
+  );
+  transform: translateX(-140%);
+  animation: reflet-passe 20s 2s linear infinite both;
+}
+
+.root:hover .medaillon {
+  transition:
+    transform 0.9s cubic-bezier(0.16, 1, 0.3, 1),
+    filter 0.9s;
+  transform: translateZ(24px) rotateX(-1.3deg) rotateY(2.2deg) scale(1.012);
+  filter: drop-shadow(0 36px 30px rgba(0, 0, 0, 0.4))
+    drop-shadow(0 10px 10px rgba(0, 0, 0, 0.26));
+}
+
+@keyframes fil-deploie {
+  to {
+    transform: scaleY(1);
+  }
+}
+
+@keyframes apparition {
+  0% {
+    opacity: 0;
+    transform: translateY(34px) scale(0.965);
+    filter: blur(7px) drop-shadow(0 10px 8px rgba(0, 0, 0, 0.15));
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+    filter: blur(0) drop-shadow(0 28px 24px rgba(0, 0, 0, 0.34))
+      drop-shadow(0 7px 8px rgba(0, 0, 0, 0.25));
+  }
+}
+
+/* 3 s de balancement sur un cycle de 20 s, puis repos complet. */
+@keyframes balancement {
+  0% {
+    transform: rotate(0deg);
+  }
+  3% {
+    transform: rotate(0.85deg);
+  }
+  6.5% {
+    transform: rotate(-0.55deg);
+  }
+  9.5% {
+    transform: rotate(0.3deg);
+  }
+  12% {
+    transform: rotate(-0.14deg);
+  }
+  14% {
+    transform: rotate(0.05deg);
+  }
+  15%,
+  100% {
+    transform: rotate(0deg);
+  }
+}
+
+/* 3 s de balayage sur un cycle de 20 s, puis reflet éteint. */
+@keyframes reflet-passe {
+  0% {
+    opacity: 0;
+    transform: translateX(-140%);
+  }
+  1% {
+    opacity: 0.7;
+    transform: translateX(-121%);
+  }
+  13% {
+    opacity: 0.5;
+    transform: translateX(121%);
+  }
+  15%,
+  100% {
+    opacity: 0;
+    transform: translateX(140%);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .fil,
+  .medaillon,
+  .pendule,
+  .reflet {
+    animation: none !important;
+  }
+  .fil {
+    transform: scaleY(1);
+  }
+  .medaillon {
+    opacity: 1;
+  }
+  .reflet {
+    display: none;
+  }
+  .root:hover .medaillon {
+    transform: none;
+  }
+}
