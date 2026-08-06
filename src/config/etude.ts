@@ -38,6 +38,12 @@ export const etude = {
     googleMaps: "https://maps.google.com/?cid=15064672117259351290",
     /** Fiche Google Business Profile (avis) — même fiche que Maps. */
     ficheGoogle: "https://maps.google.com/?cid=15064672117259351290",
+    /**
+     * Espace sécurisé d'échange de documents, hébergé par un prestataire
+     * externe (décision du notaire du 6 août 2026). Le site n'y stocke ni
+     * ne transporte aucune pièce : il se contente d'y renvoyer.
+     */
+    dataRoom: "https://www.espacenotarial.com",
   },
 } as const;
 
