@@ -6,7 +6,7 @@
         "http://localhost:3000/expertises/vefa",
         "http://localhost:3000/blog"
       ],
-      "numberOfRuns": 1,
+      "numberOfRuns": 3,
       "settings": {
         "preset": "desktop",
         "chromeFlags": "--no-sandbox"
