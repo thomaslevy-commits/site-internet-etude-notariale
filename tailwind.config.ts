@@ -28,6 +28,24 @@ const config: Config = {
       maxWidth: {
         grid: "1200px",
       },
+      /**
+       * Balancement du panonceau suspendu (accueil) : oscillation amortie de
+       * quelques secondes, répétée toutes les 15 s. Amplitude ≤ 1,6° — un
+       * frémissement, pas un mouvement. Appliqué via motion-safe uniquement.
+       */
+      keyframes: {
+        balancier: {
+          "0%, 26%, 100%": { transform: "rotate(0deg)" },
+          "4%": { transform: "rotate(1.6deg)" },
+          "9%": { transform: "rotate(-1.1deg)" },
+          "14%": { transform: "rotate(0.6deg)" },
+          "19%": { transform: "rotate(-0.25deg)" },
+          "23%": { transform: "rotate(0.1deg)" },
+        },
+      },
+      animation: {
+        balancier: "balancier 15s ease-in-out infinite",
+      },
     },
   },
   plugins: [],

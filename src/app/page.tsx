@@ -148,25 +148,27 @@ export default function Accueil() {
             </div>
           </div>
           <div className="mx-auto flex w-56 flex-col items-center self-stretch sm:w-64 lg:w-full lg:max-w-sm">
-            {/* Suspente : fine ligne or terminée par un anneau, comme un
+            {/* Suspente : fine ligne or terminée d'un anneau, comme un
                 accrochage de galerie — le panonceau complet (médaillon et
-                bandeau) apparaît suspendu, sans mur (§5 : l'or en filets). */}
-            <div
-              aria-hidden="true"
-              className="flex min-h-10 flex-1 flex-col items-center lg:-mt-28 lg:min-h-16"
-            >
-              <div className="w-px flex-1 bg-gold/60" />
-              <div className="h-2 w-2 rounded-full border border-gold" />
+                bandeau) apparaît suspendu, sans mur (§5 : l'or en filets).
+                Ligne et emblème oscillent ensemble autour du point d'accroche
+                (motion-safe : balancement amorti toutes les 15 s). */}
+            <div className="flex min-h-10 w-full flex-1 origin-top flex-col items-center motion-safe:animate-balancier lg:-mt-28 lg:min-h-16">
+              <div aria-hidden="true" className="w-px flex-1 bg-gold/60" />
+              <div
+                aria-hidden="true"
+                className="h-2 w-2 rounded-full border border-gold"
+              />
+              <Image
+                src={cheminPublic("/images/panonceau-detoure.png")}
+                alt="Panonceau officiel des notaires — médaillon « République française » et bandeau Notaire"
+                width={486}
+                height={600}
+                priority
+                sizes="(min-width: 1024px) 24rem, 14rem"
+                className="mt-3 w-full drop-shadow-2xl"
+              />
             </div>
-            <Image
-              src={cheminPublic("/images/panonceau-detoure.png")}
-              alt="Panonceau officiel des notaires — médaillon « République française » et bandeau Notaire"
-              width={468}
-              height={582}
-              priority
-              sizes="(min-width: 1024px) 24rem, 14rem"
-              className="mt-3 w-full drop-shadow-2xl"
-            />
             <div aria-hidden="true" className="flex-1" />
           </div>
         </div>
