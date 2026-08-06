@@ -147,27 +147,27 @@ export default function Accueil() {
               </Link>
             </div>
           </div>
-          <div className="relative mx-auto w-56 sm:w-64 lg:w-full lg:max-w-sm">
-            {/* Double filet or filant vers la droite, écho du panonceau
-                accroché à sa potence (§5 : l'or en filets, jamais en aplat). */}
+          <div className="mx-auto flex w-56 flex-col items-center self-stretch sm:w-64 lg:w-full lg:max-w-sm">
+            {/* Suspente : fine ligne or terminée par un anneau, comme un
+                accrochage de galerie — le panonceau complet (médaillon et
+                bandeau) apparaît suspendu, sans mur (§5 : l'or en filets). */}
             <div
               aria-hidden="true"
-              className="absolute left-1/2 top-1/2 hidden w-screen -translate-y-1/2 lg:block"
+              className="flex min-h-10 flex-1 flex-col items-center lg:-mt-28 lg:min-h-16"
             >
-              <div className="h-px bg-gold/40" />
-              <div className="mt-2 h-px bg-gold/40" />
+              <div className="w-px flex-1 bg-gold/60" />
+              <div className="h-2 w-2 rounded-full border border-gold" />
             </div>
-            <figure className="relative rounded-full border border-gold/50 bg-night p-2 sm:p-3">
-              <Image
-                src={cheminPublic("/images/medaillon-notaire.png")}
-                alt="Médaillon « République française » du panonceau officiel des notaires"
-                width={428}
-                height={428}
-                priority
-                sizes="(min-width: 1024px) 24rem, 16rem"
-                className="w-full rounded-full"
-              />
-            </figure>
+            <Image
+              src={cheminPublic("/images/panonceau-detoure.png")}
+              alt="Panonceau officiel des notaires — médaillon « République française » et bandeau Notaire"
+              width={468}
+              height={582}
+              priority
+              sizes="(min-width: 1024px) 24rem, 14rem"
+              className="mt-3 w-full drop-shadow-2xl"
+            />
+            <div aria-hidden="true" className="flex-1" />
           </div>
         </div>
       </section>
