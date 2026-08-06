@@ -119,37 +119,55 @@ export default function Accueil() {
   return (
     <main>
       <JsonLd data={schemaNotary()} />
-      {/* Héros — bannière de l'étude, voile night en dégradé (§5). */}
-      <section className="relative bg-night">
-        <Image
-          src={cheminPublic("/images/banniere.jpg")}
-          alt=""
-          fill
-          priority
-          sizes="100vw"
-          className="object-cover"
-        />
-        <div
-          aria-hidden="true"
-          className="absolute inset-0 bg-gradient-to-b from-night/40 to-night/90"
-        />
-        <div className="relative mx-auto flex min-h-[70vh] w-full max-w-grid flex-col items-start justify-center px-6 py-24">
-          <h1 className="max-w-2xl font-serif text-4xl font-medium tracking-tight text-ivory sm:text-5xl">
-            Le conseil notarial pour les opérations immobilières et
-            patrimoniales complexes
-          </h1>
-          <p className="mt-6 max-w-xl text-ivory/80">
-            À Paris et à l&apos;international, l&apos;étude accompagne
-            particuliers, investisseurs, entreprises et family offices.
-          </p>
-          <div className="mt-10 flex flex-wrap gap-4">
-            <CtaRendezVous surFondSombre />
-            <Link
-              href="/expertises"
-              className="inline-block rounded-sm border border-ivory px-6 py-3 text-sm text-ivory transition-colors hover:bg-ivory hover:text-night"
+      {/* Héros — fond night sobre, médaillon doré du panonceau officiel en
+          regard du titre. L'élégance vient de l'espace, de la typographie et
+          des filets or (§5) ; aucun aplat doré. */}
+      <section className="relative overflow-hidden bg-night">
+        <div className="relative mx-auto grid w-full max-w-grid items-center gap-16 px-6 py-24 lg:min-h-[70vh] lg:grid-cols-[minmax(0,7fr),minmax(0,5fr)] lg:py-28">
+          <div>
+            <p className="text-xs uppercase tracking-[0.3em] text-gold">
+              Étude notariale — Paris 16ᵉ — depuis 1896
+            </p>
+            <div aria-hidden="true" className="mt-6 h-px w-16 bg-gold" />
+            <h1 className="mt-8 max-w-2xl text-balance font-serif text-4xl font-medium leading-tight tracking-tight text-ivory sm:text-5xl lg:text-6xl">
+              Le conseil notarial pour les opérations immobilières et
+              patrimoniales complexes
+            </h1>
+            <p className="mt-8 max-w-xl text-lg leading-relaxed text-ivory/80">
+              À Paris et à l&apos;international, l&apos;étude accompagne
+              particuliers, investisseurs, entreprises et family offices.
+            </p>
+            <div className="mt-12 flex flex-wrap items-center gap-4">
+              <CtaRendezVous surFondSombre />
+              <Link
+                href="/expertises"
+                className="inline-block rounded-sm border border-ivory px-6 py-3 text-sm text-ivory transition-colors hover:bg-ivory hover:text-night"
+              >
+                Nos expertises
+              </Link>
+            </div>
+          </div>
+          <div className="relative mx-auto w-56 sm:w-64 lg:w-full lg:max-w-sm">
+            {/* Double filet or filant vers la droite, écho du panonceau
+                accroché à sa potence (§5 : l'or en filets, jamais en aplat). */}
+            <div
+              aria-hidden="true"
+              className="absolute left-1/2 top-1/2 hidden w-screen -translate-y-1/2 lg:block"
             >
-              Nos expertises
-            </Link>
+              <div className="h-px bg-gold/40" />
+              <div className="mt-2 h-px bg-gold/40" />
+            </div>
+            <figure className="relative rounded-full border border-gold/50 bg-night p-2 sm:p-3">
+              <Image
+                src={cheminPublic("/images/medaillon-notaire.png")}
+                alt="Médaillon « République française » du panonceau officiel des notaires"
+                width={428}
+                height={428}
+                priority
+                sizes="(min-width: 1024px) 24rem, 16rem"
+                className="w-full rounded-full"
+              />
+            </figure>
           </div>
         </div>
       </section>
@@ -159,6 +177,7 @@ export default function Accueil() {
       <section className="bg-ivory">
         <div className="mx-auto grid w-full max-w-grid gap-12 px-6 py-24 lg:grid-cols-[3fr,2fr]">
           <div className="flex flex-col justify-center">
+            <div aria-hidden="true" className="mb-5 h-px w-10 bg-gold" />
             <h2 className="font-serif text-3xl font-medium tracking-tight text-night">
               {etude.denominationComplete}
             </h2>
@@ -209,6 +228,7 @@ export default function Accueil() {
           descriptive : une liste de titres nus ne dit rien de la pratique. */}
       <section className="bg-paper">
         <div className="mx-auto w-full max-w-grid px-6 py-24">
+          <div aria-hidden="true" className="mb-5 h-px w-10 bg-gold" />
           <h2 className="font-serif text-3xl font-medium tracking-tight text-night">
             Domaines d&apos;intervention
           </h2>
@@ -249,6 +269,7 @@ export default function Accueil() {
       {/* Méthode en trois temps (§8) — numéros décoratifs, taille large (AA).
           Le chapeau désamorce l'inconnu : le premier rendez-vous n'engage à rien. */}
       <section className="mx-auto w-full max-w-grid px-6 py-24">
+        <div aria-hidden="true" className="mb-5 h-px w-10 bg-gold" />
         <h2 className="font-serif text-3xl font-medium tracking-tight text-night">
           Notre méthode
         </h2>
@@ -276,6 +297,7 @@ export default function Accueil() {
       {/* Engagements — quatre énoncés au présent descriptif. */}
       <section className="bg-paper">
         <div className="mx-auto w-full max-w-grid px-6 py-24">
+          <div aria-hidden="true" className="mb-5 h-px w-10 bg-gold" />
           <h2 className="font-serif text-3xl font-medium tracking-tight text-night">
             Nos engagements
           </h2>
@@ -305,6 +327,7 @@ export default function Accueil() {
       {/* Bandeau international (§8). */}
       <section className="bg-night">
         <div className="mx-auto w-full max-w-grid px-6 py-16">
+          <div aria-hidden="true" className="mb-5 h-px w-10 bg-gold" />
           <h2 className="font-serif text-2xl font-medium tracking-tight text-ivory">
             Une pratique internationale
           </h2>
@@ -322,6 +345,7 @@ export default function Accueil() {
 
       {/* Derniers articles (§8). */}
       <section className="mx-auto w-full max-w-grid px-6 py-24">
+        <div aria-hidden="true" className="mb-5 h-px w-10 bg-gold" />
         <h2 className="font-serif text-3xl font-medium tracking-tight text-night">
           Actualités
         </h2>
@@ -358,6 +382,7 @@ export default function Accueil() {
       <section className="bg-paper">
         <div className="mx-auto grid w-full max-w-grid gap-10 px-6 py-24 md:grid-cols-2">
           <div>
+            <div aria-hidden="true" className="mb-5 h-px w-10 bg-gold" />
             <h2 className="font-serif text-3xl font-medium tracking-tight text-night">
               Contact
             </h2>
