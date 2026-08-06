@@ -54,7 +54,7 @@ export function EtudeSection({
             textShadow: "0 2px 20px rgba(16,28,44,0.6)",
           }}
         >
-          Office notarial parisien depuis 1896.
+          Office notarial parisien.
         </p>
       </div>
     </section>
