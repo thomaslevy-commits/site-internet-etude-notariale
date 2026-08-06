@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import Image from "next/image";
 import Link from "next/link";
 import { CtaRendezVous } from "@/components/cta-rdv";
+import { EmblemeNotaire } from "@/components/embleme-notaire";
 import { JsonLd, schemaNotary } from "@/components/json-ld";
 import { etude } from "@/config/etude";
 import { cheminPublic } from "@/lib/chemins";
@@ -147,29 +148,11 @@ export default function Accueil() {
               </Link>
             </div>
           </div>
-          <div className="mx-auto flex w-56 flex-col items-center self-stretch sm:w-64 lg:w-full lg:max-w-sm">
-            {/* Suspente : fine ligne or terminée d'un anneau, comme un
-                accrochage de galerie — le panonceau complet (médaillon et
-                bandeau) apparaît suspendu, sans mur (§5 : l'or en filets).
-                Ligne et emblème oscillent ensemble autour du point d'accroche
-                (motion-safe : balancement amorti toutes les 15 s). */}
-            <div className="flex min-h-10 w-full flex-1 origin-top flex-col items-center motion-safe:animate-balancier lg:-mt-28 lg:min-h-16">
-              <div aria-hidden="true" className="w-px flex-1 bg-gold/60" />
-              <div
-                aria-hidden="true"
-                className="h-2 w-2 rounded-full border border-gold"
-              />
-              <Image
-                src={cheminPublic("/images/panonceau-detoure.png")}
-                alt="Panonceau officiel des notaires — médaillon « République française » et bandeau Notaire"
-                width={486}
-                height={600}
-                priority
-                sizes="(min-width: 1024px) 24rem, 14rem"
-                className="mt-3 w-full drop-shadow-2xl"
-              />
-            </div>
-            <div aria-hidden="true" className="flex-1" />
+          {/* Emblème doré animé, fourni par le notaire : fil de suspension,
+              apparition douce, balancement amorti et reflet métallique —
+              le composant gère lui-même prefers-reduced-motion. */}
+          <div className="mx-auto">
+            <EmblemeNotaire />
           </div>
         </div>
       </section>
