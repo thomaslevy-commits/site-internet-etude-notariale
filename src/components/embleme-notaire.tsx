@@ -35,7 +35,7 @@ export function EmblemeNotaire({
             src={source}
             alt=""
             width={520}
-            height={665}
+            height={661}
             priority
             sizes="(min-width: 1024px) 24rem, 82vw"
             className={styles.image}
