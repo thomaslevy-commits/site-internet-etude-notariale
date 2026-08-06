@@ -41,15 +41,27 @@ jobs:
         run: npx wait-on http://localhost:3000 --timeout 60000
       - name: Installer Chrome et ChromeDriver synchronisés
         run: npx browser-driver-manager install chrome
+      # La version d'axe-core est épinglée : une montée de version silencieuse
+      # modifie les règles appliquées et fait varier le résultat d'un jour à
+      # l'autre sans qu'aucun code n'ait changé. L'audit est par ailleurs
+      # rejoué une fois avant de conclure à l'échec — le rendu de la page peut
+      # n'être pas tout à fait stabilisé au premier passage, ce qui a déjà
+      # produit de fausses violations « color-contrast » (run 30726637553).
       - name: Audit axe-core
-        run: >-
-          source ~/.browser-driver-manager/.env &&
-          npx @axe-core/cli
-          http://localhost:3000
-          http://localhost:3000/expertises/vefa
-          http://localhost:3000/faq
-          http://localhost:3000/contact
-          --chromedriver-path "$CHROMEDRIVER_TEST_PATH"
-          --exit
+        run: |
+          source ~/.browser-driver-manager/.env
+          auditer() {
+            npx @axe-core/cli@4.12.1 \
+              http://localhost:3000 \
+              http://localhost:3000/expertises/vefa \
+              http://localhost:3000/faq \
+              http://localhost:3000/contact \
+              --chromedriver-path "$CHROMEDRIVER_TEST_PATH" \
+              --exit
+          }
+          auditer || {
+            echo "::warning::Premier passage d'axe-core en échec — second essai avant de conclure."
+            auditer
+          }
       - name: Lighthouse CI
         run: npx @lhci/cli autorun
