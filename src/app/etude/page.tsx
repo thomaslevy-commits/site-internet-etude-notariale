@@ -56,11 +56,8 @@ export default function PageEtude() {
                 <h2 className="font-serif text-2xl text-night">
                   {section.titre}
                 </h2>
-                {section.contenu.map((paragraphe) => (
-                  <p
-                    key={paragraphe.slice(0, 40)}
-                    className="mt-4 text-slate-soft"
-                  >
+                {section.contenu.map((paragraphe, index) => (
+                  <p key={index} className="mt-4 text-slate-soft">
                     {paragraphe}
                   </p>
                 ))}

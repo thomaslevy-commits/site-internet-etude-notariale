@@ -76,8 +76,8 @@ export default async function PageExpertise({ params }: Params) {
       </h1>
 
       <section className="mt-8 max-w-3xl space-y-4">
-        {paragraphes.map((paragraphe) => (
-          <p key={paragraphe.slice(0, 60)} className="text-slate-soft">
+        {paragraphes.map((paragraphe, index) => (
+          <p key={index} className="text-slate-soft">
             {paragraphe}
           </p>
         ))}
@@ -89,8 +89,8 @@ export default async function PageExpertise({ params }: Params) {
         </h2>
         {frontmatter.problematiques ? (
           <ul className="mt-4 space-y-3">
-            {frontmatter.problematiques.map((probleme) => (
-              <li key={probleme.slice(0, 40)} className="flex gap-3">
+            {frontmatter.problematiques.map((probleme, index) => (
+              <li key={index} className="flex gap-3">
                 <span aria-hidden="true" className="mt-3 h-px w-4 shrink-0 bg-gold" />
                 <span className="text-slate-soft">{probleme}</span>
               </li>
@@ -116,7 +116,7 @@ export default async function PageExpertise({ params }: Params) {
         </h2>
         <ol className="mt-6 space-y-4">
           {etapes.map((etape, index) => (
-            <li key={etape.slice(0, 40)} className="flex items-start gap-4">
+            <li key={index} className="flex items-start gap-4">
               <span
                 aria-hidden="true"
                 className="font-serif text-2xl leading-none text-gold"
@@ -169,6 +169,16 @@ export default async function PageExpertise({ params }: Params) {
         <div className="mt-4">
           <CtaRendezVous />
         </div>
+        {/* La question du coût se pose sur chaque dossier : /tarif ne
+            recevait pourtant de lien que depuis l'accueil. */}
+        <p className="mt-6">
+          <Link
+            href="/tarif"
+            className="text-sm text-night decoration-gold underline underline-offset-4 hover:text-anthracite"
+          >
+            Comprendre le tarif notarial
+          </Link>
+        </p>
       </section>
     </main>
   );
