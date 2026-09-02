@@ -4,8 +4,6 @@
  * NAP complet validé le 2 août 2026 par le notaire (adresse, téléphone, e-mail, URL canonique).
  * Code postal officiel La Poste du boulevard Flandrin : 75116 (16e arr., partie nord).
  */
-export const PLACEHOLDER_ETUDE = "[CONTENU À VALIDER — NE PAS PUBLIER]";
-
 export const etude = {
   nom: "Étude Notariale Thomas Lévy — Paris 16",
   denominationComplete: "Maître Thomas Lévy, notaire à Paris",
@@ -38,6 +36,13 @@ export const etude = {
     googleMaps: "https://maps.google.com/?cid=15064672117259351290",
     /** Fiche Google Business Profile (avis) — même fiche que Maps. */
     ficheGoogle: "https://maps.google.com/?cid=15064672117259351290",
+    /**
+     * Espace sécurisé d'échange de documents, hébergé par un prestataire
+     * externe (décision du notaire du 6 août 2026, branche
+     * entete/lien-data-room). Le site n'y stocke ni n'y transporte aucune
+     * pièce : il se contente d'y renvoyer.
+     */
+    dataRoom: "https://www.espacenotarial.com",
   },
 } as const;
 
