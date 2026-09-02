@@ -1,6 +1,7 @@
 "use client";
 
-import { useState } from "react";
+import Link from "next/link";
+import { useEffect, useRef, useState } from "react";
 
 interface Champs {
   nom: string;
@@ -20,18 +21,64 @@ const CHAMPS_INITIAUX: Champs = {
   consentement: false,
 };
 
+/** Ordre d'affichage — sert à porter le focus sur le premier champ fautif. */
+const ORDRE_CHAMPS: (keyof Champs)[] = [
+  "nom",
+  "email",
+  "objet",
+  "message",
+  "consentement",
+];
+
 const ENDPOINT = process.env.NEXT_PUBLIC_CONTACT_ENDPOINT;
+
+/**
+ * Délai minimal, en millisecondes, entre l'affichage du formulaire et son
+ * envoi. Un formulaire rempli en moins de trois secondes est le fait d'un
+ * automate, pas d'un visiteur qui rédige un message.
+ */
+const DELAI_MINIMAL_MS = 3000;
 
 /**
  * Formulaire de contact (§2) : nom, coordonnées, objet, message,
  * consentement RGPD explicite non pré-coché. Envoi en POST vers
  * NEXT_PUBLIC_CONTACT_ENDPOINT ; sans endpoint configuré, message
  * d'indisponibilité renvoyant aux coordonnées directes.
+ *
+ * Accessibilité (§10) : les erreurs sont annoncées par une région d'alerte,
+ * le focus est porté sur le premier champ à corriger, et le message de
+ * confirmation reçoit le focus pour ne pas laisser l'utilisateur de lecteur
+ * d'écran dans le vide après l'envoi.
+ *
+ * Anti-automates : un champ leurre invisible aux visiteurs mais renseigné
+ * par la plupart des robots, et un délai minimal de rédaction. Ces deux
+ * gardes sont côté client et ne dispensent pas d'une vérification par le
+ * service qui reçoit les envois.
  */
 export function FormulaireContact() {
   const [champs, setChamps] = useState<Champs>(CHAMPS_INITIAUX);
   const [erreurs, setErreurs] = useState<Partial<Record<keyof Champs, string>>>({});
   const [etat, setEtat] = useState<"repos" | "envoi" | "succes" | "echec">("repos");
+  const [leurre, setLeurre] = useState("");
+
+  const affichageLe = useRef<number>(Date.now());
+  const formulaire = useRef<HTMLFormElement>(null);
+  const confirmation = useRef<HTMLParagraphElement>(null);
+  /** Champ sur lequel porter le focus au prochain rendu, après validation. */
+  const focusAPorter = useRef<keyof Champs | null>(null);
+
+  useEffect(() => {
+    if (etat === "succes") confirmation.current?.focus();
+  }, [etat]);
+
+  useEffect(() => {
+    const champ = focusAPorter.current;
+    focusAPorter.current = null;
+    if (!champ) return;
+    formulaire.current
+      ?.querySelector<HTMLElement>(`#${champ}`)
+      ?.focus();
+  });
 
   function valider(): boolean {
     const nouvelles: typeof erreurs = {};
@@ -43,12 +90,20 @@ export function FormulaireContact() {
     if (!champs.consentement)
       nouvelles.consentement = "Le consentement est nécessaire pour traiter votre demande.";
     setErreurs(nouvelles);
+    const premier = ORDRE_CHAMPS.find((champ) => nouvelles[champ]);
+    if (premier) focusAPorter.current = premier;
     return Object.keys(nouvelles).length === 0;
   }
 
   async function soumettre(evenement: React.FormEvent<HTMLFormElement>) {
     evenement.preventDefault();
     if (!valider()) return;
+    // Automate détecté : on affiche la confirmation sans rien envoyer, pour
+    // ne pas indiquer au robot quelle garde l'a arrêté.
+    if (leurre !== "" || Date.now() - affichageLe.current < DELAI_MINIMAL_MS) {
+      setEtat("succes");
+      return;
+    }
     if (!ENDPOINT) {
       setEtat("echec");
       return;
@@ -68,7 +123,12 @@ export function FormulaireContact() {
 
   if (etat === "succes") {
     return (
-      <p role="status" className="rounded-sm border border-line bg-paper px-6 py-6 text-sm text-anthracite">
+      <p
+        ref={confirmation}
+        role="status"
+        tabIndex={-1}
+        className="rounded-sm border border-line bg-paper px-6 py-6 text-sm text-anthracite"
+      >
         Votre message a bien été transmis. L&apos;étude reviendra vers vous dans
         les meilleurs délais.
       </p>
@@ -76,10 +136,35 @@ export function FormulaireContact() {
   }
 
   const classeChamp =
-    "mt-2 w-full rounded-sm border border-line bg-paper px-4 py-3 text-sm text-anthracite focus:border-night focus:outline-none focus:ring-1 focus:ring-night";
+    "mt-2 w-full rounded-sm border border-line-strong bg-paper px-4 py-3 text-sm text-anthracite focus:border-night";
+
+  const nombreErreurs = Object.keys(erreurs).length;
 
   return (
-    <form onSubmit={soumettre} noValidate>
+    <form ref={formulaire} onSubmit={soumettre} noValidate>
+      {/* Récapitulatif annoncé : sans lui, la soumission d'un formulaire
+          invalide ne produit aucun retour audible. */}
+      <div aria-live="assertive" className="sr-only">
+        {nombreErreurs > 0
+          ? `${nombreErreurs} champ${nombreErreurs > 1 ? "s" : ""} à corriger avant l'envoi.`
+          : ""}
+      </div>
+
+      {/* Champ leurre : hors flux visuel, hors ordre de tabulation, hors
+          restitution vocale. Un visiteur ne le voit ni ne l'atteint. */}
+      <div aria-hidden="true" className="absolute h-px w-px overflow-hidden opacity-0">
+        <label htmlFor="societe-reference">Ne pas remplir</label>
+        <input
+          id="societe-reference"
+          name="societe-reference"
+          type="text"
+          tabIndex={-1}
+          autoComplete="off"
+          value={leurre}
+          onChange={(e) => setLeurre(e.target.value)}
+        />
+      </div>
+
       <div className="grid gap-6 sm:grid-cols-2">
         <div>
           <label htmlFor="nom" className="text-sm text-night">
@@ -98,7 +183,7 @@ export function FormulaireContact() {
             aria-invalid={Boolean(erreurs.nom)}
           />
           {erreurs.nom ? (
-            <p id="erreur-nom" className="mt-1 text-sm text-night">
+            <p id="erreur-nom" className="mt-1 text-sm font-medium text-night">
               {erreurs.nom}
             </p>
           ) : null}
@@ -120,7 +205,7 @@ export function FormulaireContact() {
             aria-invalid={Boolean(erreurs.email)}
           />
           {erreurs.email ? (
-            <p id="erreur-email" className="mt-1 text-sm text-night">
+            <p id="erreur-email" className="mt-1 text-sm font-medium text-night">
               {erreurs.email}
             </p>
           ) : null}
@@ -155,7 +240,7 @@ export function FormulaireContact() {
             aria-invalid={Boolean(erreurs.objet)}
           />
           {erreurs.objet ? (
-            <p id="erreur-objet" className="mt-1 text-sm text-night">
+            <p id="erreur-objet" className="mt-1 text-sm font-medium text-night">
               {erreurs.objet}
             </p>
           ) : null}
@@ -173,11 +258,18 @@ export function FormulaireContact() {
           className={classeChamp}
           value={champs.message}
           onChange={(e) => setChamps({ ...champs, message: e.target.value })}
-          aria-describedby={erreurs.message ? "erreur-message" : undefined}
+          aria-describedby={
+            erreurs.message ? "erreur-message secret-professionnel" : "secret-professionnel"
+          }
           aria-invalid={Boolean(erreurs.message)}
         />
+        <p id="secret-professionnel" className="mt-2 text-sm text-slate-soft">
+          Ce formulaire permet de prendre contact. Il n&apos;est pas destiné à
+          la transmission de pièces : celles-ci sont remises à l&apos;étude par
+          les voies convenues lors du premier rendez-vous.
+        </p>
         {erreurs.message ? (
-          <p id="erreur-message" className="mt-1 text-sm text-night">
+          <p id="erreur-message" className="mt-1 text-sm font-medium text-night">
             {erreurs.message}
           </p>
         ) : null}
@@ -200,13 +292,19 @@ export function FormulaireContact() {
             aria-invalid={Boolean(erreurs.consentement)}
           />
           <label htmlFor="consentement" className="text-sm text-slate-soft">
-            J&apos;accepte que les informations saisies soient traitées pour
-            répondre à ma demande, conformément à la politique de
-            confidentialité. *
+            J&apos;accepte que les informations saisies soient traitées par
+            l&apos;étude pour répondre à ma demande, conformément à la{" "}
+            <Link
+              href="/politique-de-confidentialite"
+              className="text-night decoration-gold underline underline-offset-4 hover:text-anthracite"
+            >
+              politique de confidentialité
+            </Link>
+            . *
           </label>
         </div>
         {erreurs.consentement ? (
-          <p id="erreur-consentement" className="mt-1 text-sm text-night">
+          <p id="erreur-consentement" className="mt-1 text-sm font-medium text-night">
             {erreurs.consentement}
           </p>
         ) : null}
