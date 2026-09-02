@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import { FormulaireContact } from "@/components/formulaire-contact";
 import { JsonLd, schemaNotary } from "@/components/json-ld";
-import { PLACEHOLDER } from "@/lib/content";
+import { ACCES } from "@/config/acces";
 import { etude } from "@/config/etude";
 
 export const metadata: Metadata = {
@@ -33,7 +33,14 @@ export default function PageContact() {
           <p className="mt-4 text-sm text-slate-soft">{etude.horaires}</p>
 
           <h2 className="mt-10 font-serif text-2xl text-night">Accès</h2>
-          <p className="mt-4 text-sm text-slate-soft">{PLACEHOLDER}</p>
+          <dl className="mt-4 divide-y divide-line border-y border-line">
+            {ACCES.map(({ cle, valeur }) => (
+              <div key={cle} className="py-3">
+                <dt className="text-sm font-medium text-night">{cle}</dt>
+                <dd className="mt-0.5 text-sm text-slate-soft">{valeur}</dd>
+              </div>
+            ))}
+          </dl>
           {etude.liens.googleMaps ? (
             <p className="mt-4">
               <a

@@ -1,23 +1,8 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
+import { ACCES, ADRESSE_COMPLETE, REQUETE_CARTE } from "@/config/acces";
 import { etude } from "@/config/etude";
-
-/** Adresse complète sur une ligne, dérivée du NAP unique (§7). */
-const ADRESSE_COMPLETE = `${etude.adresse.ligne1}, ${etude.adresse.codePostal} ${etude.adresse.ville}`;
-
-/** Données d'accès — transports autour du boulevard Flandrin. */
-const ACCES = [
-  ["Métro", "Ligne 2 — Porte Dauphine · Ligne 9 — Rue de la Pompe"],
-  ["RER", "RER C — Avenue Foch"],
-  ["Bus", "Lignes 52 et PC1 — arrêt Flandrin"],
-  ["Voiture", "Stationnement Foch · accès périphérique Porte Dauphine"],
-  ["Adresse", ADRESSE_COMPLETE],
-] as const;
-
-const REQUETE_CARTE = encodeURIComponent(
-  `${etude.adresse.ligne1.split(" — ")[0]}, ${etude.adresse.codePostal} ${etude.adresse.ville}, France`,
-);
 
 /**
  * Clé de sessionStorage portant l'accord du visiteur. sessionStorage et non
@@ -150,7 +135,7 @@ export function AccessMap() {
           )}
         </div>
         <div className="flex-1">
-          {ACCES.map(([cle, valeur]) => (
+          {ACCES.map(({ cle, valeur }) => (
             <div key={cle} className="border-b border-gold/25 py-2.5">
               <span className="block font-serif text-[1.05rem] text-gold">
                 {cle}
