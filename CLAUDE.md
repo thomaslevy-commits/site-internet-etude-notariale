@@ -223,7 +223,7 @@ Aucune mesure Lighthouse ou Core Web Vitals réelle n'a été consignée à ce j
 
 ## 11. Plan de travail
 
-Travailler par phases, dans l'ordre, une branche par phase, sans anticiper :
+Travailler par phases, dans l'ordre, sans anticiper :
 
 1. **Socle** : projet Next.js + TypeScript + Tailwind, tokens du §5, polices, layout global (en-tête, pied de page), config `etude.ts`, pipeline de contenu MDX typé.
 2. **Gabarits** : accueil, gabarit expertise, tarif, contact, pages légales.
@@ -240,7 +240,10 @@ Travailler par phases, dans l'ordre, une branche par phase, sans anticiper :
 
 - Composants dans `src/components`, un composant par fichier, props typées et documentées.
 - Pas de dépendance ajoutée sans justification écrite dans le commit.
-- Commits en français, sobres, à l'impératif. Une branche par sujet, tout passe par une proposition de fusion.
+- Commits en français, sobres, à l'impératif.
+- **Tout le travail se fait sur `main`, et sur `main` seule** (décision du notaire du 2 septembre 2026). Ni branche de sujet, ni proposition de fusion : chaque modification est commitée puis poussée directement sur `main`, qui est la seule source de vérité et la seule branche déployée. Ne créer une branche que sur demande expresse du notaire, pour un chantier dont il a lui-même décidé qu'il ne devait pas rejoindre `main` en l'état.
+- **Contrepartie de la règle précédente, impérative :** la proposition de fusion servait de garde avant production. Cette garde disparaît, la vérification passe donc *avant* le commit. Ne rien pousser sur `main` sans avoir fait passer, dans cet ordre, `npx tsc --noEmit`, `npm run lint` et `npm run verifier:contenu`, et sans avoir relu chaque chaîne ajoutée au regard du §3. Un push sur `main` est une mise en production : il n'y a plus d'étape entre le commit et le site.
+- Ce qui n'est pas en état d'être servi au public ne se cache pas derrière une branche mais derrière un interrupteur : `noindex`, route désactivée ou variable d'environnement. Le dépôt reste linéaire, le site reste maîtrisé.
 - Aucun secret dans le code ; variables d'environnement documentées dans `.env.example`.
 - Les commentaires expliquent *pourquoi*, non *quoi* : ils consignent la décision et le raisonnement qui l'a produite. C'est la mémoire du projet — ne pas les élaguer.
 
@@ -254,15 +257,29 @@ Il porte toutefois `robots: { index: false, follow: false }`
 ce `noindex` est une décision du notaire, à ne prendre qu'après validation des
 quatre pages légales et de l'ensemble des contenus.
 
+**Consolidation du 2 septembre 2026.** Les propositions de fusion #41
+(régularisation de l'audit de phase 0), #34 (parcours et formation) et #40
+(lien Data Room) ont rejoint `main`. La #40 était intégralement reprise par la
+#41, qui la complète — lien corrigé aussi dans le menu mobile, entrée
+« Paiement en ligne » retirée faute de destination : elle a donc été close
+comme absorbée plutôt que fusionnée deux fois. `tsc --noEmit`, `next lint` et
+`verifier:contenu` passent sur `main` après fusion. Le dépôt passe au régime
+du §12 : plus de branche, plus de proposition de fusion, tout sur `main`.
+
 **Décisions en attente, à ne pas trancher sans accord explicite :**
 1. Forme d'exercice de l'office (notaire à titre individuel ou société) — les
    annuaires officiels font état d'une structure à plusieurs associés. Elle
    commande les mentions légales et le champ `founder` du JSON-LD.
-2. Branche `etude/parcours-et-formation` : elle ajoute le parcours du notaire
-   sur `/etude` mais supprime l'emblème animé du héros, direction retenue sur
-   `main` au terme de cinq commits.
-3. Branche `rdv/socle-plateforme` : plateforme de rendez-vous développée en
+2. Branche `rdv/socle-plateforme` : plateforme de rendez-vous développée en
    interne (~8 900 lignes) contre le lien vers un outil externe prévu au §2.
+   Seule branche laissée ouverte, volontairement : son propre auteur la
+   signale comme non déployable (ni base de données, ni authentification, ni
+   AIPD) et trois conflits avec le §2 et le §9 restent à trancher. Elle ne
+   rejoindra `main` qu'après arbitrage.
+3. Destination du lien « Paiement en ligne » de l'en-tête, retiré le
+   2 septembre 2026 faute d'adresse : prestataire de paiement retenu, ou
+   service de paiement en ligne de la profession. Point signalé comme
+   prioritaire par le notaire.
 4. Maintien ou retrait de `@vercel/speed-insights`, que le §4 n'autorise pas
    en l'état et qu'aucune politique ne déclarait.
 5. Prestataire recevant les envois du formulaire de contact : identité,
