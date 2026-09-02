@@ -1,11 +1,8 @@
 import type { Metadata } from "next";
-import { PageLegale } from "@/components/page-legale";
+import { PageLegale, metadonneesPageLegale } from "@/components/page-legale";
 
-export const metadata: Metadata = {
-  title: "Politique de confidentialité",
-  alternates: { canonical: "/politique-de-confidentialite" },
-};
+export const metadata: Metadata = metadonneesPageLegale("politique-de-confidentialite");
 
-export default function PolitiqueDeConfidentialite() {
-  return <PageLegale titre="Politique de confidentialité" />;
+export default function Page() {
+  return <PageLegale slug="politique-de-confidentialite" />;
 }

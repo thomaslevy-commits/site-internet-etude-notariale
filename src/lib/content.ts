@@ -77,6 +77,12 @@ export const articleFrontmatterSchema = z.object({
   pillar: slugSchema,
   date: z.string().regex(/^\d{4}-\d{2}-\d{2}$/),
   author: z.string().min(1),
+  /**
+   * Meta description de l'article (§7, 140–160 caractères). Facultative :
+   * mieux vaut aucune description qu'une description fabriquée — Google
+   * compose alors lui-même l'extrait à partir du texte de la page.
+   */
+  description: z.string().min(1).optional(),
 });
 
 export type ArticleFrontmatter = z.infer<typeof articleFrontmatterSchema>;
@@ -100,6 +106,46 @@ export const faqSchema = z.object({
 });
 
 export type Faq = z.infer<typeof faqSchema>;
+
+/**
+ * Pages légales (mentions, confidentialité, cookies, accessibilité).
+ * Le texte vit en MDX comme le reste du contenu éditorial (§9) : il relève
+ * de la validation du notaire, pas du code. Une section porte des
+ * paragraphes, une liste et des couples terme/valeur — assez pour la
+ * structure imposée par l'article 6 III de la LCEN et par le RGAA, sans
+ * ouvrir la porte à une mise en forme libre.
+ */
+export const legalSectionSchema = z.object({
+  titre: z.string().min(1),
+  paragraphes: z.array(z.string().min(1)).optional(),
+  liste: z.array(z.string().min(1)).optional(),
+  definitions: z
+    .array(z.object({ terme: z.string().min(1), valeur: z.string().min(1) }))
+    .optional(),
+});
+
+export const legalSchema = z.object({
+  titre: z.string().min(1),
+  description: z.string().min(1),
+  miseAJour: z.string().regex(/^\d{4}-\d{2}-\d{2}$/),
+  sections: z.array(legalSectionSchema).min(1),
+});
+
+export type PageLegaleContenu = z.infer<typeof legalSchema>;
+
+/** Marqueur des éléments que seul le notaire peut renseigner. Non bloquant
+ *  au build, contrairement au PLACEHOLDER : la page reste publiable, mais
+ *  la vérification de contenu recense ce qui manque à chaque construction. */
+export const A_VALIDER = "[À VALIDER";
+
+export const PAGES_LEGALES = [
+  "mentions-legales",
+  "politique-de-confidentialite",
+  "cookies",
+  "accessibilite",
+] as const;
+
+export type PageLegaleSlug = (typeof PAGES_LEGALES)[number];
 
 const CONTENT_DIR = path.join(process.cwd(), "content");
 
@@ -171,10 +217,23 @@ export function loadArticle(categorie: Categorie, slug: string): Article {
   return article;
 }
 
+/** Articles d'une catégorie, du plus récent au plus ancien. */
+export function loadArticlesParCategorie(categorie: Categorie): Article[] {
+  return loadAllArticles().filter((a) => a.frontmatter.categorie === categorie);
+}
+
 /** Charge et valide la FAQ générale (content/faq.mdx). */
 export function loadFaq(): Faq {
   const { data } = matter(
     fs.readFileSync(path.join(CONTENT_DIR, "faq.mdx"), "utf8"),
   );
   return faqSchema.parse(data);
+}
+
+/** Charge et valide une page légale ; toute incohérence fait échouer le build. */
+export function loadPageLegale(slug: PageLegaleSlug): PageLegaleContenu {
+  const { data } = matter(
+    fs.readFileSync(path.join(CONTENT_DIR, "legal", `${slug}.mdx`), "utf8"),
+  );
+  return legalSchema.parse(data);
 }

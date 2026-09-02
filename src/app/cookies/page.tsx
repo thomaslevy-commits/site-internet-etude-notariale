@@ -1,11 +1,8 @@
 import type { Metadata } from "next";
-import { PageLegale } from "@/components/page-legale";
+import { PageLegale, metadonneesPageLegale } from "@/components/page-legale";
 
-export const metadata: Metadata = {
-  title: "Gestion des cookies",
-  alternates: { canonical: "/cookies" },
-};
+export const metadata: Metadata = metadonneesPageLegale("cookies");
 
-export default function Cookies() {
-  return <PageLegale titre="Gestion des cookies" />;
+export default function Page() {
+  return <PageLegale slug="cookies" />;
 }
