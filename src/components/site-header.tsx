@@ -27,7 +27,7 @@ const adresseCourte = etude.adresse.ligne1.split(" — ")[0];
  * ligne. Transformation d'affichage seulement — la valeur de référence de
  * etude.ts, qui alimente les métadonnées et le JSON-LD, reste intacte (§7).
  */
-const nomAffiche = etude.nom.replace(/\s(\d+)$/, "\\u00A0$1");
+const nomAffiche = etude.nom.replace(/\s(\d+)$/, " $1");
 
 /**
  * En-tête global : nom de l'étude à gauche, coordonnées condensées (≥ xl) et
