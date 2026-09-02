@@ -47,11 +47,14 @@ const SECTIONS: { titre: string; contenu: string[] }[] = [
   },
 ];
 
-export default function PageHonoraires() {
+export default function PageTarif() {
   return (
     <main className="mx-auto w-full max-w-grid px-6 py-24">
+      {/* Le titre reprend le libellé de navigation et celui de l'URL. Il
+          s'intitulait « Honoraires », ce qui désignait la seule composante
+          non tarifée du coût et contredisait à la fois le menu et l'adresse. */}
       <h1 className="font-serif text-4xl font-medium tracking-tight text-night">
-        Honoraires
+        Tarif
       </h1>
       <p className="mt-6 max-w-3xl text-slate-soft">
         Le coût d&apos;un acte notarié obéit à des règles précises. Il se
@@ -61,8 +64,8 @@ export default function PageHonoraires() {
       {SECTIONS.map((section) => (
         <section key={section.titre} className="mt-14 max-w-3xl">
           <h2 className="font-serif text-2xl text-night">{section.titre}</h2>
-          {section.contenu.map((paragraphe) => (
-            <p key={paragraphe.slice(0, 40)} className="mt-4 text-slate-soft">
+          {section.contenu.map((paragraphe, index) => (
+            <p key={index} className="mt-4 text-slate-soft">
               {paragraphe}
             </p>
           ))}

@@ -17,7 +17,7 @@
     "email": "contact@levy-notaires.fr",
     "siteUrl": "https://www.levy-notaires.fr",
     "horaires": "Du lundi au vendredi, de 9 h à 19 h, sur rendez-vous.",
-    "langues": ["français", "anglais"],
+    "langues": ["français", "anglais", "allemand"],
     "googleMapsCid": "15064672117259351290",
     "googleMapsUrl": "https://maps.google.com/?cid=15064672117259351290"
   },

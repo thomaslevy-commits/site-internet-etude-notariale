@@ -1,11 +1,8 @@
 import type { Metadata } from "next";
-import { PageLegale } from "@/components/page-legale";
+import { PageLegale, metadonneesPageLegale } from "@/components/page-legale";
 
-export const metadata: Metadata = {
-  title: "Mentions légales",
-  alternates: { canonical: "/mentions-legales" },
-};
+export const metadata: Metadata = metadonneesPageLegale("mentions-legales");
 
-export default function MentionsLegales() {
-  return <PageLegale titre="Mentions légales" />;
+export default function Page() {
+  return <PageLegale slug="mentions-legales" />;
 }

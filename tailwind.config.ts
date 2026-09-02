@@ -6,6 +6,11 @@ import type { Config } from "tailwindcss";
  * gold : accents décoratifs uniquement (filets, puces, icônes) — 3:1 sur ivory.
  * gold-ink : variante assombrie réservée aux textes dorés sur fonds clairs
  * (5,6:1 sur ivory, conforme WCAG AA).
+ * line-strong : variante assombrie de line, réservée aux limites des
+ * composants de saisie. line ne vaut que 1,34:1 sur paper, quand le critère
+ * WCAG 1.4.11 en exige 3 pour la bordure qui identifie un champ ;
+ * line-strong donne 3,35:1 sur paper et 3,14:1 sur ivory. Les filets et
+ * séparateurs décoratifs restent en line, non concernés par ce critère.
  */
 const config: Config = {
   content: ["./src/**/*.{ts,tsx,mdx}", "./content/**/*.mdx"],
@@ -20,6 +25,7 @@ const config: Config = {
         gold: "#A98A4C",
         "gold-ink": "#77613A",
         line: "#E4DED4",
+        "line-strong": "#978B74",
       },
       fontFamily: {
         serif: ["var(--font-serif)", "Georgia", "serif"],

@@ -1,11 +1,8 @@
 import type { Metadata } from "next";
-import { PageLegale } from "@/components/page-legale";
+import { PageLegale, metadonneesPageLegale } from "@/components/page-legale";
 
-export const metadata: Metadata = {
-  title: "Déclaration d'accessibilité",
-  alternates: { canonical: "/accessibilite" },
-};
+export const metadata: Metadata = metadonneesPageLegale("accessibilite");
 
-export default function Accessibilite() {
-  return <PageLegale titre="Déclaration d'accessibilité" />;
+export default function Page() {
+  return <PageLegale slug="accessibilite" />;
 }

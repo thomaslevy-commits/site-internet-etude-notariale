@@ -22,17 +22,30 @@ export default function IndexBlog() {
         Blog
       </h1>
 
-      <nav aria-label="Catégories" className="mt-8">
+      {/* Les rubriques étaient rendues en span : elles avaient toutes les
+          apparences d'un filtre sans en être un. Elles pointent désormais
+          vers leur page de catégorie. */}
+      <nav aria-label="Rubriques" className="mt-8">
         <ul className="flex flex-wrap gap-3">
           {CATEGORIES.map((categorie) => (
             <li key={categorie}>
-              <span className="inline-block rounded-sm border border-line bg-paper px-4 py-2 text-sm text-night">
+              <Link
+                href={`/blog/${categorie}`}
+                className="inline-block rounded-sm border border-line bg-paper px-4 py-2 text-sm text-night transition-colors hover:bg-ivory"
+              >
                 {CATEGORIE_LABELS[categorie]}
-              </span>
+              </Link>
             </li>
           ))}
         </ul>
       </nav>
+
+      {articles.length === 0 ? (
+        <p className="mt-14 max-w-3xl text-slate-soft">
+          Les publications de l&apos;étude seront mises en ligne
+          prochainement. Les rubriques ci-dessus en présentent le champ.
+        </p>
+      ) : null}
 
       <ul className="mt-14 space-y-8">
         {articles.map(({ frontmatter }) => (

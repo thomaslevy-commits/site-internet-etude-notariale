@@ -39,6 +39,11 @@ export async function generateMetadata({ params }: Params): Promise<Metadata> {
   if (!article) return {};
   return {
     title: article.frontmatter.title,
+    // Description facultative (§7) : mieux vaut laisser Google composer
+    // l'extrait qu'inventer une description qui n'a pas été validée.
+    ...(article.frontmatter.description
+      ? { description: article.frontmatter.description }
+      : {}),
     alternates: { canonical: `/blog/${categorie}/${slug}` },
   };
 }
@@ -71,7 +76,7 @@ export default async function PageArticle({ params }: Params) {
       <JsonLd
         data={schemaFilAriane([
           { href: "/blog", label: "Blog" },
-          { label: CATEGORIE_LABELS[categorie] },
+          { href: `/blog/${categorie}`, label: CATEGORIE_LABELS[categorie] },
           { label: frontmatter.title },
         ])}
       />
@@ -79,7 +84,7 @@ export default async function PageArticle({ params }: Params) {
       <FilAriane
         maillons={[
           { href: "/blog", label: "Blog" },
-          { label: CATEGORIE_LABELS[categorie] },
+          { href: `/blog/${categorie}`, label: CATEGORIE_LABELS[categorie] },
           { label: frontmatter.title },
         ]}
       />
@@ -97,8 +102,8 @@ export default async function PageArticle({ params }: Params) {
           {frontmatter.author}
         </p>
         <div className="mt-8 space-y-4">
-          {paragraphes.map((paragraphe) => (
-            <p key={paragraphe.slice(0, 60)} className="text-slate-soft">
+          {paragraphes.map((paragraphe, index) => (
+            <p key={index} className="text-slate-soft">
               {paragraphe}
             </p>
           ))}

@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { etude } from "@/config/etude";
 
 /** Navigation principale — routes du §6 de CLAUDE.md (Contact devient le CTA). */
@@ -27,7 +27,7 @@ const adresseCourte = etude.adresse.ligne1.split(" — ")[0];
  * ligne. Transformation d'affichage seulement — la valeur de référence de
  * etude.ts, qui alimente les métadonnées et le JSON-LD, reste intacte (§7).
  */
-const nomAffiche = etude.nom.replace(/\s(\d+)$/, "\u00A0$1");
+const nomAffiche = etude.nom.replace(/\s(\d+)$/, " $1");
 
 /**
  * En-tête global : nom de l'étude à gauche, coordonnées condensées (≥ xl) et
@@ -37,6 +37,17 @@ const nomAffiche = etude.nom.replace(/\s(\d+)$/, "\u00A0$1");
  */
 export function SiteHeader() {
   const [ouvert, setOuvert] = useState(false);
+
+  // Échap referme le menu : sans cela, un visiteur au clavier doit parcourir
+  // tous les liens pour en sortir.
+  useEffect(() => {
+    if (!ouvert) return;
+    function surTouche(evenement: KeyboardEvent) {
+      if (evenement.key === "Escape") setOuvert(false);
+    }
+    document.addEventListener("keydown", surTouche);
+    return () => document.removeEventListener("keydown", surTouche);
+  }, [ouvert]);
 
   return (
     <header className="border-b border-line bg-ivory">
@@ -79,26 +90,34 @@ export function SiteHeader() {
               <li>
                 <Link
                   href="/contact"
-                  className="inline-block whitespace-nowrap rounded-[2px] bg-night px-4 py-2.5 text-[0.8rem] tracking-wide text-ivory no-underline transition-colors hover:bg-gold"
+                  // Survol en anthracite et non en or : ivoire sur or ne
+                  // vaut que 3,06:1, en deçà du seuil AA pour ce corps de
+                  // texte, et le §5 proscrit tout bouton doré.
+                  className="inline-block whitespace-nowrap rounded-[2px] bg-night px-4 py-2.5 text-[0.8rem] tracking-wide text-ivory no-underline transition-colors hover:bg-anthracite"
                 >
                   Prendre rendez-vous
                 </Link>
               </li>
             </ul>
             <div className="flex items-center gap-3 text-[0.72rem] uppercase tracking-[0.05em] text-gold-ink">
-              <Link
-                href="/data-room"
+              {/* Service externe : lien sortant, et non route interne — le
+                  chemin /data-room ne correspondait à aucune page et servait
+                  donc une erreur 404 sur toutes les pages du site. Ouverture
+                  dans un nouvel onglet, mention restituée aux lecteurs
+                  d'écran (§10).
+                  L'entrée « Paiement en ligne » est retirée pour la même
+                  raison : /paiement n'existe pas davantage, et aucune
+                  destination n'est arrêtée. Elle relève de la phase 2 (§2) et
+                  sera rétablie lorsqu'un prestataire aura été retenu. */}
+              <a
+                href={etude.liens.dataRoom}
+                target="_blank"
+                rel="noopener noreferrer"
                 className="border-b border-transparent pb-px no-underline transition-colors hover:border-gold"
               >
                 Accès Data Room
-              </Link>
-              <span className="opacity-60">·</span>
-              <Link
-                href="/paiement"
-                className="border-b border-transparent pb-px no-underline transition-colors hover:border-gold"
-              >
-                Paiement en ligne
-              </Link>
+                <span className="sr-only"> (nouvelle fenêtre)</span>
+              </a>
             </div>
           </div>
         </nav>
@@ -114,27 +133,41 @@ export function SiteHeader() {
         </button>
       </div>
 
-      {ouvert ? (
-        <nav
-          id="menu-mobile"
-          aria-label="Navigation principale"
-          className="border-t border-line px-6 py-4 lg:hidden"
-        >
-          <ul className="flex flex-col gap-4">
-            {navigationMobile.map((item) => (
-              <li key={item.href}>
-                <Link
-                  href={item.href}
-                  className="text-anthracite decoration-gold underline-offset-4 hover:text-night hover:underline"
-                  onClick={() => setOuvert(false)}
-                >
-                  {item.label}
-                </Link>
-              </li>
-            ))}
-          </ul>
-        </nav>
-      ) : null}
+      {/* Le menu est toujours dans le document, replié par l'attribut hidden :
+          l'aria-controls du bouton désigne ainsi un élément qui existe en
+          permanence, ce qui n'était pas le cas lorsqu'il était démonté. */}
+      <nav
+        id="menu-mobile"
+        hidden={!ouvert}
+        aria-label="Navigation principale"
+        className="border-t border-line px-6 py-4 lg:hidden"
+      >
+        <ul className="flex flex-col gap-4">
+          {navigationMobile.map((item) => (
+            <li key={item.href}>
+              <Link
+                href={item.href}
+                className="text-anthracite decoration-gold underline-offset-4 hover:text-night hover:underline"
+                onClick={() => setOuvert(false)}
+              >
+                {item.label}
+              </Link>
+            </li>
+          ))}
+          <li>
+            <a
+              href={etude.liens.dataRoom}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="text-anthracite decoration-gold underline-offset-4 hover:text-night hover:underline"
+              onClick={() => setOuvert(false)}
+            >
+              Accès Data Room
+              <span className="sr-only"> (nouvelle fenêtre)</span>
+            </a>
+          </li>
+        </ul>
+      </nav>
     </header>
   );
 }
