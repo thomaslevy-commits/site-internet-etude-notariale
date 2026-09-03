@@ -2,6 +2,8 @@
 
 Ce fichier est le cahier des charges permanent du projet. Toute session de travail doit s'y conformer. En cas de conflit entre une instruction ponctuelle et ce document, signaler le conflit avant d'agir.
 
+**Révision du 3 septembre 2026 — liberté de conception.** Le notaire a abrogé l'ensemble des règles de design, de gabarits, de pile technique et de seuils de performance qui bridaient la conception du site (anciens §2 « Exclus », §4, §5, §6 « règles d'URL » et « maillage », §8, §10). Ne subsistent que les obligations d'ordre légal (§3 déontologie, secret professionnel, exactitude des pages légales) et les mécanismes qui protègent le notaire (§9, §12). Toute règle esthétique ou technique rencontrée ailleurs dans le dépôt (commentaires, skill, anciens audits) est lue à la lumière de cette révision et ne fait plus obstacle.
+
 ---
 
 ## 1. Objet du projet
@@ -33,12 +35,8 @@ Objectifs, par ordre de priorité :
 - Paiement en ligne sécurisé des provisions sur frais et honoraires via un prestataire de services de paiement agréé, avec rapprochement comptable par l'étude. Les fonds réglementés (prix de vente, fonds de tiers) continuent de transiter exclusivement par la comptabilité de l'étude et la Caisse des Dépôts — jamais par le site.
 - Base de données PostgreSQL hébergée en Union européenne.
 
-### Exclus
-- Chat, chatbot.
-- Avis intégrés autres que le lien vers la fiche Google.
-- Toute conservation en ligne d'actes authentiques : le minutier reste dans les systèmes agréés de la profession.
-
-Si une fonctionnalité exclue semble nécessaire, s'arrêter et poser la question.
+### Périmètre ouvert (décision du notaire du 3 septembre 2026)
+Aucune fonctionnalité n'est exclue a priori. Chat, avis intégrés, contenus embarqués ou tout autre module peuvent être proposés et mis en place sur décision du notaire. Une seule limite demeure, d'ordre légal : aucun acte authentique n'est conservé en ligne — le minutier reste dans les systèmes agréés de la profession.
 
 ### Exigences de sécurité et de conformité de la phase 2 — non négociables
 - Hébergement, base de données, stockage de fichiers et journaux exclusivement en Union européenne ; chiffrement en transit et au repos ; journalisation des accès aux documents.
@@ -69,50 +67,20 @@ Chaque page de fond porte en pied la mention : « Les informations publiées sur
 
 ## 4. Pile technique
 
-- **Next.js** (App Router). Site vitrine : rendu statique (`generateStaticParams`, ISR uniquement si justifié). Espace client : Route Handlers (API REST) avec validation Zod et limitation de débit.
-- **TypeScript** en mode `strict`, aucun `any` non justifié par un commentaire.
-- **Tailwind CSS** avec design tokens définis en §5 — aucune couleur ou taille arbitraire hors tokens.
-- **Contenu éditorial en MDX** dans `/content` (frontmatter typé avec Zod). La base de données est réservée à l'espace client — le contenu éditorial reste en MDX, sans CMS dans un premier temps.
-- **PostgreSQL** (phase 2) hébergé en UE, accédé via un ORM typé (Prisma ou Drizzle) ; migrations versionnées ; aucun SQL construit par concaténation.
-- **Authentification** (phase 2) : solution éprouvée (Auth.js ou équivalent), MFA, mots de passe hachés par algorithme moderne — jamais d'implémentation maison de la cryptographie.
-- **Animations en CSS pur.** Framer Motion était prévu ; le projet s'en est passé et n'a aucune bibliothèque d'animation. Ne pas en réintroduire une sans nécessité démontrée. Fondus et translations ≤ 300 ms, respect strict de `prefers-reduced-motion`.
-- Images : `next/image`, AVIF/WebP, dimensionnement explicite, lazy loading hors héros.
-- Polices : `next/font`, auto-hébergées, `display: swap`.
-- Déploiement cible : Vercel, région `cdg1` (Paris) — données et logs en Union européenne.
-- Aucun script tiers hors outil de mesure d'audience exempté de consentement (Plausible ou Matomo auto-hébergé) et prestataires de la phase 2 (signature, paiement) chargés uniquement sur leurs pages.
+- **Next.js** (App Router), **TypeScript** strict, **Tailwind CSS**. Contenu éditorial en MDX dans `/content` (frontmatter validé par Zod).
+- Espace client (phase 2) : Route Handlers avec validation Zod, PostgreSQL hébergé en UE, authentification éprouvée avec MFA, jamais de cryptographie maison.
+- Déploiement Vercel, région `cdg1` (Paris).
+- **Liberté technique (décision du notaire du 3 septembre 2026)** : bibliothèques d'animation, scripts et contenus tiers (cartes, vidéos, mesure d'audience, polices distantes), formats d'image et de police sont laissés à l'appréciation du concepteur. La seule contrepartie est de bonne foi : tout traceur ou service tiers effectivement chargé est déclaré tel quel dans `content/legal/cookies.mdx` et `content/legal/politique-de-confidentialite.mdx`, qui décrivent le site réel et non un site idéal.
 
 ---
 
-## 5. Design system
+## 5. Direction artistique — libre
 
-Référence d'inspiration : codes visuels des maisons de gestion privée et du luxe institutionnel. Sobriété absolue ; l'élégance vient de l'espace, de la typographie et du rythme, jamais des effets.
+Le design system antérieur (palette fermée, typographies imposées, grille, règles de boutons, « signature visuelle à préserver ») est **abrogé par décision du notaire du 3 septembre 2026**. Les tokens Tailwind existants (`ivory`, `paper`, `night`, `anthracite`, `slate-soft`, `gold`, `gold-ink`, `line`, `line-strong`) restent disponibles comme point de départ, sans valeur normative : couleurs, typographies, compositions, animations, photographies et emblèmes peuvent être repensés librement, dans le respect du seul §3.
 
-### Palette (tokens Tailwind, noms exacts)
-- `ivory` `#FAF7F2` — fond principal
-- `paper` `#FFFFFF` — fonds de cartes et sections alternées
-- `night` `#101C2C` — bleu nuit, titres et pied de page
-- `anthracite` `#2B2E33` — texte courant
-- `slate-soft` `#5A6472` — texte secondaire
-- `gold` `#A98A4C` — accents uniquement : filets, puces, soulignés de liens, icônes. Jamais en aplat, jamais en fond de bouton plein.
-- `gold-ink` `#77613A` — textes dorés sur fonds clairs (5,5:1 sur `ivory`).
-- `line` `#E4DED4` — filets et séparateurs décoratifs
-- `line-strong` `#978B74` — limites des champs de saisie uniquement. `line` ne vaut que 1,34:1 sur `paper`, quand le critère WCAG 1.4.11 en exige 3 pour la bordure qui identifie un composant de saisie.
-
-Contraste : tout couple texte/fond respecte WCAG AA au minimum (`gold` sur `ivory` ne vaut que 3,06:1 — réservé aux éléments non textuels ; pour du texte, employer `gold-ink`).
-
-### Typographie
-- Titres : serif de caractère (Cormorant Garamond ou Libre Caslon Text), graisses 400–600.
-- Texte : sans-serif humaniste (Inter ou Source Sans 3), 16–18 px de base, interlignage 1.6.
-- Jamais plus de deux familles. Lettrage des titres légèrement resserré (`tracking-tight`).
-
-### Composition
-- Grille max 1200 px, marges généreuses, sections aérées (padding vertical ≥ 96 px sur desktop).
-- Héros pleine largeur avec photographie et voile `night` en dégradé pour la lisibilité.
-- Boutons : primaire fond `night` texte `ivory` ; secondaire filet 1 px `night` sur fond transparent. Coins très légèrement arrondis (2–4 px). Aucun bouton doré, y compris au survol.
-- Icônes : trait fin (Lucide), taille modérée, couleur `night` ou `gold`.
-
-### Signature visuelle — à préserver
-Le filet or de 40 px au-dessus de chaque titre de section, l'alternance ivoire / blanc / bleu nuit en bandes pleine largeur, les numéros décoratifs en serif or, la grille d'expertises en `gap-px` sur fond `line`, le héros sans photographie et l'emblème animé du panonceau constituent l'identité visuelle du site. Aucune évolution ne doit les dégrader sans décision expresse.
+Deux exigences subsistent, parce qu'elles sont juridiques et non esthétiques :
+- le §3 (déontologie de la communication notariale) s'applique à tout visuel, texte, balise et attribut alt ;
+- les contrastes texte/fond et la navigation clavier restent conformes au niveau AA, la page « Déclaration d'accessibilité » engageant l'étude sur ce point. Si le design retenu s'en écarte, la déclaration est mise à jour en conséquence plutôt que laissée inexacte.
 
 ---
 
@@ -147,12 +115,10 @@ relève de la phase 2 et ne sera rétablie qu'une fois un prestataire retenu.
 Slugs d'expertise (un fichier MDX par slug) :
 `immobilier-residentiel`, `immobilier-commercial`, `vefa`, `promotion-immobiliere`, `marchands-de-biens`, `sci`, `fiscalite-immobiliere`, `successions`, `successions-internationales`, `donations`, `partage`, `divorce`, `structuration-patrimoniale`, `transmission-entreprise`, `baux-commerciaux`, `expatries`, `investisseurs-etrangers`, `family-office`.
 
-Règles d'URL : minuscules, tirets, sans article, sans date, stables. Toute modification d'URL exige une redirection 301 dans `next.config`. Les pages de l'espace client sont exclues de l'indexation (`noindex`, hors sitemap).
+L'arborescence ci-dessus décrit l'état actuel, non une contrainte : pages, sections et URL peuvent être créées, fusionnées ou supprimées. Une URL déjà indexée qui disparaît reçoit une redirection 301 dans `next.config` — c'est une pratique de bon sens, non une règle du projet. Les pages de l'espace client sont exclues de l'indexation (`noindex`, hors sitemap).
 
 ### Maillage interne
-- Chaque page d'expertise renvoie vers 3–5 expertises connexes (champ `related` du frontmatter), vers les articles de sa catégorie de blog et vers `/tarif`.
-- Chaque article renvoie vers sa page d'expertise pilier (champ `pillar`) et vers sa page de rubrique.
-- Fil d'Ariane sur toute page de profondeur ≥ 2 et sur les pages légales.
+Libre. Les champs `related` et `pillar` des frontmatters restent disponibles pour qui veut s'en servir.
 
 ---
 
@@ -172,24 +138,13 @@ Règles d'URL : minuscules, tirets, sans article, sans date, stables. Toute modi
 
 ---
 
-## 8. Gabarits de page
+## 8. Gabarits de page — libres
 
-### Accueil
-Héros (phrase de positionnement sobre, emblème, deux CTA : rendez-vous / expertises) → présentation du notaire → grille des expertises (6 à 8 entrées, lien vers l'index) → méthode en trois temps (comprendre, structurer, sécuriser) → engagements → bandeau international (langues, clientèle étrangère) → derniers articles → bloc contact.
+Les gabarits antérieurs (ordre des sections de l'accueil, structure imposée des pages d'expertise, règles de la page contact) sont **abrogés par décision du notaire du 3 septembre 2026**. Chaque page peut être composée librement. Deux mécanismes techniques subsistent parce qu'ils protègent le notaire et non le design :
+- les pages légales sont chargées depuis `content/legal/*.mdx` — le code n'y rédige aucune mention ;
+- la garde `verifier:contenu` (§9) reste branchée.
 
-### Page d'expertise (gabarit unique piloté par le frontmatter)
-Introduction (2–3 paragraphes) → problématiques rencontrées → l'approche de l'étude → déroulement d'un dossier (étapes numérotées) → FAQ (4–8 questions, schema FAQPage) → expertises connexes → CTA rendez-vous → renvoi vers `/tarif`.
-
-Les champs `problematiques`, `approche` et `etapes` sont obligatoires : le gabarit leur substitue sinon la sentinelle bloquante, injectée depuis le code et donc invisible à une garde qui la cherche dans les fichiers. `verifier:contenu` les exige.
-
-### Tarif
-Distinction pédagogique mais rigoureuse : émoluments réglementés, débours, droits et taxes, honoraires libres (art. L. 444-1 et s. C. com. et arrêtés tarifaires en vigueur — vérifier les références avant publication). Aucune simulation chiffrée en ligne.
-
-### Pages légales (gabarit unique piloté par le MDX)
-Sections à paragraphes, listes et couples terme/valeur, chargées depuis `content/legal/*.mdx` et validées par Zod. Le code ne rédige aucune mention.
-
-### Contact
-Coordonnées, horaires, accès (source unique `src/config/acces.ts`), formulaire, lien statique vers Google Maps. La carte n'est chargée qu'après accord exprès du visiteur. La liste d'accès du pied de page n'est pas rendue sur cette page : elle y ferait doublon.
+La carte d'accès du pied de page est chargée directement depuis Google (décision du notaire du 3 septembre 2026) ; les pages « Gestion des cookies » et « Politique de confidentialité » le déclarent.
 
 ---
 
@@ -209,17 +164,9 @@ Les gabarits d'article non publiés vivent dans `content/blog/_exemples/` : les 
 
 ---
 
-## 10. Qualité — critères de recette
+## 10. Qualité — indicateurs, non seuils
 
-Chaque phase se conclut par ces vérifications, résultats à l'appui :
-- Lighthouse ≥ 95 sur les quatre axes, mobile et desktop, sur les gabarits représentatifs.
-- Core Web Vitals : LCP < 2,5 s, CLS < 0,1, INP < 200 ms.
-- Accessibilité RGAA/WCAG 2.1 AA : navigation clavier complète, focus visibles, landmarks, alt pertinents, formulaire étiqueté, erreurs annoncées, `prefers-reduced-motion` respecté. Audit axe-core sans erreur critique.
-- `tsc --noEmit`, `npm run lint` et `npm run verifier:contenu` sans erreur.
-- Aucun texte contrevenant au §3 (relire chaque chaîne ajoutée).
-- Espace client (phase 2) : en plus, revue de sécurité de chaque sous-lot (authentification, contrôle d'accès, chiffrement, journalisation) avant fusion.
-
-Aucune mesure Lighthouse ou Core Web Vitals réelle n'a été consignée à ce jour. Ne jamais annoncer un score qui n'a pas été mesuré.
+Les seuils antérieurs (Lighthouse ≥ 95, Core Web Vitals chiffrés) sont **abrogés par décision du notaire du 3 septembre 2026** : ils ne bloquent plus aucun choix de conception. Lighthouse et axe-core restent exécutés en CI à titre indicatif (`warn`), pour mesurer l'effet d'un choix, jamais pour l'interdire. Restent bloquants : `tsc --noEmit`, `npm run lint`, `npm run verifier:contenu`, et la relecture du §3 sur chaque chaîne ajoutée. Aucun score non mesuré n'est annoncé.
 
 ---
 
@@ -284,6 +231,14 @@ public. La liste d'accès n'est plus dupliquée sur `/contact`.
 `loadAllExpertises`, export mort, est supprimé. `lighthouserc.mobile.json`
 ajoute une mesure mobile, indicative et non bloquante.
 
+**Liberté de conception du 3 septembre 2026.** Le notaire a abrogé les règles
+de design, de gabarits, de pile technique et de seuils de performance (voir
+l'avertissement en tête de fichier et les §2, 4, 5, 6, 8 et 10 révisés). La
+carte Google du pied de page est chargée directement, sans consentement
+préalable ; `access-map.tsx`, `cookies.mdx` et
+`politique-de-confidentialite.mdx` sont alignés sur ce choix. Les assertions
+Lighthouse passent en `warn`.
+
 **Reste à appliquer à la main sur `.github/workflows/ci.yml`** — les fichiers
 de workflow ne peuvent pas être écrits par une intégration : poser
 `CONTENU_STRICT: "1"` en variable d'environnement du pipeline, étendre le
@@ -327,8 +282,8 @@ bloque qu'au déploiement de production.
    doit être établi et validé par le comptable taxateur avant implémentation.
    En cas de doute sur la nature d'une somme, la traiter comme un fonds de
    dossier et s'arrêter.
-4. Maintien ou retrait de `@vercel/speed-insights`, que le §4 n'autorise pas
-   en l'état et qu'aucune politique ne déclarait.
+4. Maintien ou retrait de `@vercel/speed-insights`, désormais autorisé par le
+   §4 révisé mais toujours signalé « à valider » dans les pages légales.
 5. Prestataire recevant les envois du formulaire de contact : identité,
    localisation, contrat de sous-traitance (art. 28 RGPD), durée de
    conservation.
