@@ -53,7 +53,8 @@ const DELAI_MINIMAL_MS = 3000;
  * Anti-automates : un champ leurre invisible aux visiteurs mais renseigné
  * par la plupart des robots, et un délai minimal de rédaction. Ces deux
  * gardes sont côté client et ne dispensent pas d'une vérification par le
- * service qui reçoit les envois.
+ * service qui reçoit les envois. Elles servent à *marquer* une soumission,
+ * jamais à la retenir : voir soumettre().
  */
 export function FormulaireContact() {
   const [champs, setChamps] = useState<Champs>(CHAMPS_INITIAUX);
@@ -98,22 +99,32 @@ export function FormulaireContact() {
   async function soumettre(evenement: React.FormEvent<HTMLFormElement>) {
     evenement.preventDefault();
     if (!valider()) return;
-    // Automate détecté : on affiche la confirmation sans rien envoyer, pour
-    // ne pas indiquer au robot quelle garde l'a arrêté.
-    if (leurre !== "" || Date.now() - affichageLe.current < DELAI_MINIMAL_MS) {
-      setEtat("succes");
-      return;
-    }
+    // Le contrôle de l'endpoint passe en premier : sans lui, le sort d'une
+    // soumission dépendait de la vitesse de frappe du visiteur — rapide,
+    // elle annonçait un succès ; lente, un échec.
     if (!ENDPOINT) {
       setEtat("echec");
       return;
     }
+    // Signaux d'automate : champ leurre renseigné, ou message soumis plus
+    // vite qu'il n'est humainement possible de le rédiger. La soumission
+    // part malgré tout, marquée « suspecte », à charge pour le service
+    // destinataire de l'écarter ou de la mettre en quarantaine.
+    //
+    // Elle n'est jamais détruite en silence. Le code précédent affichait
+    // « votre message a bien été transmis » sans rien envoyer : un
+    // gestionnaire de mots de passe renseignant le champ caché suffisait à
+    // déclencher ce comportement, et le client d'une étude croyait avoir
+    // écrit à son notaire. Un message perdu coûte infiniment plus cher
+    // qu'un message indésirable reçu.
+    const suspect =
+      leurre !== "" || Date.now() - affichageLe.current < DELAI_MINIMAL_MS;
     setEtat("envoi");
     try {
       const reponse = await fetch(ENDPOINT, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(champs),
+        body: JSON.stringify({ ...champs, suspect }),
       });
       setEtat(reponse.ok ? "succes" : "echec");
     } catch {
