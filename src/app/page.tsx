@@ -2,7 +2,6 @@ import type { Metadata } from "next";
 import Image from "next/image";
 import Link from "next/link";
 import { CtaRendezVous } from "@/components/cta-rdv";
-import { EmblemeNotaire } from "@/components/embleme-notaire";
 import { JsonLd, schemaNotary } from "@/components/json-ld";
 import { etude } from "@/config/etude";
 import { cheminPublic } from "@/lib/chemins";
@@ -120,39 +119,59 @@ export default function Accueil() {
   return (
     <main>
       <JsonLd data={schemaNotary()} />
-      {/* Héros — fond night sobre, médaillon doré du panonceau officiel en
-          regard du titre. L'élégance vient de l'espace, de la typographie et
-          des filets or (§5) ; aucun aplat doré. */}
-      <section className="relative overflow-hidden bg-night">
-        <div className="relative mx-auto grid w-full max-w-grid items-center gap-16 px-6 py-24 lg:min-h-[70vh] lg:grid-cols-[minmax(0,7fr),minmax(0,5fr)] lg:py-28">
-          <div>
-            <p className="text-xs uppercase tracking-[0.3em] text-gold">
-              Étude notariale — Paris 16ᵉ
-            </p>
-            <div aria-hidden="true" className="mt-6 h-px w-16 bg-gold" />
-            <h1 className="mt-8 max-w-2xl text-balance font-serif text-4xl font-medium leading-tight tracking-tight text-ivory sm:text-5xl lg:text-6xl">
-              Le conseil notarial pour les opérations immobilières et
-              patrimoniales complexes
-            </h1>
-            <p className="mt-8 max-w-xl text-lg leading-relaxed text-ivory/80">
-              À Paris et à l&apos;international, l&apos;étude accompagne
-              particuliers, investisseurs, entreprises et family offices.
-            </p>
-            <div className="mt-12 flex flex-wrap items-center gap-4">
-              <CtaRendezVous surFondSombre />
-              <Link
-                href="/expertises"
-                className="inline-block rounded-sm border border-ivory px-6 py-3 text-sm text-ivory transition-colors hover:bg-ivory hover:text-night"
-              >
-                Nos expertises
-              </Link>
-            </div>
-          </div>
-          {/* Emblème doré animé, fourni par le notaire : fil de suspension,
-              apparition douce, balancement amorti et reflet métallique —
-              le composant gère lui-même prefers-reduced-motion. */}
-          <div className="mx-auto">
-            <EmblemeNotaire />
+      {/* Héros photographique — décision du notaire du 3 septembre 2026,
+          direction C de la planche de maquettes. La page d'accueil reprend
+          l'écriture qui ouvre déjà /etude : photographie pleine largeur,
+          voile night en dégradé, texte en bas à gauche. Les deux pages
+          partagent une même grammaire au lieu d'ouvrir chacune à sa façon.
+
+          L'emblème animé quitte donc l'accueil. Le composant, son module CSS
+          et ses deux PNG restent au dépôt : sa destination n'est pas
+          tranchée (repli sur /etude, sur le pied de page, ou retrait).
+
+          Le dégradé est écrit en dur, comme dans etude-section.tsx : deux
+          couches de night, l'une du bas vers le haut pour asseoir les
+          boutons, l'autre de la gauche vers la droite pour que le titre
+          reste lisible quelle que soit la zone de l'image. À extraire en
+          composant partagé si un troisième gabarit l'emploie. */}
+      <section className="relative flex min-h-[70vh] items-end overflow-hidden bg-night">
+        <Image
+          src={cheminPublic("/images/salle-etude.jpg")}
+          alt="Salle de réunion de l'étude notariale Thomas Lévy, Paris 16ᵉ"
+          fill
+          priority
+          sizes="100vw"
+          className="object-cover object-center"
+        />
+        <div
+          aria-hidden
+          className="absolute inset-0"
+          style={{
+            background:
+              "linear-gradient(to top, rgba(16,28,44,0.88) 0%, rgba(16,28,44,0.66) 24%, rgba(16,28,44,0.26) 52%, rgba(16,28,44,0) 76%), linear-gradient(to right, rgba(16,28,44,0.74) 0%, rgba(16,28,44,0.32) 46%, rgba(16,28,44,0) 80%)",
+          }}
+        />
+        <div className="relative mx-auto w-full max-w-grid px-6 pb-16 pt-28 lg:pb-20 lg:pt-32">
+          <p className="text-xs uppercase tracking-[0.3em] text-gold">
+            Étude notariale — Paris 16ᵉ
+          </p>
+          <div aria-hidden="true" className="mt-6 h-px w-16 bg-gold" />
+          <h1 className="mt-8 max-w-2xl text-balance font-serif text-4xl font-medium leading-tight tracking-tight text-ivory sm:text-5xl lg:text-6xl">
+            Le conseil notarial pour les opérations immobilières et
+            patrimoniales complexes
+          </h1>
+          <p className="mt-8 max-w-xl text-lg leading-relaxed text-ivory/80">
+            À Paris et à l&apos;international, l&apos;étude accompagne
+            particuliers, investisseurs, entreprises et family offices.
+          </p>
+          <div className="mt-10 flex flex-wrap items-center gap-4">
+            <CtaRendezVous surFondSombre />
+            <Link
+              href="/expertises"
+              className="inline-block rounded-sm border border-ivory px-6 py-3 text-sm text-ivory transition-colors hover:bg-ivory hover:text-night"
+            >
+              Nos expertises
+            </Link>
           </div>
         </div>
       </section>
