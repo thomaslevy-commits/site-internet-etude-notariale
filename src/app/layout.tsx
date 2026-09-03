@@ -67,7 +67,7 @@ export default function RootLayout({
           Aller au contenu
         </a>
         <SiteHeader />
-        <div id="contenu" className="flex-1">
+        <div id="contenu" className="flex-1 pt-[6.5rem]">
           {children}
         </div>
         <SiteFooter />

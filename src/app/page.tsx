@@ -369,22 +369,37 @@ export default function Accueil() {
             </h2>
             <div className="mt-8 max-w-prose space-y-5 text-[1.05rem] leading-relaxed text-anthracite">
               <p>
-                Je considère que le rôle du notaire ne se réduit pas à rédiger
-                des actes. Il consiste à comprendre une opération, à en
-                anticiper les difficultés et à construire une architecture
-                juridique dans laquelle chaque partie trouve sa sécurité.
+                Chaque opération immobilière ou patrimoniale est unique. Le
+                rôle du notaire est d&apos;en comprendre les enjeux, d&apos;en
+                anticiper les risques et de construire une architecture
+                juridique sur mesure qui protège chaque partie.
               </p>
               <p>
-                L&apos;étude est établie à Paris. Sa pratique est tournée vers
-                les opérations immobilières complexes, la structuration
-                patrimoniale, les successions françaises et internationales, et
-                le conseil aux entreprises et aux family offices.
+                L&apos;étude accompagne particuliers, investisseurs, entreprises
+                et family offices dans leurs projets les plus structurants :
+                acquisitions complexes, montages en SCI, transmissions
+                d&apos;entreprise, successions internationales et
+                restructurations patrimoniales.
               </p>
               <p>
-                Le premier rendez-vous est un échange : il permet de poser le
-                cadre d&apos;une opération avant toute question de rédaction ou
-                de coût.
+                Un premier rendez-vous permet de poser le cadre de votre
+                opération, d&apos;identifier les points d&apos;attention et de
+                définir ensemble la stratégie notariale adaptée à votre
+                situation.
               </p>
+            </div>
+            <div className="mt-6 flex flex-wrap gap-x-4 gap-y-2 text-[0.7rem] uppercase tracking-[0.14em] text-gold-ink/70">
+              <span>Notaire Paris 16</span>
+              <span aria-hidden="true">·</span>
+              <span>Immobilier</span>
+              <span aria-hidden="true">·</span>
+              <span>Patrimoine</span>
+              <span aria-hidden="true">·</span>
+              <span>Successions</span>
+              <span aria-hidden="true">·</span>
+              <span>SCI</span>
+              <span aria-hidden="true">·</span>
+              <span>International</span>
             </div>
             <div className="mt-10 flex flex-wrap items-center gap-8">
               <CtaRendezVous />

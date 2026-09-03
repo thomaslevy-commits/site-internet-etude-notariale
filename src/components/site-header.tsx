@@ -1,10 +1,9 @@
 "use client";
 
 import Link from "next/link";
-import { useEffect, useState } from "react";
+import { useEffect, useState, useCallback } from "react";
 import { etude } from "@/config/etude";
 
-/** Navigation principale — routes du §6 de CLAUDE.md (Contact devient le CTA). */
 const navigation = [
   { href: "/etude", label: "L'étude" },
   { href: "/expertises", label: "Expertises" },
@@ -18,160 +17,237 @@ const navigationMobile = [
   { href: "/contact", label: "Contact et rendez-vous" },
 ] as const;
 
-/** Adresse sans la mention d'étage, pour l'affichage condensé. */
 const adresseCourte = etude.adresse.ligne1.split(" — ")[0];
 
-/**
- * Nom de l'étude avec l'arrondissement rendu insécable : replié sur un
- * téléphone, « Paris 16 » se coupait sinon en laissant « 16 » seul sur une
- * ligne. Transformation d'affichage seulement — la valeur de référence de
- * etude.ts, qui alimente les métadonnées et le JSON-LD, reste intacte (§7).
- */
 const nomAffiche = etude.nom.replace(/\s(\d+)$/, " $1");
 
-/**
- * En-tête global : nom de l'étude à gauche, coordonnées condensées (≥ xl) et
- * navigation (≥ lg) à droite, menu repliable accessible au clavier en deçà.
- * Coordonnées exclusivement depuis etude.ts (§7).
- * Textes dorés sur ivoire en gold-ink — contraste WCAG AA.
- */
 export function SiteHeader() {
   const [ouvert, setOuvert] = useState(false);
+  const [scrolled, setScrolled] = useState(false);
 
-  // Échap referme le menu : sans cela, un visiteur au clavier doit parcourir
-  // tous les liens pour en sortir.
+  useEffect(() => {
+    function onScroll() {
+      setScrolled(window.scrollY > 20);
+    }
+    onScroll();
+    window.addEventListener("scroll", onScroll, { passive: true });
+    return () => window.removeEventListener("scroll", onScroll);
+  }, []);
+
   useEffect(() => {
     if (!ouvert) return;
-    function surTouche(evenement: KeyboardEvent) {
-      if (evenement.key === "Escape") setOuvert(false);
+    function surTouche(e: KeyboardEvent) {
+      if (e.key === "Escape") setOuvert(false);
     }
     document.addEventListener("keydown", surTouche);
     return () => document.removeEventListener("keydown", surTouche);
   }, [ouvert]);
 
+  useEffect(() => {
+    if (ouvert) {
+      document.body.style.overflow = "hidden";
+    } else {
+      document.body.style.overflow = "";
+    }
+    return () => {
+      document.body.style.overflow = "";
+    };
+  }, [ouvert]);
+
+  const fermer = useCallback(() => setOuvert(false), []);
+
   return (
-    <header className="border-b border-line bg-ivory">
-      <div className="mx-auto flex w-full max-w-grid items-center justify-between gap-6 px-6 py-5">
-        {/* Le nom se replie sous sm : maintenu insécable, sa largeur
-            incompressible dépassait la largeur d'un téléphone une fois le
-            bouton de menu placé, et la page défilait latéralement. */}
-        <Link
-          href="/"
-          className="text-balance font-serif text-base font-medium tracking-tight text-night sm:whitespace-nowrap sm:text-xl"
-        >
-          {nomAffiche}
-        </Link>
-
-        <div className="ml-6 mr-5 hidden flex-col items-end whitespace-nowrap border-r border-gold/35 pr-5 leading-tight xl:flex">
-          <span className="text-[0.8rem] text-anthracite">
-            {adresseCourte} — {etude.adresse.codePostal} {etude.adresse.ville}
-          </span>
-          <a
-            href={`tel:${etude.telephoneE164}`}
-            className="text-[0.85rem] font-medium tracking-wide text-night no-underline"
-          >
-            {etude.telephone}
-          </a>
-        </div>
-
-        <nav aria-label="Navigation principale" className="hidden lg:block">
-          <div className="flex flex-col items-end gap-2">
-            <ul className="flex items-center gap-5">
-              {navigation.map((item) => (
-                <li key={item.href}>
-                  {/* Petites capitales espacées : écriture de navigation des
-                      sites de gestion privée, retenue pour la refonte du
-                      3 septembre 2026 (même registre que LienCapitale). */}
-                  <Link
-                    href={item.href}
-                    className="text-[0.72rem] uppercase tracking-[0.16em] text-anthracite decoration-gold underline-offset-[6px] transition-colors hover:text-night hover:underline"
-                  >
-                    {item.label}
-                  </Link>
-                </li>
-              ))}
-              <li>
-                <Link
-                  href="/contact"
-                  // Survol en anthracite et non en or : ivoire sur or ne
-                  // vaut que 3,06:1, en deçà du seuil AA pour ce corps de
-                  // texte. Seul ce contraste s'oppose ici au doré ; le §5 qui
-                  // proscrivait le bouton doré est abrogé le 3 septembre 2026.
-                  className="inline-block whitespace-nowrap rounded-[2px] bg-night px-4 py-2.5 text-[0.8rem] tracking-wide text-ivory no-underline transition-colors hover:bg-anthracite"
-                >
-                  Prendre rendez-vous
-                </Link>
-              </li>
-            </ul>
-            <div className="flex items-center gap-3 text-[0.72rem] uppercase tracking-[0.05em] text-gold-ink">
-              {/* Service externe : lien sortant, et non route interne — le
-                  chemin /data-room ne correspondait à aucune page et servait
-                  donc une erreur 404 sur toutes les pages du site. Ouverture
-                  dans un nouvel onglet, mention restituée aux lecteurs
-                  d'écran (§10).
-                  L'entrée « Paiement en ligne » est retirée pour la même
-                  raison : /paiement n'existe pas davantage, et aucune
-                  destination n'est arrêtée. Elle relève de la phase 2 (§2) et
-                  sera rétablie lorsqu'un prestataire aura été retenu. */}
-              <a
-                href={etude.liens.dataRoom}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="border-b border-transparent pb-px no-underline transition-colors hover:border-gold"
-              >
-                Accès Data Room
-                <span className="sr-only"> (nouvelle fenêtre)</span>
-              </a>
-            </div>
-          </div>
-        </nav>
-
-        <button
-          type="button"
-          className="text-sm text-night lg:hidden"
-          aria-expanded={ouvert}
-          aria-controls="menu-mobile"
-          onClick={() => setOuvert(!ouvert)}
-        >
-          {ouvert ? "Fermer" : "Menu"}
-        </button>
-      </div>
-
-      {/* Le menu est toujours dans le document, replié par l'attribut hidden :
-          l'aria-controls du bouton désigne ainsi un élément qui existe en
-          permanence, ce qui n'était pas le cas lorsqu'il était démonté. */}
-      <nav
-        id="menu-mobile"
-        hidden={!ouvert}
-        aria-label="Navigation principale"
-        className="border-t border-line px-6 py-4 lg:hidden"
+    <header
+      className={`fixed left-0 right-0 top-0 z-50 transition-all duration-500 ${
+        scrolled
+          ? "bg-ivory/95 shadow-[0_1px_12px_rgba(16,28,44,0.06)] backdrop-blur-md"
+          : "bg-ivory"
+      }`}
+    >
+      {/* ── Bandeau supérieur : coordonnées ── */}
+      <div
+        className={`border-b border-line overflow-hidden transition-all duration-500 ${
+          scrolled ? "max-h-0 border-transparent" : "max-h-12"
+        }`}
       >
-        <ul className="flex flex-col gap-4">
-          {navigationMobile.map((item) => (
-            <li key={item.href}>
-              <Link
-                href={item.href}
-                className="text-anthracite decoration-gold underline-offset-4 hover:text-night hover:underline"
-                onClick={() => setOuvert(false)}
-              >
-                {item.label}
-              </Link>
-            </li>
-          ))}
-          <li>
+        <div className="mx-auto flex max-w-grid items-center justify-between px-6 py-2">
+          <div className="hidden items-center gap-6 text-[0.7rem] uppercase tracking-[0.14em] text-gold-ink md:flex">
+            <span>
+              {adresseCourte} — {etude.adresse.codePostal} {etude.adresse.ville}
+            </span>
+            <span className="h-3 w-px bg-line" aria-hidden="true" />
+            <a
+              href={`tel:${etude.telephoneE164}`}
+              className="no-underline transition-colors hover:text-night"
+            >
+              {etude.telephone}
+            </a>
+            <span className="h-3 w-px bg-line" aria-hidden="true" />
+            <a
+              href={`mailto:${etude.email}`}
+              className="no-underline transition-colors hover:text-night"
+            >
+              {etude.email}
+            </a>
+          </div>
+          <div className="flex items-center gap-5 text-[0.7rem] uppercase tracking-[0.08em] text-gold-ink md:gap-6">
             <a
               href={etude.liens.dataRoom}
               target="_blank"
               rel="noopener noreferrer"
-              className="text-anthracite decoration-gold underline-offset-4 hover:text-night hover:underline"
-              onClick={() => setOuvert(false)}
+              className="no-underline transition-colors hover:text-night"
             >
-              Accès Data Room
+              Data Room
               <span className="sr-only"> (nouvelle fenêtre)</span>
             </a>
-          </li>
-        </ul>
+          </div>
+        </div>
+      </div>
+
+      {/* ── Barre principale ── */}
+      <div className="mx-auto flex max-w-grid items-center justify-between px-6 py-4">
+        <Link
+          href="/"
+          className="group flex items-center gap-3 no-underline"
+        >
+          {/* Monogramme TL stylisé */}
+          <span
+            className="flex h-10 w-10 items-center justify-center rounded-full border border-gold/40 text-sm font-semibold tracking-wide text-gold transition-colors group-hover:border-gold group-hover:bg-gold/5"
+            aria-hidden="true"
+          >
+            TL
+          </span>
+          <span className="text-balance font-serif text-lg font-medium tracking-tight text-night sm:text-xl">
+            {nomAffiche}
+          </span>
+        </Link>
+
+        {/* Navigation desktop */}
+        <nav aria-label="Navigation principale" className="hidden lg:block">
+          <ul className="flex items-center gap-7">
+            {navigation.map((item) => (
+              <li key={item.href}>
+                <Link
+                  href={item.href}
+                  className="relative text-[0.72rem] uppercase tracking-[0.16em] text-anthracite no-underline transition-colors after:absolute after:-bottom-1 after:left-0 after:h-px after:w-0 after:bg-gold after:transition-all after:duration-300 hover:text-night hover:after:w-full"
+                >
+                  {item.label}
+                </Link>
+              </li>
+            ))}
+            <li>
+              <Link
+                href="/contact"
+                className="inline-block whitespace-nowrap border border-night bg-night px-5 py-2.5 text-[0.72rem] uppercase tracking-[0.12em] text-ivory no-underline transition-all duration-300 hover:bg-transparent hover:text-night"
+              >
+                Prendre rendez-vous
+              </Link>
+            </li>
+          </ul>
+        </nav>
+
+        {/* Bouton hamburger mobile */}
+        <button
+          type="button"
+          className="relative z-50 flex h-10 w-10 flex-col items-center justify-center gap-[5px] lg:hidden"
+          aria-expanded={ouvert}
+          aria-controls="menu-mobile"
+          aria-label={ouvert ? "Fermer le menu" : "Ouvrir le menu"}
+          onClick={() => setOuvert(!ouvert)}
+        >
+          <span
+            className={`block h-px w-5 bg-night transition-all duration-300 ${
+              ouvert ? "translate-y-[6px] rotate-45" : ""
+            }`}
+          />
+          <span
+            className={`block h-px w-5 bg-night transition-all duration-300 ${
+              ouvert ? "opacity-0" : ""
+            }`}
+          />
+          <span
+            className={`block h-px w-5 bg-night transition-all duration-300 ${
+              ouvert ? "-translate-y-[6px] -rotate-45" : ""
+            }`}
+          />
+        </button>
+      </div>
+
+      {/* ── Menu mobile plein écran ── */}
+      <nav
+        id="menu-mobile"
+        aria-label="Navigation principale"
+        className={`fixed inset-0 z-40 flex flex-col bg-ivory transition-all duration-500 lg:hidden ${
+          ouvert
+            ? "visible opacity-100"
+            : "invisible opacity-0"
+        }`}
+        style={{ paddingTop: "6rem" }}
+      >
+        <div className="flex flex-1 flex-col items-center justify-center gap-1 px-6">
+          <ul className="flex flex-col items-center gap-6">
+            {navigationMobile.map((item, i) => (
+              <li
+                key={item.href}
+                className={`transition-all duration-500 ${
+                  ouvert
+                    ? "translate-y-0 opacity-100"
+                    : "translate-y-4 opacity-0"
+                }`}
+                style={{
+                  transitionDelay: ouvert ? `${100 + i * 60}ms` : "0ms",
+                }}
+              >
+                <Link
+                  href={item.href}
+                  className="font-serif text-2xl text-night no-underline transition-colors hover:text-gold-ink sm:text-3xl"
+                  onClick={fermer}
+                >
+                  {item.label}
+                </Link>
+              </li>
+            ))}
+            <li
+              className={`mt-4 transition-all duration-500 ${
+                ouvert
+                  ? "translate-y-0 opacity-100"
+                  : "translate-y-4 opacity-0"
+              }`}
+              style={{
+                transitionDelay: ouvert
+                  ? `${100 + navigationMobile.length * 60}ms`
+                  : "0ms",
+              }}
+            >
+              <a
+                href={etude.liens.dataRoom}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="text-sm uppercase tracking-[0.12em] text-gold-ink no-underline transition-colors hover:text-night"
+                onClick={fermer}
+              >
+                Accès Data Room
+                <span className="sr-only"> (nouvelle fenêtre)</span>
+              </a>
+            </li>
+          </ul>
+        </div>
+        <div className="border-t border-line px-6 py-6 text-center text-[0.75rem] text-slate-soft">
+          <a
+            href={`tel:${etude.telephoneE164}`}
+            className="no-underline hover:text-night"
+          >
+            {etude.telephone}
+          </a>
+          <span className="mx-3">·</span>
+          <span>
+            {adresseCourte}, {etude.adresse.codePostal} {etude.adresse.ville}
+          </span>
+        </div>
       </nav>
+
+      {/* Filet doré subtil en bas du header */}
+      <div className="h-px bg-gradient-to-r from-transparent via-gold/30 to-transparent" />
     </header>
   );
 }
