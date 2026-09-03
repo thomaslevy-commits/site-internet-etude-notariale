@@ -239,6 +239,35 @@ préalable ; `access-map.tsx`, `cookies.mdx` et
 `politique-de-confidentialite.mdx` sont alignés sur ce choix. Les assertions
 Lighthouse passent en `warn`.
 
+**Refonte de l'accueil du 3 septembre 2026** (décision du notaire, même
+jour). Deux références ont été données et transposées sans rien en copier :
+la composition d'un site de banque privée (héros plein écran à texte centré,
+repères chiffrés en grande serif, renvois en petites capitales espacées —
+composant `LienCapitale`, repris dans la navigation de l'en-tête) et deux
+structures d'un site d'étude notariale de place — les pôles d'expertise
+présentés comme grandes entrées éditoriales avant la grille, et un bloc
+« Vos démarches à distance » (espace documentaire, tarif, copie d'acte).
+L'entrée « Paiement en ligne » de ce bloc n'existe que si
+`NEXT_PUBLIC_PAIEMENT_URL` est renseignée : interrupteur du §12, tant que
+l'arbitrage n° 3 n'est pas rendu. Le fond éditorial (phrases, engagements,
+méthode) n'a pas été réécrit.
+
+Le héros est vidéo : deux plans de huit secondes produits par génération
+(Higgsfield, modèle Veo 3.1, 2 × 58 crédits), un travelling aérien
+au-dessus des toits haussmanniens de l'ouest parisien et un lent travelling
+dans des salons haussmanniens, lus en boucle avec fondu enchaîné
+(`hero-video.tsx`). Fichiers recompressés en H.264 1280 px sans piste audio
+(`public/videos/`, 3,7 Mo et 1,2 Mo) ; les masters bruts (35 Mo et 10 Mo)
+sont conservés hors dépôt dans `Desktop\SCP\Site internet\videos-higgsfield`.
+**Ce sont des images d'illustration** : elles ne montrent ni les locaux
+réels ni aucune personne, et le composant l'écrit à l'écran (« Séquences
+d'illustration ») pour ne pas laisser croire à une photographie des lieux
+(§3). Retirer cette mention est une décision du notaire. La vidéo n'est pas
+chargée sous 768 px, sous `prefers-reduced-motion` ni en mode économie de
+données : la photographie de la salle de réunion, rendue en priorité, reste
+alors seule. Aucun tiers n'intervient — rien à déclarer dans les pages
+légales.
+
 **Reste à appliquer à la main sur `.github/workflows/ci.yml`** — les fichiers
 de workflow ne peuvent pas être écrits par une intégration : poser
 `CONTENU_STRICT: "1"` en variable d'environnement du pipeline, étendre le

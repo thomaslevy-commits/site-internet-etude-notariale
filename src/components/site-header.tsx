@@ -79,9 +79,12 @@ export function SiteHeader() {
             <ul className="flex items-center gap-5">
               {navigation.map((item) => (
                 <li key={item.href}>
+                  {/* Petites capitales espacées : écriture de navigation des
+                      sites de gestion privée, retenue pour la refonte du
+                      3 septembre 2026 (même registre que LienCapitale). */}
                   <Link
                     href={item.href}
-                    className="text-sm text-anthracite decoration-gold underline-offset-4 transition-colors hover:text-night hover:underline"
+                    className="text-[0.72rem] uppercase tracking-[0.16em] text-anthracite decoration-gold underline-offset-[6px] transition-colors hover:text-night hover:underline"
                   >
                     {item.label}
                   </Link>

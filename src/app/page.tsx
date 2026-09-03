@@ -2,7 +2,9 @@ import type { Metadata } from "next";
 import Image from "next/image";
 import Link from "next/link";
 import { CtaRendezVous } from "@/components/cta-rdv";
+import { HeroVideo } from "@/components/hero-video";
 import { JsonLd, schemaNotary } from "@/components/json-ld";
+import { LienCapitale } from "@/components/lien-capitale";
 import { etude } from "@/config/etude";
 import { cheminPublic } from "@/lib/chemins";
 import {
@@ -10,6 +12,7 @@ import {
   EXPERTISE_SLUGS,
   loadAllArticles,
   loadExpertise,
+  type Categorie,
   type ExpertiseSlug,
 } from "@/lib/content";
 
@@ -20,9 +23,59 @@ export const metadata: Metadata = {
 };
 
 /**
- * Sélection de 8 expertises pour la grille d'accueil (§8). Tuple figé : il
- * sert de clé au type de ACCROCHES_ACCUEIL, ce qui rend une accroche
- * manquante détectable à la compilation plutôt qu'à l'affichage.
+ * Refonte du 3 septembre 2026 — décision du notaire, après la levée des
+ * gabarits imposés. Deux références ont été données, et sont transposées
+ * ici sans rien en copier :
+ *  - l'écriture d'un site de banque privée pour la composition : héros
+ *    plein écran à texte centré, repères chiffrés en grande serif, renvois
+ *    en petites capitales espacées (LienCapitale), sections aérées ;
+ *  - la structure d'un site d'étude notariale de place pour deux blocs qui
+ *    manquaient au nôtre : les pôles d'expertise présentés comme de grandes
+ *    entrées éditoriales avant la grille, et un bloc « démarches à
+ *    distance » qui rassemble les services accessibles sans rendez-vous.
+ * Le fond éditorial — les phrases, les engagements, la méthode — est
+ * inchangé : validé, il ne se réécrit pas au gré d'une refonte visuelle.
+ */
+
+/**
+ * Pôles d'expertise : les quatre familles de /expertises et du blog, avec
+ * trois portes d'entrée chacune. Une ligne descriptive dit ce que l'étude
+ * fait, jamais ce qu'elle vaut (§3).
+ */
+const POLES: readonly {
+  categorie: Categorie;
+  texte: string;
+  slugs: readonly [ExpertiseSlug, ExpertiseSlug, ExpertiseSlug];
+}[] = [
+  {
+    categorie: "immobilier",
+    texte:
+      "Acquisitions et ventes, VEFA, promotion, marchands de biens, fiscalité immobilière : du logement à l'opération d'ensemble.",
+    slugs: ["immobilier-residentiel", "vefa", "promotion-immobiliere"],
+  },
+  {
+    categorie: "patrimoine-famille",
+    texte:
+      "Successions, donations, partages, séparations et structuration patrimoniale, pensés dans la durée d'une famille.",
+    slugs: ["successions", "donations", "structuration-patrimoniale"],
+  },
+  {
+    categorie: "entreprise",
+    texte:
+      "Transmission d'entreprise, baux commerciaux, sociétés civiles : l'immobilier et le patrimoine du dirigeant, en coordination avec ses conseils.",
+    slugs: ["transmission-entreprise", "baux-commerciaux", "sci"],
+  },
+  {
+    categorie: "international",
+    texte: `Successions transfrontalières, non-résidents, expatriés, investisseurs étrangers et family offices — en ${etude.langues.join(", ")}.`,
+    slugs: ["successions-internationales", "investisseurs-etrangers", "family-office"],
+  },
+];
+
+/**
+ * Sélection de 8 expertises pour la grille. Tuple figé : il sert de clé au
+ * type de ACCROCHES_ACCUEIL, ce qui rend une accroche manquante détectable
+ * à la compilation plutôt qu'à l'affichage.
  */
 const EXPERTISES_ACCUEIL = [
   "immobilier-residentiel",
@@ -107,14 +160,72 @@ const ENGAGEMENTS: readonly {
   },
 ];
 
+/**
+ * Paiement en ligne — interrupteur du §12. Tant qu'aucun prestataire n'est
+ * retenu et qu'aucun circuit d'encaissement n'est validé par le comptable
+ * taxateur (arbitrage n° 3 du §13), la variable reste vide et l'entrée
+ * n'existe pas. Le périmètre est fixé par le §13 : sommes dues à l'étude
+ * au titre de sa rémunération et de ses remboursements, rien d'autre.
+ */
+const PAIEMENT_URL = process.env.NEXT_PUBLIC_PAIEMENT_URL;
+
+/**
+ * Démarches accessibles sans rendez-vous. Structure reprise d'un site
+ * d'étude de place (« gérez vos démarches à distance ») ; les textes
+ * décrivent un service, jamais une promesse. La copie d'acte passe par le
+ * formulaire de contact : aucun envoi de pièce ne transite par le site.
+ */
+const DEMARCHES: readonly {
+  titre: string;
+  texte: string;
+  action: string;
+  href: string;
+  externe?: boolean;
+}[] = [
+  {
+    titre: "Espace documentaire sécurisé",
+    texte:
+      "Le dépôt et l'échange de pièces avec l'étude passent par l'espace sécurisé d'un prestataire externe, jamais par ce site.",
+    action: "Accéder à l'espace documentaire",
+    href: etude.liens.dataRoom,
+    externe: true,
+  },
+  {
+    titre: "Tarif",
+    texte:
+      "Émoluments réglementés, débours, droits et taxes, honoraires libres : de quoi se compose le coût d'une opération.",
+    action: "Consulter le tarif",
+    href: "/tarif",
+  },
+  {
+    titre: "Copie d'acte",
+    texte:
+      "La demande de copie d'un acte reçu par l'étude se fait par le formulaire de contact, en indiquant l'acte concerné.",
+    action: "Faire une demande",
+    href: "/contact",
+  },
+  ...(PAIEMENT_URL
+    ? [
+        {
+          titre: "Paiement en ligne",
+          texte:
+            "Règlement des sommes dues à l'étude au titre de ses émoluments, honoraires et débours.",
+          action: "Procéder au paiement",
+          href: PAIEMENT_URL,
+          externe: true,
+        },
+      ]
+    : []),
+];
+
 /** Adresse sans la mention d'étage, pour la légende du portrait (§7). */
 const ADRESSE_COURTE = etude.adresse.ligne1.split(" — ")[0];
 
 /**
- * Repères — la preuve arrive tôt, juste après la présentation du notaire.
- * Transposition d'une mécanique observée sur les sites de banque d'affaires
- * et d'étude : le visiteur obtient une réponse à « pourquoi est-ce crédible »
- * avant d'entrer dans le catalogue des expertises.
+ * Repères — la preuve arrive tôt, juste après le héros. Transposition d'une
+ * mécanique observée sur les sites de banque d'affaires et d'étude : le
+ * visiteur obtient une réponse à « pourquoi est-ce crédible » avant
+ * d'entrer dans le catalogue des expertises.
  *
  * Aucun chiffre n'est produit pour l'occasion. Les quatre reprennent des
  * faits déjà publiés ou dérivés du code :
@@ -138,7 +249,33 @@ const REPERES: readonly { valeur: string; libelle: string }[] = [
   { valeur: "Paris 16ᵉ", libelle: "Implantation" },
 ];
 
+/** Filet doré et intitulé de section, en petites capitales espacées. */
+function Intitule({
+  children,
+  surFondSombre = false,
+}: {
+  children: string;
+  surFondSombre?: boolean;
+}) {
+  return (
+    <p
+      className={`text-[0.72rem] uppercase tracking-[0.28em] ${
+        surFondSombre ? "text-gold" : "text-gold-ink"
+      }`}
+    >
+      {children}
+    </p>
+  );
+}
+
 export default function Accueil() {
+  const poles = POLES.map((pole) => ({
+    ...pole,
+    expertises: pole.slugs.map((slug) => ({
+      slug,
+      titre: loadExpertise(slug).frontmatter.title,
+    })),
+  }));
   const expertises = EXPERTISES_ACCUEIL.map((slug) => ({
     slug,
     frontmatter: loadExpertise(slug).frontmatter,
@@ -148,56 +285,46 @@ export default function Accueil() {
   return (
     <main>
       <JsonLd data={schemaNotary()} />
-      {/* Héros photographique — décision du notaire du 3 septembre 2026,
-          direction C de la planche de maquettes. La page d'accueil reprend
-          l'écriture qui ouvre déjà /etude : photographie pleine largeur,
-          voile night en dégradé, texte en bas à gauche. Les deux pages
-          partagent une même grammaire au lieu d'ouvrir chacune à sa façon.
 
-          L'emblème animé quitte donc l'accueil. Le composant, son module CSS
-          et ses deux PNG restent au dépôt : sa destination n'est pas
-          tranchée (repli sur /etude, sur le pied de page, ou retrait).
-
-          Le dégradé est écrit en dur, comme dans etude-section.tsx : deux
-          couches de night, l'une du bas vers le haut pour asseoir les
-          boutons, l'autre de la gauche vers la droite pour que le titre
-          reste lisible quelle que soit la zone de l'image. À extraire en
-          composant partagé si un troisième gabarit l'emploie. */}
-      <section className="relative flex min-h-[70vh] items-end overflow-hidden bg-night">
-        <Image
-          src={cheminPublic("/images/salle-etude.jpg")}
-          alt="Salle de réunion de l'étude notariale Thomas Lévy, Paris 16ᵉ"
-          fill
-          priority
-          sizes="100vw"
-          className="object-cover object-center"
-        />
+      {/* Héros plein écran, texte centré. La photographie de la salle de
+          réunion est rendue d'abord ; les deux séquences vidéo s'y fondent
+          ensuite (voir hero-video.tsx pour ce qu'elles sont et quand elles
+          ne sont pas chargées). Le voile night est plus dense qu'avant :
+          le texte est centré sur l'image et non plus calé dans un angle
+          sombre, il doit rester lisible sur n'importe quel plan. */}
+      <section className="relative flex min-h-[92vh] items-center overflow-hidden bg-night">
+        <HeroVideo />
         <div
           aria-hidden
           className="absolute inset-0"
           style={{
             background:
-              "linear-gradient(to top, rgba(16,28,44,0.88) 0%, rgba(16,28,44,0.66) 24%, rgba(16,28,44,0.26) 52%, rgba(16,28,44,0) 76%), linear-gradient(to right, rgba(16,28,44,0.74) 0%, rgba(16,28,44,0.32) 46%, rgba(16,28,44,0) 80%)",
+              "linear-gradient(to bottom, rgba(16,28,44,0.55) 0%, rgba(16,28,44,0.42) 45%, rgba(16,28,44,0.78) 100%)",
           }}
         />
-        <div className="relative mx-auto w-full max-w-grid px-6 pb-16 pt-28 lg:pb-20 lg:pt-32">
-          <p className="text-xs uppercase tracking-[0.3em] text-gold">
+        <div className="relative mx-auto flex w-full max-w-grid flex-col items-center px-6 pb-24 pt-32 text-center">
+          {/* Ivoire et non or : centré sur l'image, le surtitre passe sur le
+              ciel clair du plan aérien, où l'or ne tient pas le contraste. */}
+          <p className="text-[0.72rem] uppercase tracking-[0.32em] text-ivory/90">
             Étude notariale — Paris 16ᵉ
           </p>
-          <div aria-hidden="true" className="mt-6 h-px w-16 bg-gold" />
-          <h1 className="mt-8 max-w-2xl text-balance font-serif text-4xl font-medium leading-tight tracking-tight text-ivory sm:text-5xl lg:text-6xl">
+          <div aria-hidden="true" className="mt-7 h-px w-12 bg-gold" />
+          <h1
+            className="mt-9 max-w-4xl text-balance font-serif font-normal leading-[1.08] tracking-tight text-ivory"
+            style={{ fontSize: "clamp(2.4rem, 5.4vw, 4.6rem)" }}
+          >
             Le conseil notarial pour les opérations immobilières et
             patrimoniales complexes
           </h1>
-          <p className="mt-8 max-w-xl text-lg leading-relaxed text-ivory/80">
+          <p className="mt-8 max-w-xl text-lg leading-relaxed text-ivory/85">
             À Paris et à l&apos;international, l&apos;étude accompagne
             particuliers, investisseurs, entreprises et family offices.
           </p>
-          <div className="mt-10 flex flex-wrap items-center gap-4">
+          <div className="mt-11 flex flex-wrap items-center justify-center gap-4">
             <CtaRendezVous surFondSombre />
             <Link
               href="/expertises"
-              className="inline-block rounded-sm border border-ivory px-6 py-3 text-sm text-ivory transition-colors hover:bg-ivory hover:text-night"
+              className="inline-block rounded-sm border border-ivory/80 px-6 py-3 text-sm text-ivory transition-colors hover:bg-ivory hover:text-night"
             >
               Nos expertises
             </Link>
@@ -205,16 +332,42 @@ export default function Accueil() {
         </div>
       </section>
 
-      {/* Présentation du notaire : visage, nom et vision du métier à la
-          première personne — un officier public identifié plutôt qu'anonyme. */}
+      {/* Repères — bande sombre, valeurs en grande serif, libellés en
+          capitales dorées : les chiffres se lisent de loin, comme sur les
+          sites de gestion privée dont la composition s'inspire. */}
+      <section className="bg-night text-ivory">
+        <div className="mx-auto w-full max-w-grid px-6 py-16 lg:py-20">
+          <dl className="grid gap-10 sm:grid-cols-2 lg:grid-cols-4 lg:gap-6">
+            {REPERES.map((repere) => (
+              <div
+                key={repere.libelle}
+                className="border-l border-gold/40 pl-6"
+              >
+                <dd className="font-serif text-5xl font-normal leading-none tracking-tight text-ivory lg:text-6xl">
+                  {repere.valeur}
+                </dd>
+                <dt className="mt-4 text-[0.72rem] uppercase tracking-[0.24em] text-gold">
+                  {repere.libelle}
+                </dt>
+              </div>
+            ))}
+          </dl>
+        </div>
+      </section>
+
+      {/* Le notaire : visage, nom et vision du métier à la première
+          personne — un officier public identifié plutôt qu'anonyme. */}
       <section className="bg-ivory">
-        <div className="mx-auto grid w-full max-w-grid gap-12 px-6 py-24 lg:grid-cols-[3fr,2fr]">
+        <div className="mx-auto grid w-full max-w-grid gap-14 px-6 py-24 lg:grid-cols-[3fr,2fr] lg:py-32">
           <div className="flex flex-col justify-center">
-            <div aria-hidden="true" className="mb-5 h-px w-10 bg-gold" />
-            <h2 className="font-serif text-3xl font-medium tracking-tight text-night">
+            <Intitule>Nous connaître</Intitule>
+            <h2
+              className="mt-6 font-serif font-normal leading-[1.12] tracking-tight text-night"
+              style={{ fontSize: "clamp(2rem, 3.4vw, 3rem)" }}
+            >
               {etude.denominationComplete}
             </h2>
-            <div className="mt-8 space-y-4 text-slate-soft">
+            <div className="mt-8 max-w-prose space-y-5 text-[1.05rem] leading-relaxed text-anthracite">
               <p>
                 Je considère que le rôle du notaire ne se réduit pas à rédiger
                 des actes. Il consiste à comprendre une opération, à en
@@ -233,8 +386,9 @@ export default function Accueil() {
                 de coût.
               </p>
             </div>
-            <div className="mt-8">
+            <div className="mt-10 flex flex-wrap items-center gap-8">
               <CtaRendezVous />
+              <LienCapitale href="/etude">En savoir plus sur l&rsquo;étude</LienCapitale>
             </div>
           </div>
           <div className="flex flex-col items-center lg:items-end">
@@ -254,39 +408,68 @@ export default function Accueil() {
         </div>
       </section>
 
-      {/* Repères — bande de faits, encadrée de deux filets, sans carte ni
-          ombre : c'est une ligne de lecture, pas un objet de plus. Les
-          valeurs sont en serif, à la taille des titres de section, pour
-          qu'elles se lisent d'un regard ; le libellé reste discret. */}
-      <section className="bg-ivory">
-        <div className="mx-auto w-full max-w-grid px-6">
-          <dl className="grid gap-px border-y border-line bg-line sm:grid-cols-2 lg:grid-cols-4">
-            {REPERES.map((repere) => (
-              <div key={repere.libelle} className="bg-ivory px-6 py-10">
-                <dt className="text-sm text-slate-soft">{repere.libelle}</dt>
-                <dd className="mt-2 font-serif text-3xl font-medium tracking-tight text-night">
-                  {repere.valeur}
-                </dd>
-              </div>
+      {/* Pôles — quatre grandes entrées éditoriales avant la grille : le
+          visiteur se situe d'abord dans une famille, puis dans une
+          expertise. Le titre de chaque pôle est un lien vers l'index, les
+          trois expertises en dessous ouvrent directement leur page. */}
+      <section className="bg-paper">
+        <div className="mx-auto w-full max-w-grid px-6 py-24 lg:py-32">
+          <Intitule>Notre pratique</Intitule>
+          <h2
+            className="mt-6 max-w-3xl font-serif font-normal leading-[1.12] tracking-tight text-night"
+            style={{ fontSize: "clamp(2rem, 3.4vw, 3rem)" }}
+          >
+            Quatre pôles, une même exigence de conseil
+          </h2>
+          <ul className="mt-14 grid gap-px border-t border-line md:grid-cols-2 lg:grid-cols-4 lg:border-t-0">
+            {poles.map((pole) => (
+              <li
+                key={pole.categorie}
+                className="border-b border-line py-10 lg:border-b-0 lg:border-t lg:pr-8"
+              >
+                <h3 className="font-serif text-2xl text-night">
+                  <Link
+                    href="/expertises"
+                    className="no-underline hover:text-anthracite"
+                  >
+                    {CATEGORIE_LABELS[pole.categorie]}
+                  </Link>
+                </h3>
+                <p className="mt-4 text-sm leading-relaxed text-slate-soft">
+                  {pole.texte}
+                </p>
+                <ul className="mt-6 space-y-2">
+                  {pole.expertises.map((expertise) => (
+                    <li key={expertise.slug}>
+                      <Link
+                        href={`/expertises/${expertise.slug}`}
+                        className="text-sm text-night decoration-gold underline-offset-4 hover:underline"
+                      >
+                        {expertise.titre}
+                      </Link>
+                    </li>
+                  ))}
+                </ul>
+              </li>
             ))}
-          </dl>
+          </ul>
+          <div className="mt-12">
+            <LienCapitale href="/expertises">Toutes nos expertises</LienCapitale>
+          </div>
         </div>
       </section>
 
-      {/* Grille des expertises (§8) — chaque entrée porte une accroche
+      {/* Grille de huit expertises — chaque entrée porte une accroche
           descriptive : une liste de titres nus ne dit rien de la pratique. */}
-      <section className="bg-paper">
+      <section className="bg-ivory">
         <div className="mx-auto w-full max-w-grid px-6 py-24">
-          <div aria-hidden="true" className="mb-5 h-px w-10 bg-gold" />
-          <h2 className="font-serif text-3xl font-medium tracking-tight text-night">
-            Domaines d&apos;intervention
-          </h2>
+          <Intitule>Domaines d&rsquo;intervention</Intitule>
           <ul className="mt-10 grid gap-px border border-line bg-line sm:grid-cols-2 lg:grid-cols-4">
             {expertises.map(({ slug, frontmatter }) => (
-              <li key={slug} className="bg-paper">
+              <li key={slug} className="bg-ivory">
                 <Link
                   href={`/expertises/${slug}`}
-                  className="block h-full px-6 py-8 transition-colors hover:bg-ivory"
+                  className="block h-full px-6 py-8 no-underline transition-colors hover:bg-paper"
                 >
                   <span className="block font-serif text-lg text-night">
                     {frontmatter.title}
@@ -298,71 +481,100 @@ export default function Accueil() {
               </li>
             ))}
           </ul>
-          <p className="mt-8 flex flex-wrap items-center gap-6">
-            <Link
-              href="/expertises"
-              className="text-sm text-night decoration-gold underline underline-offset-4 hover:text-anthracite"
-            >
-              Toutes nos expertises
-            </Link>
-            <Link
-              href="/tarif"
-              className="text-sm text-night decoration-gold underline underline-offset-4 hover:text-anthracite"
-            >
-              Comprendre le tarif
-            </Link>
-          </p>
         </div>
       </section>
 
-      {/* Méthode en trois temps (§8) — numéros décoratifs, taille large (AA).
-          Le chapeau désamorce l'inconnu : le premier rendez-vous n'engage à rien. */}
-      <section className="mx-auto w-full max-w-grid px-6 py-24">
-        <div aria-hidden="true" className="mb-5 h-px w-10 bg-gold" />
-        <h2 className="font-serif text-3xl font-medium tracking-tight text-night">
-          Notre méthode
-        </h2>
-        <p className="mt-4 max-w-2xl text-slate-soft">
-          Le premier rendez-vous permet de poser le cadre : vos objectifs, les
-          contraintes de l&apos;opération, le calendrier souhaité. Il
-          n&apos;engage à rien. La suite du dossier suit trois temps.
-        </p>
-        <ol className="mt-10 grid gap-10 md:grid-cols-3">
-          {METHODE.map((etape, index) => (
-            <li key={etape.titre}>
-              <span
-                aria-hidden="true"
-                className="font-serif text-2xl leading-none text-gold"
+      {/* Méthode — « de l'analyse à la signature » : l'étude est présente à
+          chaque étape, ce qu'un site d'étude de place dit en une phrase et
+          que nos trois temps détaillent. Le chapeau désamorce l'inconnu :
+          le premier rendez-vous n'engage à rien. */}
+      <section className="bg-night text-ivory">
+        <div className="mx-auto w-full max-w-grid px-6 py-24 lg:py-32">
+          <Intitule surFondSombre>Notre méthode</Intitule>
+          <h2
+            className="mt-6 max-w-3xl font-serif font-normal leading-[1.12] tracking-tight text-ivory"
+            style={{ fontSize: "clamp(2rem, 3.4vw, 3rem)" }}
+          >
+            De l&rsquo;analyse à la signature
+          </h2>
+          <p className="mt-6 max-w-2xl text-ivory/80">
+            Le premier rendez-vous permet de poser le cadre : vos objectifs, les
+            contraintes de l&apos;opération, le calendrier souhaité. Il
+            n&apos;engage à rien. La suite du dossier suit trois temps, et
+            l&apos;étude est présente à chacun d&apos;eux, jusqu&apos;aux
+            formalités qui suivent la signature.
+          </p>
+          <ol className="mt-14 grid gap-12 md:grid-cols-3">
+            {METHODE.map((etape, index) => (
+              <li key={etape.titre} className="border-t border-gold/40 pt-6">
+                <span
+                  aria-hidden="true"
+                  className="font-serif text-3xl leading-none text-gold"
+                >
+                  {`0${index + 1}`}
+                </span>
+                <h3 className="mt-4 font-serif text-2xl text-ivory">
+                  {etape.titre}
+                </h3>
+                <p className="mt-3 text-sm leading-relaxed text-ivory/75">
+                  {etape.texte}
+                </p>
+              </li>
+            ))}
+          </ol>
+        </div>
+      </section>
+
+      {/* Démarches à distance — ce qui se fait sans rendez-vous. */}
+      <section className="bg-paper">
+        <div className="mx-auto w-full max-w-grid px-6 py-24 lg:py-32">
+          <Intitule>Services en ligne</Intitule>
+          <h2
+            className="mt-6 max-w-3xl font-serif font-normal leading-[1.12] tracking-tight text-night"
+            style={{ fontSize: "clamp(2rem, 3.4vw, 3rem)" }}
+          >
+            Vos démarches à distance
+          </h2>
+          <ul className="mt-14 grid gap-px border border-line bg-line md:grid-cols-3">
+            {DEMARCHES.map((demarche) => (
+              <li
+                key={demarche.titre}
+                className="flex flex-col bg-paper px-8 py-10"
               >
-                {`0${index + 1}`}
-              </span>
-              <h3 className="mt-2 font-serif text-xl text-night">{etape.titre}</h3>
-              <p className="mt-3 text-sm text-slate-soft">{etape.texte}</p>
-            </li>
-          ))}
-        </ol>
+                <h3 className="font-serif text-2xl text-night">
+                  {demarche.titre}
+                </h3>
+                <p className="mt-4 flex-1 text-sm leading-relaxed text-slate-soft">
+                  {demarche.texte}
+                </p>
+                <div className="mt-8">
+                  <LienCapitale href={demarche.href} externe={demarche.externe}>
+                    {demarche.action}
+                  </LienCapitale>
+                </div>
+              </li>
+            ))}
+          </ul>
+        </div>
       </section>
 
       {/* Engagements — quatre énoncés au présent descriptif. */}
-      <section className="bg-paper">
-        <div className="mx-auto w-full max-w-grid px-6 py-24">
-          <div aria-hidden="true" className="mb-5 h-px w-10 bg-gold" />
-          <h2 className="font-serif text-3xl font-medium tracking-tight text-night">
-            Nos engagements
-          </h2>
-          <div className="mt-10 grid gap-10 sm:grid-cols-2 lg:grid-cols-4">
+      <section className="bg-ivory">
+        <div className="mx-auto w-full max-w-grid px-6 py-24 lg:py-32">
+          <Intitule>Nos engagements</Intitule>
+          <div className="mt-12 grid gap-12 sm:grid-cols-2 lg:grid-cols-4">
             {ENGAGEMENTS.map((engagement) => (
-              <div key={engagement.titre}>
-                <h3 className="font-serif text-xl text-night">
+              <div key={engagement.titre} className="border-t border-line pt-6">
+                <h3 className="font-serif text-2xl text-night">
                   {engagement.titre}
                 </h3>
-                <p className="mt-3 text-sm text-slate-soft">
+                <p className="mt-3 text-sm leading-relaxed text-slate-soft">
                   {engagement.texte}
                 </p>
                 {engagement.lien ? (
                   <Link
                     href={engagement.lien.href}
-                    className="mt-3 inline-block text-sm text-night decoration-gold underline underline-offset-4 hover:text-anthracite"
+                    className="mt-4 inline-block text-sm text-night decoration-gold underline underline-offset-4 hover:text-anthracite"
                   >
                     {engagement.lien.label}
                   </Link>
@@ -373,67 +585,77 @@ export default function Accueil() {
         </div>
       </section>
 
-      {/* Bandeau international (§8). */}
-      <section className="bg-night">
-        <div className="mx-auto w-full max-w-grid px-6 py-16">
-          <div aria-hidden="true" className="mb-5 h-px w-10 bg-gold" />
-          <h2 className="font-serif text-2xl font-medium tracking-tight text-ivory">
-            Une pratique internationale
-          </h2>
-          <p className="mt-4 max-w-2xl text-sm text-ivory/80">
-            Successions comportant des éléments d&apos;extranéité, acquisitions
-            par des non-résidents, expatriation et retour en France :
-            l&apos;étude traite les dossiers internationaux en coordination avec
-            des correspondants étrangers lorsque la situation l&apos;exige.
-          </p>
-          <p className="mt-4 text-sm text-ivory/70">
-            Langues : {etude.langues.join(", ")}
-          </p>
+      {/* Bandeau international. */}
+      <section className="border-y border-line bg-paper">
+        <div className="mx-auto grid w-full max-w-grid gap-8 px-6 py-16 lg:grid-cols-[2fr,3fr] lg:items-center">
+          <div>
+            <Intitule>International</Intitule>
+            <h2 className="mt-4 font-serif text-3xl font-normal tracking-tight text-night">
+              Une pratique internationale
+            </h2>
+          </div>
+          <div>
+            <p className="text-anthracite">
+              Successions comportant des éléments d&apos;extranéité,
+              acquisitions par des non-résidents, expatriation et retour en
+              France : l&apos;étude traite les dossiers internationaux en
+              coordination avec des correspondants étrangers lorsque la
+              situation l&apos;exige.
+            </p>
+            <p className="mt-4 text-sm text-slate-soft">
+              Langues de travail : {etude.langues.join(", ")}.
+            </p>
+          </div>
         </div>
       </section>
 
-      {/* Derniers articles (§8). */}
-      <section className="mx-auto w-full max-w-grid px-6 py-24">
-        <div aria-hidden="true" className="mb-5 h-px w-10 bg-gold" />
-        <h2 className="font-serif text-3xl font-medium tracking-tight text-night">
-          Actualités
-        </h2>
-        {derniersArticles.length > 0 ? (
-          <ul className="mt-10 grid gap-8 md:grid-cols-3">
-            {derniersArticles.map(({ frontmatter }) => (
-              <li key={`${frontmatter.categorie}/${frontmatter.slug}`}>
-                <p className="text-sm uppercase tracking-wide text-slate-soft">
-                  {CATEGORIE_LABELS[frontmatter.categorie]}
-                </p>
-                <h3 className="mt-2 font-serif text-xl text-night">
-                  <Link
-                    href={`/blog/${frontmatter.categorie}/${frontmatter.slug}`}
-                    className="decoration-gold underline-offset-4 hover:underline"
-                  >
-                    {frontmatter.title}
-                  </Link>
-                </h3>
-                <p className="mt-2 text-sm text-slate-soft">
-                  <time dateTime={frontmatter.date}>{frontmatter.date}</time>
-                </p>
-              </li>
-            ))}
-          </ul>
-        ) : (
-          <p className="mt-6 text-sm text-slate-soft">
-            Les articles du blog seront publiés prochainement.
-          </p>
-        )}
+      {/* Derniers articles. */}
+      <section className="bg-ivory">
+        <div className="mx-auto w-full max-w-grid px-6 py-24">
+          <Intitule>Actualités et publications</Intitule>
+          {derniersArticles.length > 0 ? (
+            <ul className="mt-10 grid gap-10 md:grid-cols-3">
+              {derniersArticles.map(({ frontmatter }) => (
+                <li
+                  key={`${frontmatter.categorie}/${frontmatter.slug}`}
+                  className="border-t border-line pt-6"
+                >
+                  <p className="text-[0.72rem] uppercase tracking-[0.2em] text-slate-soft">
+                    {CATEGORIE_LABELS[frontmatter.categorie]}
+                  </p>
+                  <h3 className="mt-3 font-serif text-2xl text-night">
+                    <Link
+                      href={`/blog/${frontmatter.categorie}/${frontmatter.slug}`}
+                      className="no-underline decoration-gold underline-offset-4 hover:underline"
+                    >
+                      {frontmatter.title}
+                    </Link>
+                  </h3>
+                  <p className="mt-2 text-sm text-slate-soft">
+                    <time dateTime={frontmatter.date}>{frontmatter.date}</time>
+                  </p>
+                </li>
+              ))}
+            </ul>
+          ) : (
+            <p className="mt-6 text-sm text-slate-soft">
+              Les articles du blog seront publiés prochainement.
+            </p>
+          )}
+          <div className="mt-12">
+            <LienCapitale href="/blog">Toutes les publications</LienCapitale>
+          </div>
+        </div>
       </section>
 
-      {/* Bloc contact (§8) — téléphone appelable en grand pour le mobile,
+      {/* Bloc contact — téléphone appelable en grand pour le mobile,
           adresse électronique, lien statique vers Google Maps, pas d'iframe. */}
       <section className="bg-paper">
-        <div className="mx-auto grid w-full max-w-grid gap-10 px-6 py-24 md:grid-cols-2">
+        <div className="mx-auto grid w-full max-w-grid gap-10 px-6 py-24 md:grid-cols-2 lg:py-32">
           <div>
-            <div aria-hidden="true" className="mb-5 h-px w-10 bg-gold" />
-            <h2 className="font-serif text-3xl font-medium tracking-tight text-night">
-              Contact
+            <Intitule>Contact</Intitule>
+            <h2 className="mt-6 font-serif text-3xl font-normal tracking-tight text-night">
+              Nous rencontrer
             </h2>
             <p className="mt-6 text-sm text-slate-soft">
               {etude.adresse.ligne1}
@@ -443,7 +665,7 @@ export default function Accueil() {
             <p className="mt-3">
               <a
                 href={`tel:${etude.telephoneE164}`}
-                className="font-serif text-2xl text-night no-underline"
+                className="font-serif text-3xl text-night no-underline"
               >
                 {etude.telephone}
               </a>
@@ -468,14 +690,9 @@ export default function Accueil() {
               </a>
             </p>
           </div>
-          <div className="flex flex-col items-start justify-center gap-4">
+          <div className="flex flex-col items-start justify-center gap-6">
             <CtaRendezVous />
-            <Link
-              href="/contact"
-              className="text-sm text-night decoration-gold underline underline-offset-4 hover:text-anthracite"
-            >
-              Accès et formulaire de contact
-            </Link>
+            <LienCapitale href="/contact">Accès et formulaire de contact</LienCapitale>
           </div>
         </div>
       </section>
