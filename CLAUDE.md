@@ -161,10 +161,10 @@ Règles d'URL : minuscules, tirets, sans article, sans date, stables. Toute modi
 - Métadonnées par page via l'API Metadata de Next : `title` ≤ 60 caractères sur le modèle `{Sujet} — Étude notariale {Nom}, Paris {arr.}` ; `description` 140–160 caractères, factuelle, sans superlatif.
 - Un `h1` unique par page ; hiérarchie `h2`/`h3` stricte.
 - Open Graph et Twitter Card complets, image OG dédiée 1200×630.
-- `sitemap.xml` et `robots.txt` générés ; canonicals systématiques. Les pages de rubrique n'entrent au sitemap qu'une fois peuplées.
+- `sitemap.xml` et `robots.txt` générés ; canonicals systématiques. Les pages de rubrique n'entrent au sitemap qu'une fois peuplées. Les pages légales portant encore un marqueur `[À VALIDER — … ]` sont déclarées `noindex, follow` et exclues du sitemap ; l'exclusion est dérivée du contenu (`pageLegaleIncomplete`) et tombe d'elle-même une fois le dernier élément renseigné.
 - Favicon : `src/app/icon.svg` (provisoire, composé sur les seuls tokens du §5 — à remplacer lorsque l'identité sera arrêtée).
 - Données structurées JSON-LD :
-  - `Notary` (sous-type de `LegalService`/`LocalBusiness`) sur l'accueil et le contact : nom, adresse, géolocalisation, horaires, téléphone, `areaServed`, `knowsLanguage`.
+  - `Notary` (sous-type de `LegalService`/`LocalBusiness`) sur l'accueil et le contact : nom, adresse, géolocalisation, horaires, téléphone, `areaServed`, `knowsLanguage`. Le type existe bien au vocabulaire schema.org ; ne pas le remplacer par `ProfessionalService`, qui y est déprécié.
   - `BreadcrumbList` sur toute page profonde.
   - `FAQPage` sur `/faq` et sur les blocs FAQ des pages d'expertise.
   - `Article` + `Person` (auteur) sur les articles de blog.
@@ -180,6 +180,8 @@ Héros (phrase de positionnement sobre, emblème, deux CTA : rendez-vous / exper
 ### Page d'expertise (gabarit unique piloté par le frontmatter)
 Introduction (2–3 paragraphes) → problématiques rencontrées → l'approche de l'étude → déroulement d'un dossier (étapes numérotées) → FAQ (4–8 questions, schema FAQPage) → expertises connexes → CTA rendez-vous → renvoi vers `/tarif`.
 
+Les champs `problematiques`, `approche` et `etapes` sont obligatoires : le gabarit leur substitue sinon la sentinelle bloquante, injectée depuis le code et donc invisible à une garde qui la cherche dans les fichiers. `verifier:contenu` les exige.
+
 ### Tarif
 Distinction pédagogique mais rigoureuse : émoluments réglementés, débours, droits et taxes, honoraires libres (art. L. 444-1 et s. C. com. et arrêtés tarifaires en vigueur — vérifier les références avant publication). Aucune simulation chiffrée en ligne.
 
@@ -187,7 +189,7 @@ Distinction pédagogique mais rigoureuse : émoluments réglementés, débours, 
 Sections à paragraphes, listes et couples terme/valeur, chargées depuis `content/legal/*.mdx` et validées par Zod. Le code ne rédige aucune mention.
 
 ### Contact
-Coordonnées, horaires, accès (source unique `src/config/acces.ts`), formulaire, lien statique vers Google Maps. La carte n'est chargée qu'après accord exprès du visiteur.
+Coordonnées, horaires, accès (source unique `src/config/acces.ts`), formulaire, lien statique vers Google Maps. La carte n'est chargée qu'après accord exprès du visiteur. La liste d'accès du pied de page n'est pas rendue sur cette page : elle y ferait doublon.
 
 ---
 
@@ -199,7 +201,7 @@ Le code peut en revanche générer : les structures, les frontmatters types, les
 
 Deux marqueurs, deux régimes :
 - `[CONTENU À VALIDER — NE PAS PUBLIER]` — **bloquant**. Aucun build de production ne passe tant qu'il subsiste dans un fichier publié.
-- `[À VALIDER — … ]` — **non bloquant**, réservé aux pages légales : un élément que seul le notaire peut renseigner (forme d'exercice, SIREN, assureur, durées de conservation). La page reste publiable, le marqueur est rendu visible à l'écran, et `verifier:contenu` en dresse la liste à chaque construction.
+- `[À VALIDER — … ]` — **non bloquant**, réservé aux pages légales : un élément que seul le notaire peut renseigner (forme d'exercice, SIREN, assureur, durées de conservation). La page reste publiable mais n'est pas indexable, le marqueur est rendu visible à l'écran, et `verifier:contenu` en dresse la liste à chaque construction.
 
 La garde `scripts/verifier-contenu.mjs` est branchée sur `prebuild` et doit l'être sur la CI (`CONTENU_STRICT=1`). Elle n'était appelée nulle part jusqu'au 2 septembre 2026 : c'est ce qui a permis la mise en ligne de quatre pages légales portant la sentinelle bloquante. Ne jamais la débrancher.
 
@@ -249,7 +251,7 @@ Travailler par phases, dans l'ordre, sans anticiper :
 
 ---
 
-## 13. État du projet et arbitrages ouverts (2 septembre 2026)
+## 13. État du projet et arbitrages ouverts (3 septembre 2026)
 
 **Le site est en ligne** sur `https://www.levy-notaires.fr` et sert `main`.
 Il porte toutefois `robots: { index: false, follow: false }`
@@ -266,10 +268,44 @@ comme absorbée plutôt que fusionnée deux fois. `tsc --noEmit`, `next lint` et
 `verifier:contenu` passent sur `main` après fusion. Le dépôt passe au régime
 du §12 : plus de branche, plus de proposition de fusion, tout sur `main`.
 
+**Correctifs du 3 septembre 2026** (suites du troisième audit de phase 0,
+`claude/audit-phase0-main-c3ad754.md`). Le formulaire de contact n'annonce
+plus un envoi qui n'a pas eu lieu : le court-circuit anti-automate affichait
+« votre message a bien été transmis » sans rien envoyer, et un gestionnaire de
+mots de passe renseignant le champ leurre suffisait à le déclencher. La
+soumission part désormais toujours, marquée `suspect` à l'usage du service
+destinataire, et le contrôle de l'endpoint passe avant tout le reste. Les
+pages légales portant encore un marqueur sont exclues de l'index et du
+sitemap, par dérivation du contenu et non par liste tenue à la main. La garde
+exige les champs `problematiques`, `approche` et `etapes` de chaque expertise,
+que le gabarit remplaçait sinon par la sentinelle injectée depuis le code —
+seconde porte par laquelle « NE PAS PUBLIER » pouvait encore atteindre le
+public. La liste d'accès n'est plus dupliquée sur `/contact`.
+`loadAllExpertises`, export mort, est supprimé. `lighthouserc.mobile.json`
+ajoute une mesure mobile, indicative et non bloquante.
+
+**Reste à appliquer à la main sur `.github/workflows/ci.yml`** — les fichiers
+de workflow ne peuvent pas être écrits par une intégration : poser
+`CONTENU_STRICT: "1"` en variable d'environnement du pipeline, étendre le
+périmètre `axe-core` de quatre à neuf adresses (accueil, étude, expertise,
+tarif, FAQ, contact, page légale, rubrique de blog, 404) et ajouter l'étape
+Lighthouse mobile en `continue-on-error`. Sans `CONTENU_STRICT`, la garde ne
+bloque qu'au déploiement de production.
+
 **Décisions en attente, à ne pas trancher sans accord explicite :**
-1. Forme d'exercice de l'office (notaire à titre individuel ou société) — les
-   annuaires officiels font état d'une structure à plusieurs associés. Elle
-   commande les mentions légales et le champ `founder` du JSON-LD.
+1. **Forme d'exercice — tranchée le 2 septembre 2026** (société civile
+   professionnelle à associé unique) et publiée dans les mentions légales.
+   **Point de vérification rouvert le 3 septembre 2026 :** l'annuaire des
+   Notaires de France recense la société « SCP Thomas LEVY », 11 boulevard
+   Flandrin 75116 Paris, en y rattachant plusieurs notaires. Une mention
+   légale inexacte sur la forme d'exercice n'est pas un détail rédactionnel
+   sur le site d'un officier public : à confirmer par le notaire sur pièce
+   (extrait du registre du commerce et des sociétés) avant toute mise en
+   index. En découlent la dénomination sociale, le SIREN, le directeur de la
+   publication, `denominationComplete` de `src/config/etude.ts`, le fichier
+   `data/etude-nap.json` diffusé aux annuaires et le champ `founder` du
+   JSON-LD — lequel affirme aujourd'hui que le notaire a *constitué* la
+   société.
 2. Branche `rdv/socle-plateforme` : plateforme de rendez-vous développée en
    interne (~8 900 lignes) contre le lien vers un outil externe prévu au §2.
    Seule branche laissée ouverte, volontairement : son propre auteur la
@@ -280,16 +316,33 @@ du §12 : plus de branche, plus de proposition de fusion, tout sur `main`.
    2 septembre 2026 faute d'adresse : prestataire de paiement retenu, ou
    service de paiement en ligne de la profession. Point signalé comme
    prioritaire par le notaire.
+   **Périmètre à arrêter par écrit avant toute ligne de code** : le paiement
+   en ligne ne porte que sur les sommes dues à l'étude au titre de sa
+   rémunération et de ses remboursements — émoluments, honoraires libres,
+   débours et taxes afférentes. Aucun fonds de dossier — prix, dépôt de
+   garantie, séquestre, provision destinée à un tiers — ne saurait transiter
+   par le compte technique d'un prestataire de paiement généraliste. Le
+   circuit d'encaissement lui-même (compte récepteur, délai de reversement,
+   commissions prélevées, imputation comptable, mécanique de remboursement)
+   doit être établi et validé par le comptable taxateur avant implémentation.
+   En cas de doute sur la nature d'une somme, la traiter comme un fonds de
+   dossier et s'arrêter.
 4. Maintien ou retrait de `@vercel/speed-insights`, que le §4 n'autorise pas
    en l'état et qu'aucune politique ne déclarait.
 5. Prestataire recevant les envois du formulaire de contact : identité,
    localisation, contrat de sous-traitance (art. 28 RGPD), durée de
    conservation.
+6. Prestataire de la Data Room : le lien est actif sur chaque page et le
+   traitement n'est déclaré dans aucune politique. Identité, localisation,
+   contrat art. 28, articulation avec le secret professionnel.
 
 **Écarts connus, non traités à ce jour :** `'unsafe-inline'` dans la directive
 `script-src` de la CSP ; corps rédactionnel des pages d'expertise trop court
-pour les requêtes visées (~400 mots) ; blog sans article publié ; FAQ à neuf
-questions ; aucune version anglaise malgré `knowsLanguage: [fr, en, de]` ;
-`embleme-notaire.png` à 855 Ko ; aucune mesure Lighthouse consignée ;
+pour les requêtes visées — 62 mots en moyenne hors frontmatter, mesurés le
+3 septembre 2026, soit 1 120 mots pour dix-huit pages ; blog sans article
+publié ; FAQ à neuf questions ; aucune version anglaise malgré
+`knowsLanguage: [fr, en, de]` ; `embleme-notaire.png` à 836 Ko en `priority`
+sur le héros de l'accueil, donc candidat direct au LCP ; aucune mesure
+Lighthouse consignée dans le dépôt — le pipeline mesure, il ne conserve pas ;
 `output: "export"` conservé dans `next.config.ts` sans workflow qui l'active —
 son activation désactiverait silencieusement redirections et en-têtes.
