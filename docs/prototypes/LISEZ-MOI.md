@@ -13,6 +13,10 @@ celle du site** :
 | Sans | Manrope | Inter |
 | Polices | chargées depuis Google Fonts | auto-hébergées (`next/font`) |
 
-La seule source de vérité chromatique et typographique est `tailwind.config.ts`
-(CLAUDE.md §5). Ces fichiers sont conservés à titre d'archive de conception ;
-toute reprise de valeur depuis ces prototypes introduirait une seconde charte.
+`tailwind.config.ts` décrit la palette et les typographies effectivement
+servies par le site. La règle qui en faisait la « seule source de vérité »
+(CLAUDE.md §5) est abrogée par la décision du notaire du 3 septembre 2026 :
+ces prototypes redeviennent des pistes exploitables, et non une charte
+concurrente à écarter. Le seul point de vigilance, si une valeur en est
+reprise, est de la porter dans `tailwind.config.ts` plutôt que de laisser
+deux jeux de couleurs coexister dans le code.

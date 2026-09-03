@@ -3,7 +3,9 @@ import { ImageResponse } from "next/og";
 /**
  * Image Open Graph 1200×630 générée au build (§7) — version générique,
  * à remplacer par un visuel dédié lors de la validation de l'identité.
- * Les couleurs sont les valeurs des tokens night, ivory et gold (§5).
+ * Les couleurs reprennent les tokens night, ivory et gold — état de la
+ * palette au moment de sa création, non une obligation : le design system
+ * du §5 est abrogé depuis le 3 septembre 2026.
  */
 export const size = { width: 1200, height: 630 };
 export const contentType = "image/png";

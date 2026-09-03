@@ -1,9 +1,17 @@
 import type { Config } from "tailwindcss";
 
 /**
- * Design tokens — CLAUDE.md §5. Seule source de vérité chromatique.
- * Aucune couleur arbitraire hors de ces tokens.
- * gold : accents décoratifs uniquement (filets, puces, icônes) — 3:1 sur ivory.
+ * Palette de départ du site.
+ *
+ * Le §5 qui faisait de ces tokens la « seule source de vérité chromatique »
+ * et interdisait toute couleur hors de cette liste est abrogé par la décision
+ * du notaire du 3 septembre 2026 : ils restent disponibles, sans valeur
+ * normative. En ajouter, en modifier ou composer autrement est libre.
+ *
+ * Les rapports de contraste indiqués ci-dessous ne sont pas des règles de
+ * style : ils relèvent de l'accessibilité AA, seule contrainte maintenue.
+ * gold vaut 3:1 sur ivory, ce qui le réserve de fait aux éléments non
+ * textuels ou au texte de grande taille.
  * gold-ink : variante assombrie réservée aux textes dorés sur fonds clairs
  * (5,6:1 sur ivory, conforme WCAG AA).
  * line-strong : variante assombrie de line, réservée aux limites des

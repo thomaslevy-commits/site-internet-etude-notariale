@@ -2,9 +2,11 @@
   <!--
     Favicon provisoire. Le site n'en avait aucun : l'onglet, le favori et la
     ligne de résultat mobile affichaient l'icône par défaut du navigateur.
-    Composition tirée des seuls tokens du §5 — fond night, filet et lettre en
-    gold — sans emprunter au panonceau, qui appartient à la profession.
-    À remplacer par l'emblème définitif lorsque l'identité sera arrêtée.
+    Composition provisoire reprenant la palette d'alors — fond night, filet
+    et lettre en gold — sans emprunter au panonceau, qui appartient à la
+    profession. Ce n'est plus une contrainte : le §5 est abrogé depuis le
+    3 septembre 2026. À remplacer par l'emblème définitif lorsque l'identité
+    sera arrêtée.
   -->
   <rect width="64" height="64" fill="#101C2C"/>
   <rect x="18" y="13" width="28" height="1.5" fill="#A98A4C"/>

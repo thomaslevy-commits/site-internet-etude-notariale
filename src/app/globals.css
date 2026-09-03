@@ -14,7 +14,9 @@
     outline-offset: 2px;
   }
 
-  /* Apparition discrète des titres — fondu ≤ 300 ms (§5). */
+  /* Apparition discrète des titres. Le plafond de 300 ms et l'interdiction
+     des bibliothèques d'animation venaient du §5, abrogé le 3 septembre
+     2026 : cette durée est désormais un choix, non une limite. */
   @keyframes apparition {
     from {
       opacity: 0;
@@ -30,7 +32,8 @@
     animation: apparition 300ms ease-out both;
   }
 
-  /* Respect strict de prefers-reduced-motion (§4). */
+  /* Respect de prefers-reduced-motion : exigence d'accessibilité, maintenue
+     par le §5 révisé quelle que soit la direction artistique retenue. */
   @media (prefers-reduced-motion: reduce) {
     *,
     *::before,

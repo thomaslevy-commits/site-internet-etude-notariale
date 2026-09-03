@@ -7,8 +7,11 @@ import { SITE_URL } from "@/config/site";
 import "./globals.css";
 
 /**
- * Polices auto-hébergées via next/font (téléchargées au build, servies
- * depuis le domaine — aucune requête externe à l'exécution). CLAUDE.md §4-5.
+ * Polices auto-hébergées via next/font (téléchargées au build, servies depuis
+ * le domaine — aucune requête externe à l'exécution). C'était une obligation
+ * du §4 ; le §4 révisé du 3 septembre 2026 autorise les polices distantes.
+ * L'auto-hébergement est conservé parce qu'il évite d'avoir à déclarer un
+ * transfert vers Google dans les pages légales, non parce qu'il est imposé.
  */
 const cormorant = Cormorant_Garamond({
   subsets: ["latin"],

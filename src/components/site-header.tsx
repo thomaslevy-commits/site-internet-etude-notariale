@@ -92,7 +92,8 @@ export function SiteHeader() {
                   href="/contact"
                   // Survol en anthracite et non en or : ivoire sur or ne
                   // vaut que 3,06:1, en deçà du seuil AA pour ce corps de
-                  // texte, et le §5 proscrit tout bouton doré.
+                  // texte. Seul ce contraste s'oppose ici au doré ; le §5 qui
+                  // proscrivait le bouton doré est abrogé le 3 septembre 2026.
                   className="inline-block whitespace-nowrap rounded-[2px] bg-night px-4 py-2.5 text-[0.8rem] tracking-wide text-ivory no-underline transition-colors hover:bg-anthracite"
                 >
                   Prendre rendez-vous

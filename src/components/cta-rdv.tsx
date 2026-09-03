@@ -5,7 +5,10 @@ const BOOKING_URL = process.env.NEXT_PUBLIC_BOOKING_URL;
 /**
  * Bouton de prise de rendez-vous (§2) — pointe vers l'outil externe
  * NEXT_PUBLIC_BOOKING_URL, à défaut vers /contact.
- * Styles §5 : primaire night/ivory, secondaire filet night. Jamais de doré.
+ * Styles actuels : primaire night/ivory, secondaire filet night. Ils venaient
+ * du §5, qui proscrivait le bouton doré ; cette règle est abrogée depuis le
+ * 3 septembre 2026 et l'aspect du bouton est libre, sous la seule réserve du
+ * contraste AA.
  */
 export function CtaRendezVous({
   variante = "primaire",
