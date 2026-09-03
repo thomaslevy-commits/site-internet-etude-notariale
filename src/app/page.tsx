@@ -388,19 +388,13 @@ export default function Accueil() {
                 situation.
               </p>
             </div>
-            <div className="mt-6 flex flex-wrap gap-x-4 gap-y-2 text-[0.7rem] uppercase tracking-[0.14em] text-gold-ink/70">
-              <span>Notaire Paris 16</span>
-              <span aria-hidden="true">·</span>
-              <span>Immobilier</span>
-              <span aria-hidden="true">·</span>
-              <span>Patrimoine</span>
-              <span aria-hidden="true">·</span>
-              <span>Successions</span>
-              <span aria-hidden="true">·</span>
-              <span>SCI</span>
-              <span aria-hidden="true">·</span>
-              <span>International</span>
-            </div>
+            <p className="mt-6 max-w-prose border-l-2 border-gold/40 pl-5 text-[0.95rem] leading-relaxed text-anthracite">
+              Notaire à Paris 16, l&apos;étude intervient en droit immobilier,
+              en structuration patrimoniale et en conseil aux entreprises. Elle
+              accompagne les opérations en SCI, les successions internationales,
+              les donations et les transmissions d&apos;entreprise, avec une
+              pratique tournée vers la clientèle privée et les family offices.
+            </p>
             <div className="mt-10 flex flex-wrap items-center gap-8">
               <CtaRendezVous />
               <LienCapitale href="/etude">En savoir plus sur l&rsquo;étude</LienCapitale>

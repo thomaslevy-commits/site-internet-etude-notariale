@@ -64,38 +64,38 @@ export function SiteHeader() {
           : "bg-ivory"
       }`}
     >
-      {/* ── Bandeau supérieur : coordonnées ── */}
+      {/* ── Bandeau supérieur : coordonnées (fond sombre, fort contraste) ── */}
       <div
-        className={`border-b border-line overflow-hidden transition-all duration-500 ${
-          scrolled ? "max-h-0 border-transparent" : "max-h-12"
+        className={`overflow-hidden bg-night transition-all duration-500 ${
+          scrolled ? "max-h-0" : "max-h-14"
         }`}
       >
-        <div className="mx-auto flex max-w-grid items-center justify-between px-6 py-2">
-          <div className="hidden items-center gap-6 text-[0.7rem] uppercase tracking-[0.14em] text-gold-ink md:flex">
+        <div className="mx-auto flex max-w-grid items-center justify-between px-6 py-2.5">
+          <div className="hidden items-center gap-6 text-[0.8rem] uppercase tracking-[0.12em] text-ivory/90 md:flex">
             <span>
               {adresseCourte} — {etude.adresse.codePostal} {etude.adresse.ville}
             </span>
-            <span className="h-3 w-px bg-line" aria-hidden="true" />
+            <span className="h-3.5 w-px bg-ivory/25" aria-hidden="true" />
             <a
               href={`tel:${etude.telephoneE164}`}
-              className="no-underline transition-colors hover:text-night"
+              className="font-medium text-ivory no-underline transition-colors hover:text-gold"
             >
               {etude.telephone}
             </a>
-            <span className="h-3 w-px bg-line" aria-hidden="true" />
+            <span className="h-3.5 w-px bg-ivory/25" aria-hidden="true" />
             <a
               href={`mailto:${etude.email}`}
-              className="no-underline transition-colors hover:text-night"
+              className="text-ivory/90 no-underline transition-colors hover:text-ivory"
             >
               {etude.email}
             </a>
           </div>
-          <div className="flex items-center gap-5 text-[0.7rem] uppercase tracking-[0.08em] text-gold-ink md:gap-6">
+          <div className="flex items-center gap-5 text-[0.8rem] uppercase tracking-[0.08em] text-gold md:gap-6">
             <a
               href={etude.liens.dataRoom}
               target="_blank"
               rel="noopener noreferrer"
-              className="no-underline transition-colors hover:text-night"
+              className="font-medium no-underline transition-colors hover:text-ivory"
             >
               Data Room
               <span className="sr-only"> (nouvelle fenêtre)</span>
@@ -112,12 +112,12 @@ export function SiteHeader() {
         >
           {/* Monogramme TL stylisé */}
           <span
-            className="flex h-10 w-10 items-center justify-center rounded-full border border-gold/40 text-sm font-semibold tracking-wide text-gold transition-colors group-hover:border-gold group-hover:bg-gold/5"
+            className="flex h-11 w-11 items-center justify-center rounded-full border-2 border-gold/50 text-sm font-bold tracking-wide text-gold transition-colors group-hover:border-gold group-hover:bg-gold/5"
             aria-hidden="true"
           >
             TL
           </span>
-          <span className="text-balance font-serif text-lg font-medium tracking-tight text-night sm:text-xl">
+          <span className="text-balance font-serif text-xl font-semibold tracking-tight text-night sm:text-2xl">
             {nomAffiche}
           </span>
         </Link>
@@ -129,7 +129,7 @@ export function SiteHeader() {
               <li key={item.href}>
                 <Link
                   href={item.href}
-                  className="relative text-[0.72rem] uppercase tracking-[0.16em] text-anthracite no-underline transition-colors after:absolute after:-bottom-1 after:left-0 after:h-px after:w-0 after:bg-gold after:transition-all after:duration-300 hover:text-night hover:after:w-full"
+                  className="relative text-[0.82rem] font-medium uppercase tracking-[0.14em] text-night no-underline transition-colors after:absolute after:-bottom-1 after:left-0 after:h-px after:w-0 after:bg-gold after:transition-all after:duration-300 hover:text-gold-ink hover:after:w-full"
                 >
                   {item.label}
                 </Link>
@@ -138,7 +138,7 @@ export function SiteHeader() {
             <li>
               <Link
                 href="/contact"
-                className="inline-block whitespace-nowrap border border-night bg-night px-5 py-2.5 text-[0.72rem] uppercase tracking-[0.12em] text-ivory no-underline transition-all duration-300 hover:bg-transparent hover:text-night"
+                className="inline-block whitespace-nowrap border border-night bg-night px-6 py-3 text-[0.82rem] font-medium uppercase tracking-[0.12em] text-ivory no-underline transition-all duration-300 hover:bg-transparent hover:text-night"
               >
                 Prendre rendez-vous
               </Link>
