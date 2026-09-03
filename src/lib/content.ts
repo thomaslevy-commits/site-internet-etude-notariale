@@ -172,10 +172,6 @@ export function loadExpertise(slug: ExpertiseSlug): Expertise {
   return { frontmatter, body: content };
 }
 
-export function loadAllExpertises(): Expertise[] {
-  return EXPERTISE_SLUGS.map((slug) => loadExpertise(slug));
-}
-
 /** Charge tous les articles, triés du plus récent au plus ancien. */
 export function loadAllArticles(): Article[] {
   const dossierBlog = path.join(CONTENT_DIR, "blog");
@@ -236,4 +232,16 @@ export function loadPageLegale(slug: PageLegaleSlug): PageLegaleContenu {
     fs.readFileSync(path.join(CONTENT_DIR, "legal", `${slug}.mdx`), "utf8"),
   );
   return legalSchema.parse(data);
+}
+
+/**
+ * Vrai tant que la page porte au moins un élément que seul le notaire peut
+ * renseigner. Source unique du traitement réservé aux pages légales
+ * incomplètes : exclusion de l'index (composant PageLegale) et exclusion du
+ * sitemap (src/app/sitemap.ts). Dérivé du contenu, donc sans liste à tenir
+ * à jour — le jour où le dernier marqueur est renseigné, la page redevient
+ * indexable et rejoint le sitemap sans autre intervention.
+ */
+export function pageLegaleIncomplete(slug: PageLegaleSlug): boolean {
+  return JSON.stringify(loadPageLegale(slug)).includes(A_VALIDER);
 }

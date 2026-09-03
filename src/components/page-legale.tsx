@@ -3,6 +3,7 @@ import { FilAriane } from "@/components/fil-ariane";
 import { JsonLd, schemaFilAriane } from "@/components/json-ld";
 import {
   loadPageLegale,
+  pageLegaleIncomplete,
   type PageLegaleSlug,
   A_VALIDER,
 } from "@/lib/content";
@@ -27,13 +28,28 @@ function formaterDate(iso: string): string {
   return DATE_FR.format(new Date(`${iso}T12:00:00Z`));
 }
 
-/** Métadonnées d'une page légale, dérivées de son propre contenu. */
+/**
+ * Métadonnées d'une page légale, dérivées de son propre contenu.
+ *
+ * Une page qui porte encore des marqueurs est déclarée non indexable,
+ * indépendamment du `noindex` global : le jour où celui-ci sera levé, une
+ * mention en attente de validation deviendrait un résultat de recherche sur
+ * le site d'un officier public. L'exclusion est dérivée du contenu et non
+ * déclarée à la main — elle tombe d'elle-même lorsque le dernier marqueur
+ * est renseigné, sans que personne ait à penser à la retirer.
+ *
+ * `follow: true` : les liens de la page restent suivis, seule l'indexation
+ * de son texte est écartée.
+ */
 export function metadonneesPageLegale(slug: PageLegaleSlug): Metadata {
   const contenu = loadPageLegale(slug);
   return {
     title: { absolute: `${contenu.titre} — Étude Thomas Lévy, notaire à Paris` },
     description: contenu.description,
     alternates: { canonical: `/${slug}` },
+    ...(pageLegaleIncomplete(slug)
+      ? { robots: { index: false, follow: true } }
+      : {}),
   };
 }
 
