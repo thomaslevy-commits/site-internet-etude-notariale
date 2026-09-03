@@ -7,6 +7,7 @@ import { etude } from "@/config/etude";
 import { cheminPublic } from "@/lib/chemins";
 import {
   CATEGORIE_LABELS,
+  EXPERTISE_SLUGS,
   loadAllArticles,
   loadExpertise,
   type ExpertiseSlug,
@@ -108,6 +109,34 @@ const ENGAGEMENTS: readonly {
 
 /** Adresse sans la mention d'étage, pour la légende du portrait (§7). */
 const ADRESSE_COURTE = etude.adresse.ligne1.split(" — ")[0];
+
+/**
+ * Repères — la preuve arrive tôt, juste après la présentation du notaire.
+ * Transposition d'une mécanique observée sur les sites de banque d'affaires
+ * et d'étude : le visiteur obtient une réponse à « pourquoi est-ce crédible »
+ * avant d'entrer dans le catalogue des expertises.
+ *
+ * Aucun chiffre n'est produit pour l'occasion. Les quatre reprennent des
+ * faits déjà publiés ou dérivés du code :
+ *   — l'année de nomination figure sur /etude (« arrêté du 27 décembre 2005 ») ;
+ *   — le nombre de domaines est dérivé de EXPERTISE_SLUGS, il ne peut donc
+ *     pas diverger de l'arborescence réelle ;
+ *   — les langues viennent de etude.ts, source unique du NAP ;
+ *   — l'implantation vient de la même source.
+ * Formulations descriptives, sans comparaison ni superlatif (§3).
+ */
+const REPERES: readonly { valeur: string; libelle: string }[] = [
+  { valeur: "2005", libelle: "Notaire depuis" },
+  {
+    valeur: String(EXPERTISE_SLUGS.length),
+    libelle: "Domaines d'intervention",
+  },
+  {
+    valeur: String(etude.langues.length),
+    libelle: "Langues de travail",
+  },
+  { valeur: "Paris 16ᵉ", libelle: "Implantation" },
+];
 
 export default function Accueil() {
   const expertises = EXPERTISES_ACCUEIL.map((slug) => ({
@@ -222,6 +251,25 @@ export default function Accueil() {
               {etude.adresse.ville}
             </p>
           </div>
+        </div>
+      </section>
+
+      {/* Repères — bande de faits, encadrée de deux filets, sans carte ni
+          ombre : c'est une ligne de lecture, pas un objet de plus. Les
+          valeurs sont en serif, à la taille des titres de section, pour
+          qu'elles se lisent d'un regard ; le libellé reste discret. */}
+      <section className="bg-ivory">
+        <div className="mx-auto w-full max-w-grid px-6">
+          <dl className="grid gap-px border-y border-line bg-line sm:grid-cols-2 lg:grid-cols-4">
+            {REPERES.map((repere) => (
+              <div key={repere.libelle} className="bg-ivory px-6 py-10">
+                <dt className="text-sm text-slate-soft">{repere.libelle}</dt>
+                <dd className="mt-2 font-serif text-3xl font-medium tracking-tight text-night">
+                  {repere.valeur}
+                </dd>
+              </div>
+            ))}
+          </dl>
         </div>
       </section>
 
