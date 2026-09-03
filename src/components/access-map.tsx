@@ -1,5 +1,6 @@
 "use client";
 
+import { usePathname } from "next/navigation";
 import { useEffect, useRef, useState } from "react";
 import { ACCES, ADRESSE_COMPLETE, REQUETE_CARTE } from "@/config/acces";
 import { etude } from "@/config/etude";
@@ -43,6 +44,15 @@ function ecrireConsentement(accorde: boolean): void {
  * RGPD exigeant que le retrait soit aussi simple que le recueil.
  */
 export function AccessMap() {
+  /**
+   * /contact affiche déjà la liste d'accès dans le corps de la page, où elle
+   * a sa place : le pied de page l'y répétait à quelques centaines de pixels
+   * d'écart, si bien que « Porte Dauphine » figurait six fois sur cette seule
+   * page. La carte, elle, reste servie partout — c'est ce qui donne au pied
+   * de page son intérêt. Seule la colonne redondante est retirée, et le plan
+   * occupe alors toute la largeur.
+   */
+  const surPageContact = usePathname() === "/contact";
   const [carteAffichee, setCarteAffichee] = useState(false);
   const cadre = useRef<HTMLIFrameElement>(null);
   const boutonAfficher = useRef<HTMLButtonElement>(null);
@@ -84,7 +94,7 @@ export function AccessMap() {
         Accès à l&rsquo;étude — Paris 16ᵉ
       </p>
       <div className="flex flex-col gap-8 md:flex-row">
-        <div className="flex-[1.4]">
+        <div className={surPageContact ? "w-full" : "flex-[1.4]"}>
           <div className="min-h-[320px] overflow-hidden rounded-[2px] border border-gold">
             {carteAffichee ? (
               <iframe
@@ -134,18 +144,20 @@ export function AccessMap() {
             </button>
           )}
         </div>
-        <div className="flex-1">
-          {ACCES.map(({ cle, valeur }) => (
-            <div key={cle} className="border-b border-gold/25 py-2.5">
-              <span className="block font-serif text-[1.05rem] text-gold">
-                {cle}
-              </span>
-              <span className="mt-0.5 block text-[0.85rem] text-ivory/80">
-                {valeur}
-              </span>
-            </div>
-          ))}
-        </div>
+        {surPageContact ? null : (
+          <div className="flex-1">
+            {ACCES.map(({ cle, valeur }) => (
+              <div key={cle} className="border-b border-gold/25 py-2.5">
+                <span className="block font-serif text-[1.05rem] text-gold">
+                  {cle}
+                </span>
+                <span className="mt-0.5 block text-[0.85rem] text-ivory/80">
+                  {valeur}
+                </span>
+              </div>
+            ))}
+          </div>
+        )}
       </div>
     </section>
   );
