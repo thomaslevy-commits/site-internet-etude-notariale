@@ -15,6 +15,14 @@
  * qui la définit dans src/lib/content.ts et aurait donc fait échouer
  * *toute* construction de production, y compris sur un contenu irréprochable.
  * Les fichiers qui définissent légitimement la sentinelle sont exclus.
+ *
+ * Restait une porte ouverte, fermée le 3 septembre 2026 : la garde cherche
+ * la sentinelle DANS LES FICHIERS, alors que le gabarit d'expertise
+ * l'INJECTE DEPUIS LE CODE lorsqu'un champ facultatif manque au frontmatter
+ * (problematiques, approche, etapes). Une expertise amputée de l'un de ces
+ * champs aurait donc publié « NE PAS PUBLIER » sans qu'aucune garde ne s'y
+ * oppose — le mécanisme même de l'incident initial, par une autre porte.
+ * Ces trois champs sont désormais exigés.
  */
 import fs from "node:fs";
 import path from "node:path";
@@ -78,6 +86,19 @@ for (const slug of SLUGS) {
   if (data.slug !== slug) erreurs.push(`${slug}.mdx : slug incohérent (« ${data.slug} »)`);
   if (!data.title) erreurs.push(`${slug}.mdx : title manquant`);
   if (!data.description) erreurs.push(`${slug}.mdx : description manquante`);
+  // Champs dont l'absence ferait afficher la sentinelle par le gabarit —
+  // voir l'en-tête de ce fichier. Ils sont facultatifs pour le schéma Zod,
+  // qui décrit la forme du contenu ; ils sont obligatoires pour la garde,
+  // qui décide de ce qui est publiable.
+  if (!Array.isArray(data.problematiques) || data.problematiques.length === 0) {
+    erreurs.push(`${slug}.mdx : problematiques manquantes ou vides`);
+  }
+  if (typeof data.approche !== "string" || data.approche.trim() === "") {
+    erreurs.push(`${slug}.mdx : approche manquante`);
+  }
+  if (!Array.isArray(data.etapes) || data.etapes.length === 0) {
+    erreurs.push(`${slug}.mdx : etapes manquantes ou vides`);
+  }
   if (!Array.isArray(data.related) || data.related.length < 3 || data.related.length > 5) {
     erreurs.push(`${slug}.mdx : related doit contenir 3 à 5 slugs`);
   } else {
