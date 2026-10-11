@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import Image from "next/image";
+import Link from "next/link";
 import { PageIntro } from "@/components/page-intro";
 import { ContactBand } from "@/components/contact-band";
 import { etude } from "@/config/etude";
@@ -134,21 +135,25 @@ export default function PageEtude() {
           </section>
         </div>
         <aside className="order-first lg:order-none lg:sticky lg:top-44">
-          <figure>
-            <Image
-              src={cheminPublic("/images/portrait.jpg")}
-              alt="Maître Thomas Lévy, notaire à Paris"
-              width={1023}
-              height={1537}
-              priority
-              sizes="(min-width: 1024px) 450px, 100vw"
-              className="max-h-[620px] w-full object-cover object-top"
-            />
-            <figcaption className="border-b border-line py-5">
-              <p className="font-serif text-3xl">Maître Thomas Lévy</p>
-              <p className="mt-1 text-sm text-slate-soft">
-                Notaire à Paris · Nommé le 27 décembre 2005
-              </p>
+          {/* Même présentation que le portrait de l'accueil (décision du
+              notaire du 11 octobre 2026). La date de nomination reste dans le
+              paragraphe « Parcours » ; la flèche renvoie au contact, la page
+              du parcours étant celle-ci. */}
+          <figure className="signature-portrait">
+            <div className="signature-image">
+              <Image
+                src={cheminPublic("/images/portrait.jpg")}
+                alt="Maître Thomas Lévy, notaire à Paris"
+                width={1023}
+                height={1537}
+                priority
+                sizes="(min-width: 1024px) 450px, 100vw"
+              />
+              <span className="portrait-edge" aria-hidden="true">LÉVY NOTAIRES · PARIS</span>
+            </div>
+            <figcaption>
+              <span><strong>Thomas Lévy</strong><span>Notaire à Paris</span></span>
+              <Link href="/contact" className="round-link" aria-label="Contacter l'étude">↗</Link>
             </figcaption>
           </figure>
         </aside>
