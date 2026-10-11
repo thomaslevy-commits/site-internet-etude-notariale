@@ -48,7 +48,7 @@ export default function Accueil() {
               <span className="portrait-edge" aria-hidden="true">LÉVY NOTAIRES · PARIS</span>
             </div>
             <figcaption>
-              <span><strong>Thomas Lévy</strong><span>Notaire à Paris, nommé en 2005</span></span>
+              <span><strong>Thomas Lévy</strong><span>Notaire à Paris</span></span>
               <Link href="/etude" className="round-link" aria-label="Découvrir le parcours de Thomas Lévy">↗</Link>
             </figcaption>
           </figure>
