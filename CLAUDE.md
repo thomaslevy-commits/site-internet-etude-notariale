@@ -201,10 +201,13 @@ Travailler par phases, dans l'ordre, sans anticiper :
 ## 13. État du projet et arbitrages ouverts (3 septembre 2026)
 
 **Le site est en ligne** sur `https://www.levy-notaires.fr` et sert `main`.
-Il porte toutefois `robots: { index: false, follow: false }`
-(`src/app/layout.tsx`) : il est public et intégralement désindexé. La levée de
-ce `noindex` est une décision du notaire, à ne prendre qu'après validation des
-quatre pages légales et de l'ensemble des contenus.
+Le `noindex` global (`robots: { index: false, follow: false }` dans
+`src/app/layout.tsx`) a été levé par décision du notaire le 11 octobre 2026 :
+le site est désormais indexable. Les pages légales portant encore un marqueur
+`[À VALIDER — … ]` restent `noindex, follow` et hors sitemap par dérivation du
+contenu, et l'indexation ne s'étend à elles qu'une fois renseignées. La
+balise de vérification Bing Webmaster Tools (`msvalidate.01`) est posée le même
+jour.
 
 **Consolidation du 2 septembre 2026.** Les propositions de fusion #41
 (régularisation de l'audit de phase 0), #34 (parcours et formation) et #40
@@ -277,19 +280,12 @@ Lighthouse mobile en `continue-on-error`. Sans `CONTENU_STRICT`, la garde ne
 bloque qu'au déploiement de production.
 
 **Décisions en attente, à ne pas trancher sans accord explicite :**
-1. **Forme d'exercice — tranchée le 2 septembre 2026** (société civile
-   professionnelle à associé unique) et publiée dans les mentions légales.
-   **Point de vérification rouvert le 3 septembre 2026 :** l'annuaire des
-   Notaires de France recense la société « SCP Thomas LEVY », 11 boulevard
-   Flandrin 75116 Paris, en y rattachant plusieurs notaires. Une mention
-   légale inexacte sur la forme d'exercice n'est pas un détail rédactionnel
-   sur le site d'un officier public : à confirmer par le notaire sur pièce
-   (extrait du registre du commerce et des sociétés) avant toute mise en
-   index. En découlent la dénomination sociale, le SIREN, le directeur de la
-   publication, `denominationComplete` de `src/config/etude.ts`, le fichier
-   `data/etude-nap.json` diffusé aux annuaires et le champ `founder` du
-   JSON-LD — lequel affirme aujourd'hui que le notaire a *constitué* la
-   société.
+1. **Forme d'exercice — tranchée le 2 septembre 2026 et confirmée par le
+   notaire le 11 octobre 2026** : société civile professionnelle à associé
+   unique. Les notaires que l'annuaire des Notaires de France rattache à la
+   « SCP Thomas LEVY » n'en sont pas associés ; sa fiche est à faire mettre à
+   jour s'il y a lieu. Restent à renseigner sur pièce (extrait K-bis) la
+   dénomination sociale exacte et le SIREN des mentions légales.
 2. Branche `rdv/socle-plateforme` : plateforme de rendez-vous développée en
    interne (~8 900 lignes) contre le lien vers un outil externe prévu au §2.
    Seule branche laissée ouverte, volontairement : son propre auteur la
