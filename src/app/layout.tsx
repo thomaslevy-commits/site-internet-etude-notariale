@@ -59,6 +59,11 @@ export const metadata: Metadata = {
     "Étude notariale à Paris 16ᵉ. Immobilier, successions, structuration patrimoniale, entreprise et clientèle internationale. Consultations sur rendez-vous.",
   // Le site est public, mais reste désindexé jusqu’à la validation notariale.
   robots: { index: false, follow: false },
+  // Vérification de propriété Bing Webmaster Tools (11 octobre 2026) :
+  // la balise doit rester en place, sa suppression fait perdre la vérification.
+  verification: {
+    other: { "msvalidate.01": "A0EDDC7B72EE8D8A4FDA736C77B37142" },
+  },
   alternates: {
     types: { "application/rss+xml": "/rss.xml" },
   },
