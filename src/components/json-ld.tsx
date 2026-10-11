@@ -39,11 +39,9 @@ export function schemaNotary(): Record<string, unknown> {
       opens: etude.horairesSchema.ouverture,
       closes: etude.horairesSchema.fermeture,
     },
-    founder: {
-      "@type": "Person",
-      name: etude.nomNotaire,
-      jobTitle: "Notaire",
-    },
+    // Pas de `founder` : la société a commencé son activité en 1981, avant
+    // l'arrivée du titulaire actuel (extrait K-bis du 16 septembre 2026).
+    // schema.org n'a pas d'équivalent de « titulaire de l'office ».
     areaServed: {
       "@type": "AdministrativeArea",
       name: "Paris et Île-de-France",
