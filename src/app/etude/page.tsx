@@ -69,6 +69,7 @@ const FORMATION: readonly {
   {
     etablissement: "Université de Strasbourg",
     titres: [
+      "Lauréat du prix Dalloz en droit des obligations",
       "Maîtrise de droit privé",
       "Certificat d'urbanisme, de construction et marchés publics",
     ],
