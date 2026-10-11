@@ -27,7 +27,7 @@ const SECTIONS: { titre: string; contenu: string[] }[] = [
       `${etude.nomNotaire} effectue son stage dans des études parisiennes tournées vers l'immobilier complexe, à une période où la documentation de l'investissement institutionnel se transforme : les data rooms apparaissent, et les cessions de portefeuilles appellent des clauses rédigées sur mesure pour des investisseurs internationaux.`,
       "Il rejoint ensuite une étude à la pratique mixte, où se côtoient l'investissement institutionnel, la vente en l'état futur d'achèvement en bloc, le financement et la découpe d'immeubles destinée à la vente aux particuliers. Ces années donnent une vue continue de l'opération immobilière, du montage jusqu'au lot vendu.",
       "Il est nommé notaire par arrêté du 27 décembre 2005.",
-      "La fiscalité s'est imposée ensuite, par goût des mathématiques et de règles qui changent. Elle occupe depuis une part constante de la pratique.",
+      "La fiscalité s'est imposée ensuite, par goût des mathématiques et de règles qui changent. Elle occupe depuis une part constante de sa pratique.",
     ],
   },
   {
