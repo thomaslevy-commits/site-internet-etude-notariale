@@ -57,8 +57,10 @@ export const metadata: Metadata = {
   },
   description:
     "Étude notariale à Paris 16ᵉ. Immobilier, successions, structuration patrimoniale, entreprise et clientèle internationale. Consultations sur rendez-vous.",
-  // Le site est public, mais reste désindexé jusqu’à la validation notariale.
-  robots: { index: false, follow: false },
+  // Indexation ouverte par décision du notaire du 11 octobre 2026. Les pages
+  // légales encore incomplètes (marqueur de validation) restent `noindex, follow`
+  // par dérivation du contenu (page-legale.tsx) ; la 404 aussi.
+  robots: { index: true, follow: true },
   // Vérification de propriété Bing Webmaster Tools (11 octobre 2026) :
   // la balise doit rester en place, sa suppression fait perdre la vérification.
   verification: {
