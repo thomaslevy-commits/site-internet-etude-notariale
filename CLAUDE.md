@@ -307,14 +307,20 @@ bloque qu'au déploiement de production.
    doit être établi et validé par le comptable taxateur avant implémentation.
    En cas de doute sur la nature d'une somme, la traiter comme un fonds de
    dossier et s'arrêter.
-4. Maintien ou retrait de `@vercel/speed-insights`, désormais autorisé par le
-   §4 révisé mais toujours signalé « à valider » dans les pages légales.
-5. Prestataire recevant les envois du formulaire de contact : identité,
-   localisation, contrat de sous-traitance (art. 28 RGPD), durée de
-   conservation.
-6. Prestataire de la Data Room : le lien est actif sur chaque page et le
-   traitement n'est déclaré dans aucune politique. Identité, localisation,
-   contrat art. 28, articulation avec le secret professionnel.
+4. **Tranché le 11 octobre 2026** : `@vercel/speed-insights` est maintenu,
+   déclaré sans cookie dans `cookies.mdx` et `politique-de-confidentialite.mdx`.
+5. **Tranché le 11 octobre 2026** : les envois du formulaire de contact
+   passent par Resend (`/api/contact`), déclaré comme sous-traitant avec
+   Vercel. Le formulaire ne s'affiche que si `RESEND_API_KEY` est renseignée
+   sur Vercel. Conservation : douze mois sans suite ; versement au dossier
+   sinon. DPO de l'étude : ADNOV (dpo.not@adnov.fr).
+6. **Tranché le 11 octobre 2026** : l'espace documentaire
+   (espacenotarial.com) est la plateforme de la Chambre des notaires de
+   Paris ; la politique de confidentialité le déclare et précise que le site
+   ne lui transmet aucune donnée.
+
+Les quatre pages légales ne portent plus aucun marqueur depuis le
+11 octobre 2026 : elles sont indexables et figurent au sitemap.
 
 **Écarts connus, non traités à ce jour :** `'unsafe-inline'` dans la directive
 `script-src` de la CSP ; corps rédactionnel des pages d'expertise trop court
