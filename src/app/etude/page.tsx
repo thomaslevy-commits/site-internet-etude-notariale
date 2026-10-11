@@ -40,7 +40,7 @@ const SECTIONS: { titre: string; contenu: string[] }[] = [
   {
     titre: "Équipe",
     contenu: [
-      "L'étude réunit autour du notaire une équipe de collaborateurs formés au traitement des dossiers immobiliers, patrimoniaux et internationaux. La taille de l'équipe est volontairement maîtrisée : chaque dossier est suivi personnellement, de l'ouverture à l'accomplissement des dernières formalités.",
+      "L'étude réunit autour du notaire une équipe de deux notaires salariées et de collaborateurs formés au traitement des dossiers immobiliers, patrimoniaux et internationaux. La taille de l'équipe est volontairement maîtrisée : chaque dossier est suivi personnellement, de l'ouverture à l'accomplissement des dernières formalités.",
     ],
   },
   {
