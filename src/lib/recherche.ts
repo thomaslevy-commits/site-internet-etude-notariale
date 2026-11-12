@@ -27,7 +27,7 @@ export interface EntreeRecherche {
 const PAGES: EntreeRecherche[] = [
   { type: "Page", titre: "L'étude", extrait: "Présentation, méthode et langues de travail de l'étude.", href: "/etude", corpus: "notaire thomas levy equipe methode langues" },
   { type: "Page", titre: "Expertises", extrait: "L'ensemble des domaines d'intervention de l'étude.", href: "/expertises", corpus: "domaines competences" },
-  { type: "Page", titre: "International", extrait: "Informations pratiques pour une clientèle étrangère ou non résidente.", href: "/international", corpus: "english deutsch etranger non resident expatrie" },
+  { type: "Page", titre: "International", extrait: "Informations pratiques pour une clientèle étrangère ou non résidente.", href: "/international", corpus: "english deutsch chinois chinese 中文 etranger non resident expatrie" },
   { type: "Page", titre: "Publications", extrait: "Les articles publiés par l'étude.", href: "/blog", corpus: "blog articles actualites" },
   { type: "Page", titre: "Tarif", extrait: "Émoluments réglementés, débours, taxes et honoraires libres.", href: "/tarif", corpus: "prix frais cout emoluments honoraires debours taxes" },
   { type: "Page", titre: "Questions fréquentes", extrait: "Les réponses de l'étude, classées par thème.", href: "/faq", corpus: "faq aide" },

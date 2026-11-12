@@ -53,7 +53,7 @@ export function SiteFooter() {
           <div>
             <p className="eyebrow">Informations pratiques</p>
             <p className="mt-5">{etude.horaires}</p>
-            <p className="mt-3">Français · English · Deutsch</p>
+            <p className="mt-3">Français · English · Deutsch · <span lang="zh-Hans">中文</span> (avec interprète)</p>
             <a
               href={etude.liens.dataRoom}
               target="_blank"

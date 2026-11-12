@@ -147,7 +147,7 @@ export function SiteHeader({ indexRecherche }: SiteHeaderProps) {
           >
             {rdvLabel}
           </Link>
-          <p className="mobile-location">{etude.adresse.ligne1}<br />{etude.adresse.codePostal} {etude.adresse.ville} · Français, English, Deutsch</p>
+          <p className="mobile-location">{etude.adresse.ligne1}<br />{etude.adresse.codePostal} {etude.adresse.ville} · Français, English, Deutsch, <span lang="zh-Hans">中文</span></p>
           <a className="mt-6 block" href={`tel:${etude.telephoneE164}`}>
             {etude.telephone}
           </a>

@@ -10,7 +10,7 @@ import { loadExpertise } from "@/lib/content";
 export const metadata: Metadata = {
   title: "Clientèle internationale",
   description:
-    "L'étude Thomas Lévy à Paris reçoit en français, anglais et allemand. Accès aux expertises internationales et coordonnées de l'étude.",
+    "L'étude Thomas Lévy à Paris reçoit en français, anglais et allemand, et en chinois avec le concours d'un interprète. Accès aux expertises internationales et coordonnées de l'étude.",
   alternates: { canonical: "/international" },
 };
 
@@ -23,7 +23,7 @@ export default function International() {
       <PageIntro
         titre="Votre projet, au-delà des frontières"
         rubrique="Clientèle internationale"
-        description="Successions transfrontalières, non-résidents, expatriés, investisseurs étrangers et family offices. L'étude reçoit en français, en anglais et en allemand."
+        description="Successions transfrontalières, non-résidents, expatriés, investisseurs étrangers et family offices. L'étude reçoit en français, en anglais et en allemand, et accueille sa clientèle sinophone avec le concours d'un interprète."
       >
         <nav
           id="languages"
@@ -65,7 +65,7 @@ export default function International() {
         </ul>
       </section>
       <div className="border-t border-line bg-white">
-        <div className="site-container page-body grid gap-14 md:grid-cols-2">
+        <div className="site-container page-body grid gap-14 md:grid-cols-2 xl:grid-cols-3">
           <section id="english" lang="en">
             <p className="eyebrow">English</p>
             <h2 className="section-title mt-4">A notarial office in Paris</h2>
@@ -133,11 +133,11 @@ export default function International() {
             <p className="eyebrow">中文</p>
             <h2 className="section-title mt-4">巴黎公证事务所</h2>
             <p className="mt-6 text-slate-soft">
-              Thomas Lévy 公证事务所以法语、英语和德语接待客户。业务领域涵盖不动产、家庭与遗产、企业事务以及涉外事务。
+              Thomas Lévy 公证事务所以法语、英语和德语接待客户，并可借助翻译人员以中文为您提供服务。业务领域涵盖不动产、家庭与遗产、企业事务以及涉外事务。
             </p>
             <h3 className="mt-8 font-serif text-2xl">联系事务所</h3>
             <p className="mt-4 text-slate-soft">
-              如需预约，请通过电话或电子邮件与我们联系，并注明您希望使用法语、英语还是德语。
+              如需预约，请通过电话或电子邮件与我们联系，并注明您希望使用的语言；如需中文服务，我们将为您安排翻译人员。
             </p>
             <a href={`tel:${etude.telephoneE164}`} className="text-link mt-4">
               +33 1 40 75 05 55

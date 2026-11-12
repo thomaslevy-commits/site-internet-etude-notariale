@@ -52,7 +52,7 @@ export default async function PageContact({ searchParams }: { searchParams: Prom
           <div className="mt-7 border-t border-line pt-6">
             <h3 className="eyebrow">Horaires & langues</h3>
             <p className="mt-4 text-slate-soft">{etude.horaires}</p>
-            <p className="mt-2 text-slate-soft">Français · English · Deutsch</p>
+            <p className="mt-2 text-slate-soft">Français · English · Deutsch · <span lang="zh-Hans">中文</span> (avec interprète)</p>
             <Link href="/international#languages" className="text-link mt-2">
               Informations internationales ↗
             </Link>

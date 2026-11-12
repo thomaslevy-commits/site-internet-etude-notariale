@@ -30,7 +30,9 @@ export const etude = {
   },
   langues: ["français", "anglais", "allemand"],
   /** Codes BCP 47 correspondants, pour les données structurées. */
-  languesIso: ["fr", "en", "de"],
+  languesIso: ["fr", "en", "de", "zh"],
+  /** Langue servie avec le concours d'un interprète (non parlée à l'étude). */
+  languesAvecInterprete: ["chinois"],
   liens: {
     /** Fiche Google Maps de l'étude (lien statique — pas d'iframe, §8). */
     googleMaps: "https://maps.google.com/?cid=15064672117259351290",
