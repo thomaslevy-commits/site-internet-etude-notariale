@@ -1,0 +1,13 @@
+/* Menu des langues de l'en-tête : liste déroulante sous le déclencheur. */
+.header-language.language-menu { position: relative; padding: 0; }
+.language-menu-trigger { display: flex; align-items: center; gap: 7px; padding: 12px 0; font-size: .75rem; letter-spacing: .04em; background: none; border: 0; color: inherit; cursor: pointer; }
+.language-menu .language-menu-trigger span { color: inherit; }
+.language-menu .language-menu-chevron { color: #80776a; font-size: .7rem; transition: transform .15s; }
+.language-menu-trigger[aria-expanded="true"] .language-menu-chevron { transform: rotate(180deg); }
+.language-menu-list { position: absolute; top: 100%; right: 0; z-index: 60; min-width: 240px; margin: 0; padding: 6px 0; list-style: none; background: #faf9f6; border: 1px solid var(--editorial-line); box-shadow: 0 12px 30px rgba(16,28,44,.08); }
+.language-menu-list[hidden] { display: none; }
+.language-menu-list a { display: grid; grid-template-columns: 44px 1fr; align-items: baseline; gap: 10px; padding: 11px 18px; font-size: .875rem; }
+.language-menu-list a:hover, .language-menu-list a:focus-visible { background: #f1ede5; }
+.language-menu .language-menu-code { color: #80776a; font-size: .75rem; letter-spacing: .06em; }
+.language-menu .language-menu-name { color: #101c2c; }
+@media (prefers-reduced-motion: reduce) { .language-menu-chevron { transition: none; } }

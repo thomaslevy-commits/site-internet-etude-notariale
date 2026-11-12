@@ -7,6 +7,7 @@ import { Marque } from "@/components/marque";
 import { etude } from "@/config/etude";
 import { NAVIGATION } from "@/config/navigation";
 import { RechercheGlobale } from "@/components/recherche-globale";
+import { SelecteurLangue } from "@/components/selecteur-langue";
 import type { EntreeRecherche } from "@/lib/recherche";
 
 /** Le dialogue natif isole le menu, retient le focus et gère Échap.
@@ -72,7 +73,7 @@ export function SiteHeader({ indexRecherche }: SiteHeaderProps) {
           </ul>
         </nav>
         <RechercheGlobale index={indexRecherche} />
-        <Link href="/international#english" className="header-language" lang="en" aria-label="Read practical information in English">EN <span aria-hidden="true">↗</span></Link>
+        <SelecteurLangue />
         <Link href={rdvHref} className="button button-primary header-rdv">
           {rdvLabel}
           <span aria-hidden="true">↗</span>
