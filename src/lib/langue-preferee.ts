@@ -61,3 +61,18 @@ export function useLanguePreferee(): LangueInterface {
   }, []);
   return langue;
 }
+
+/** Attribut lang correspondant, pour les éléments traduits. */
+export const ATTRIBUT_LANG: Record<LangueInterface, string> = { fr: "fr", en: "en", de: "de", zh: "zh-Hans" };
+
+/** Libellé du bouton de rendez-vous : « Prendre » lorsqu'un outil de
+ *  réservation est branché (NEXT_PUBLIC_BOOKING_URL), « Demander » sinon. */
+export function libelleRendezVous(langue: LangueInterface, reservation: boolean): string {
+  const libelles: Record<LangueInterface, [string, string]> = {
+    fr: ["Prendre rendez-vous", "Demander un rendez-vous"],
+    en: ["Book an appointment", "Request an appointment"],
+    de: ["Termin vereinbaren", "Termin anfragen"],
+    zh: ["在线预约", "预约咨询"],
+  };
+  return libelles[langue][reservation ? 0 : 1];
+}

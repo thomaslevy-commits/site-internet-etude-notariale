@@ -9,6 +9,7 @@ import { NAVIGATION } from "@/config/navigation";
 import { RechercheGlobale } from "@/components/recherche-globale";
 import { SelecteurLangue } from "@/components/selecteur-langue";
 import type { EntreeRecherche } from "@/lib/recherche";
+import { ATTRIBUT_LANG, libelleRendezVous, useLanguePreferee } from "@/lib/langue-preferee";
 
 /** Le dialogue natif isole le menu, retient le focus et gère Échap.
  *  L'en-tête reste dans le flux : aucune hauteur à deviner dans les pages. */
@@ -25,9 +26,9 @@ export function SiteHeader({ indexRecherche }: SiteHeaderProps) {
   const [ouvert, setOuvert] = useState(false);
   const reservation = process.env.NEXT_PUBLIC_BOOKING_URL;
   const rdvHref = reservation || "/contact";
-  const rdvLabel = reservation
-    ? "Prendre rendez-vous"
-    : "Demander un rendez-vous";
+  // Libellé dans la langue choisie au menu des langues (12 novembre 2026).
+  const langue = useLanguePreferee();
+  const rdvLabel = libelleRendezVous(langue, Boolean(reservation));
 
   function fermer() {
     dialogue.current?.close();
@@ -74,7 +75,7 @@ export function SiteHeader({ indexRecherche }: SiteHeaderProps) {
         </nav>
         <RechercheGlobale index={indexRecherche} />
         <SelecteurLangue />
-        <Link href={rdvHref} className="button button-primary header-rdv">
+        <Link href={rdvHref} className="button button-primary header-rdv" lang={ATTRIBUT_LANG[langue]}>
           {rdvLabel}
           <span aria-hidden="true">↗</span>
         </Link>

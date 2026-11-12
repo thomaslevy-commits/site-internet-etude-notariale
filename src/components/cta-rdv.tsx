@@ -1,4 +1,7 @@
+"use client";
+
 import Link from "next/link";
+import { ATTRIBUT_LANG, libelleRendezVous, useLanguePreferee } from "@/lib/langue-preferee";
 
 const BOOKING_URL = process.env.NEXT_PUBLIC_BOOKING_URL;
 
@@ -16,6 +19,8 @@ const BOOKING_URL = process.env.NEXT_PUBLIC_BOOKING_URL;
  * et ivoire sur gold-ink 5,0:1, tous deux conformes AA. Le bouton gagne aussi
  * en surface (px-8 py-4) : sur un site de conseil, la prise de rendez-vous
  * est la seule action attendue du visiteur, elle a droit à sa taille.
+ *
+ * Libellé dans la langue choisie au menu des langues (12 novembre 2026).
  */
 export function CtaRendezVous({
   variante = "primaire",
@@ -26,6 +31,7 @@ export function CtaRendezVous({
   surFondSombre?: boolean;
   sujet?: string;
 }) {
+  const langue = useLanguePreferee();
   const href = BOOKING_URL?.trim() || (sujet ? `/contact?sujet=${encodeURIComponent(sujet)}#ecrire` : "/contact#ecrire");
   // L'or plein ne dépend pas du fond : c'est ce qui rend le bouton
   // reconnaissable d'une section à l'autre, sur ivoire comme sur night.
@@ -36,8 +42,8 @@ export function CtaRendezVous({
         ? "border border-ivory text-ivory hover:bg-ivory hover:text-night"
         : "border border-night text-night hover:bg-night hover:text-ivory";
   return (
-    <Link href={href} className={`button ${classes}`}>
-      {BOOKING_URL ? "Prendre rendez-vous" : "Demander un rendez-vous"}
+    <Link href={href} className={`button ${classes}`} lang={ATTRIBUT_LANG[langue]}>
+      {libelleRendezVous(langue, Boolean(BOOKING_URL))}
       <span aria-hidden="true">↗</span>
     </Link>
   );
