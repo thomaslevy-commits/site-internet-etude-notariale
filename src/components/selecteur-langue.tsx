@@ -77,7 +77,12 @@ export function SelecteurLangue() {
       <ul id={idListe} className="language-menu-list" hidden={!ouvert}>
         {LANGUES.map((l) => (
           <li key={l.code}>
-            <Link href={l.href} lang={l.lang} onClick={() => { enregistrerLanguePreferee(l.choix); setOuvert(false); }}>
+            <Link href={l.href} lang={l.lang} onClick={(event) => {
+              enregistrerLanguePreferee(l.choix);
+              // Sur la page Contact, traduite sur place : on reste sur la page.
+              if (pathname === "/contact") event.preventDefault();
+              setOuvert(false);
+            }}>
               <span className="language-menu-code">{l.code}</span>
               <span className="language-menu-name">{l.nom}</span>
             </Link>

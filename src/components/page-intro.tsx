@@ -6,18 +6,21 @@ export function PageIntro({
   rubrique,
   description,
   maillons,
+  accueil,
   children,
 }: {
   titre: string;
   rubrique?: string;
   description?: string;
   maillons?: Maillon[];
+  /** Libellé du premier maillon du fil d'Ariane (« Accueil » par défaut). */
+  accueil?: string;
   children?: ReactNode;
 }) {
   return (
     <header className="page-intro">
       <div className="site-container">
-        <FilAriane maillons={maillons ?? [{ label: titre }]} />
+        <FilAriane maillons={maillons ?? [{ label: titre }]} accueil={accueil} />
         <div className={`page-intro-composition${description ? "" : " page-intro-wide"}`}>
           <div>
             <p className="eyebrow">{rubrique ?? "Lévy Notaires · Paris"}</p>

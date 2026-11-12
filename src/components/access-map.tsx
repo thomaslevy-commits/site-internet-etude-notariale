@@ -12,12 +12,18 @@ import { etude } from "@/config/etude";
  * et que Google peut y déposer ses propres cookies. `loading="lazy"` évite
  * de charger l'iframe tant que la section d'accès n'approche pas de l'écran.
  */
-export function AccessMap() {
+/** Libellés par défaut en français ; la page Contact les traduit selon la
+ *  langue choisie (contact-traduit.tsx). */
+export function AccessMap({
+  libelleLien = "Ouvrir l'itinéraire dans Google Maps",
+  nouvelleFenetre = "(nouvelle fenêtre)",
+  titreCarte = "Carte",
+}: { libelleLien?: string; nouvelleFenetre?: string; titreCarte?: string } = {}) {
   return (
     <div>
       <div className="overflow-hidden border border-line">
         <iframe
-          title={`Carte — ${ADRESSE_COMPLETE}`}
+          title={`${titreCarte} — ${ADRESSE_COMPLETE}`}
           src={`https://www.google.com/maps?q=${REQUETE_CARTE}&z=16&output=embed`}
           loading="lazy"
           referrerPolicy="no-referrer-when-downgrade"
@@ -31,8 +37,8 @@ export function AccessMap() {
         rel="noopener noreferrer"
         className="text-link mt-4"
       >
-        Ouvrir l&apos;itinéraire dans Google Maps ↗
-        <span className="sr-only"> (nouvelle fenêtre)</span>
+        {libelleLien} ↗
+        <span className="sr-only"> {nouvelleFenetre}</span>
       </a>
     </div>
   );

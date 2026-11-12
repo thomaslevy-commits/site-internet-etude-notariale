@@ -1,3 +1,5 @@
+import { useEffect, useState } from "react";
+
 /**
  * Langue choisie par le visiteur dans le menu des langues de l'en-tête.
  * Conservée dans le stockage local du navigateur sous la clé « langue » :
@@ -46,4 +48,16 @@ export function suivreLanguePreferee(rappel: () => void): () => void {
     window.removeEventListener(EVENEMENT, rappel);
     window.removeEventListener("storage", rappel);
   };
+}
+
+/** Langue choisie, pour un composant client. Rendu serveur en français ;
+ *  la langue retenue s'applique dès l'hydratation et suit tout changement. */
+export function useLanguePreferee(): LangueInterface {
+  const [langue, setLangue] = useState<LangueInterface>("fr");
+  useEffect(() => {
+    const appliquer = () => setLangue(lireLanguePreferee());
+    appliquer();
+    return suivreLanguePreferee(appliquer);
+  }, []);
+  return langue;
 }

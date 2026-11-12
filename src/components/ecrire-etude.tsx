@@ -1,11 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
-import {
-  lireLanguePreferee,
-  suivreLanguePreferee,
-  type LangueInterface,
-} from "@/lib/langue-preferee";
+import { useLanguePreferee, type LangueInterface } from "@/lib/langue-preferee";
 
 /** Textes du bloc « Écrire à l'étude », dans la langue choisie au menu des
  *  langues. L'objet du courriel reste aussi en français : c'est l'étude qui
@@ -61,13 +56,7 @@ export interface EcrireEtudeProps {
 }
 
 export function EcrireEtude({ sujet, email, telephone, telephoneE164 }: EcrireEtudeProps) {
-  // Rendu serveur en français ; la langue choisie s'applique dès l'hydratation.
-  const [langue, setLangue] = useState<LangueInterface>("fr");
-  useEffect(() => {
-    const appliquer = () => setLangue(lireLanguePreferee());
-    appliquer();
-    return suivreLanguePreferee(appliquer);
-  }, []);
+  const langue = useLanguePreferee();
 
   const t = TEXTES[langue];
   const objet = sujet ? `${sujet} — ${t.objet}` : t.objet;

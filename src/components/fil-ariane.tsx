@@ -6,7 +6,7 @@ export interface Maillon {
 }
 
 /** Fil d'Ariane — obligatoire sur toute page de profondeur ≥ 2 (§6). */
-export function FilAriane({ maillons }: { maillons: Maillon[] }) {
+export function FilAriane({ maillons, accueil = "Accueil" }: { maillons: Maillon[]; accueil?: string }) {
   return (
     <nav aria-label="Fil d'Ariane" className="text-sm text-slate-soft">
       <ol className="flex flex-wrap items-center gap-2">
@@ -15,7 +15,7 @@ export function FilAriane({ maillons }: { maillons: Maillon[] }) {
             href="/"
             className="decoration-gold underline-offset-4 hover:text-night hover:underline"
           >
-            Accueil
+            {accueil}
           </Link>
         </li>
         {maillons.map((maillon) => (
