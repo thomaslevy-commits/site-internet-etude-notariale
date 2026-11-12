@@ -1,0 +1,5 @@
+/* Textes en chinois (section 中文 de /international, renvoi de l'accueil).
+   Les polices du site n'ont pas de glyphes CJK : on désigne explicitement
+   les polices système chinoises plutôt que de laisser le navigateur choisir. */
+[lang|="zh"] { font-family: var(--font-sans),"PingFang SC","Hiragino Sans GB","Microsoft YaHei","Noto Sans CJK SC","Noto Sans SC",sans-serif; }
+[lang|="zh"] .section-title, [lang|="zh"] .font-serif { font-family: var(--font-serif),"Songti SC","STSong","SimSun","Noto Serif CJK SC","Noto Serif SC",serif; }
