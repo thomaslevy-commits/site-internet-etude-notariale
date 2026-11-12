@@ -27,6 +27,25 @@ const REDIRECTIONS = [
 
 const nextConfig: NextConfig = {
   reactStrictMode: true,
+  /**
+   * Les MDX de `content/` accompagnent chaque fonction serveur.
+   *
+   * Sur Vercel, chaque route rendue à la demande devient une fonction qui
+   * n'embarque que les fichiers que le traçage de Next a su rattacher à sa
+   * page. Le layout lit `content/` à chaque rendu (index de la recherche
+   * globale, `construireIndexRecherche`), mais le traçage ne rattache ces
+   * fichiers qu'aux pages qui importent elles-mêmes `@/lib/content`. La page
+   * Contact, seule page rendue à la demande (elle lit `?sujet=`), partait donc
+   * sans eux : `ENOENT` sur le premier MDX lu, et « Application error » servie
+   * aux visiteurs depuis l'ajout de la recherche (22 septembre 2026),
+   * constaté le 12 novembre 2026. Reproduit hors Vercel en retirant `content/`
+   * d'une construction autonome : /contact répond 500, les pages statiques 200.
+   * Déclarer le dossier pour toutes les routes ferme la porte pour toute page
+   * dynamique à venir.
+   */
+  outputFileTracingIncludes: {
+    "/**": ["./content/**/*"],
+  },
   ...(estExport
     ? {
         output: "export" as const,
