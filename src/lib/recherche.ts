@@ -31,7 +31,7 @@ const PAGES: EntreeRecherche[] = [
   { type: "Page", titre: "Publications", extrait: "Les articles publiés par l'étude.", href: "/blog", corpus: "blog articles actualites" },
   { type: "Page", titre: "Tarif", extrait: "Émoluments réglementés, débours, taxes et honoraires libres.", href: "/tarif", corpus: "prix frais cout emoluments honoraires debours taxes" },
   { type: "Page", titre: "Questions fréquentes", extrait: "Les réponses de l'étude, classées par thème.", href: "/faq", corpus: "faq aide" },
-  { type: "Page", titre: "Contact et accès", extrait: "Coordonnées, plan d'accès et formulaire de contact.", href: "/contact", corpus: "adresse telephone email rendez-vous plan acces metro" },
+  { type: "Page", titre: "Contact et accès", extrait: "Coordonnées et plan d'accès.", href: "/contact", corpus: "adresse telephone email rendez-vous plan acces metro" },
 ];
 
 function couper(texte: string, longueur = 150): string {

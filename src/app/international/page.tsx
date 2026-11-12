@@ -90,7 +90,7 @@ export default function International() {
               11 boulevard Flandrin, 2nd floor, 75116 Paris, France
             </p>
             <Link href="/contact" className="text-link mt-4">
-              Contact form & directions (in French) ↗
+              Contact details & directions (in French) ↗
             </Link>
             <p className="mt-5 text-sm text-slate-soft">
               The legal articles and detailed practice pages are currently
@@ -122,7 +122,7 @@ export default function International() {
               11 boulevard Flandrin, 2. Stock, 75116 Paris, Frankreich
             </p>
             <Link href="/contact" className="text-link mt-4">
-              Kontaktformular & Anfahrt (auf Französisch) ↗
+              Kontakt & Anfahrt (auf Französisch) ↗
             </Link>
             <p className="mt-5 text-sm text-slate-soft">
               Die juristischen Beiträge und ausführlichen Fachseiten stehen
@@ -150,7 +150,7 @@ export default function International() {
               法国巴黎 75116，Flandrin 大道 11 号，3 楼（法式楼层称“2e étage”）
             </p>
             <Link href="/contact" className="text-link mt-4">
-              联系表格与交通指引（法语）↗
+              联系方式与交通指引（法语）↗
             </Link>
             <p className="mt-5 text-sm text-slate-soft">
               法律文章及各业务领域的详细介绍目前仅提供法语版本。
