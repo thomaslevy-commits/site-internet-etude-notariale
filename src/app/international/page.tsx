@@ -89,7 +89,7 @@ export default function International() {
             <p className="mt-5 text-sm text-slate-soft">
               11 boulevard Flandrin, 2nd floor, 75116 Paris, France
             </p>
-            <Link href="/contact" className="text-link mt-4">
+            <Link href="/contact?lang=en#ecrire" className="text-link mt-4">
               Contact details & directions (in French) ↗
             </Link>
             <p className="mt-5 text-sm text-slate-soft">
@@ -121,7 +121,7 @@ export default function International() {
             <p className="mt-5 text-sm text-slate-soft">
               11 boulevard Flandrin, 2. Stock, 75116 Paris, Frankreich
             </p>
-            <Link href="/contact" className="text-link mt-4">
+            <Link href="/contact?lang=de#ecrire" className="text-link mt-4">
               Kontakt & Anfahrt (auf Französisch) ↗
             </Link>
             <p className="mt-5 text-sm text-slate-soft">
@@ -149,7 +149,7 @@ export default function International() {
             <p className="mt-5 text-sm text-slate-soft">
               法国巴黎 75116，Flandrin 大道 11 号，3 楼（法式楼层称“2e étage”）
             </p>
-            <Link href="/contact" className="text-link mt-4">
+            <Link href="/contact?lang=zh#ecrire" className="text-link mt-4">
               联系方式与交通指引（法语）↗
             </Link>
             <p className="mt-5 text-sm text-slate-soft">
