@@ -56,7 +56,7 @@ export default function Accueil() {
         </div>
         <div className="site-container signature-baseline">
           <p>{etude.adresse.ligne1} <span>{etude.adresse.codePostal} {etude.adresse.ville}</span></p>
-          <Link href="/international">Français <span aria-hidden="true">/</span> English <span aria-hidden="true">/</span> Deutsch <span aria-hidden="true">/</span> <span lang="zh-Hans">中文</span></Link>
+          <Link href="/international">Français <span aria-hidden="true">/</span> English <span aria-hidden="true">/</span> Deutsch <span aria-hidden="true">/</span> <span lang="zh-Hans">中文（配有口译）</span></Link>
           <a href="#domaines">Explorer nos expertises <span aria-hidden="true">↓</span></a>
         </div>
       </section>

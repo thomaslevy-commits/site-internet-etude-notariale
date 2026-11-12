@@ -9,7 +9,7 @@ import { cheminPublic } from "@/lib/chemins";
 export const metadata: Metadata = {
   title: { absolute: "L'étude — Étude notariale Thomas Lévy, Paris 16" },
   description:
-    "Histoire, méthode de travail et équipe de l'étude notariale Thomas Lévy, à Paris 16ᵉ. Une pratique dédiée à l'immobilier et au patrimoine, en français, anglais et allemand, et en chinois avec le concours d'un interprète.",
+    "Histoire, méthode de travail et équipe de l'étude notariale Thomas Lévy, à Paris 16ᵉ. Une pratique dédiée à l'immobilier et au patrimoine, en français, anglais, allemand et chinois.",
   alternates: { canonical: "/etude" },
 };
 
@@ -91,7 +91,7 @@ export default function PageEtude() {
       <PageIntro
         titre="L'étude Thomas Lévy"
         rubrique="Notaire à Paris XVI"
-        description="Une pratique dédiée à l'immobilier et au patrimoine, en français, anglais et allemand, et en chinois avec le concours d'un interprète."
+        description="Une pratique dédiée à l'immobilier et au patrimoine, en français, anglais, allemand et chinois."
       />
       <div className="site-container page-body profile-layout">
         <div className="reading-sections">
@@ -131,8 +131,7 @@ export default function PageEtude() {
             <h2>Langues</h2>
             <p>
               L&apos;étude reçoit en {etude.langues.slice(0, -1).join(", en ")}{" "}
-              et en {etude.langues[etude.langues.length - 1]}. La clientèle sinophone
-              est accueillie avec le concours d&apos;un interprète.
+              et en {etude.langues[etude.langues.length - 1]}.
             </p>
           </section>
         </div>

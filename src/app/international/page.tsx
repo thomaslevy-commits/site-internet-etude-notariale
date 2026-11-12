@@ -10,7 +10,7 @@ import { loadExpertise } from "@/lib/content";
 export const metadata: Metadata = {
   title: "Clientèle internationale",
   description:
-    "L'étude Thomas Lévy à Paris reçoit en français, anglais et allemand, et en chinois avec le concours d'un interprète. Accès aux expertises internationales et coordonnées de l'étude.",
+    "L'étude Thomas Lévy à Paris reçoit en français, anglais, allemand et chinois. Accès aux expertises internationales et coordonnées de l'étude.",
   alternates: { canonical: "/international" },
 };
 
@@ -23,7 +23,7 @@ export default function International() {
       <PageIntro
         titre="Votre projet, au-delà des frontières"
         rubrique="Clientèle internationale"
-        description="Successions transfrontalières, non-résidents, expatriés, investisseurs étrangers et family offices. L'étude reçoit en français, en anglais et en allemand, et accueille sa clientèle sinophone avec le concours d'un interprète."
+        description="Successions transfrontalières, non-résidents, expatriés, investisseurs étrangers et family offices. L'étude reçoit en français, en anglais, en allemand et en chinois."
       >
         <nav
           id="languages"
