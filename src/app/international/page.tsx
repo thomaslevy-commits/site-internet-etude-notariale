@@ -1,3 +1,4 @@
+import "../langues.css";
 import type { Metadata } from "next";
 import Link from "next/link";
 import { PageIntro } from "@/components/page-intro";
@@ -37,6 +38,9 @@ export default function International() {
           </a>
           <a href="#deutsch" lang="de">
             Deutsch
+          </a>
+          <a href="#zhongwen" lang="zh-Hans">
+            中文
           </a>
         </nav>
       </PageIntro>
@@ -123,6 +127,33 @@ export default function International() {
             <p className="mt-5 text-sm text-slate-soft">
               Die juristischen Beiträge und ausführlichen Fachseiten stehen
               derzeit auf Französisch zur Verfügung.
+            </p>
+          </section>
+          <section id="zhongwen" lang="zh-Hans">
+            <p className="eyebrow">中文</p>
+            <h2 className="section-title mt-4">巴黎公证事务所</h2>
+            <p className="mt-6 text-slate-soft">
+              Thomas Lévy 公证事务所以法语、英语和德语接待客户。业务领域涵盖不动产、家庭与遗产、企业事务以及涉外事务。
+            </p>
+            <h3 className="mt-8 font-serif text-2xl">联系事务所</h3>
+            <p className="mt-4 text-slate-soft">
+              如需预约，请通过电话或电子邮件与我们联系，并注明您希望使用法语、英语还是德语。
+            </p>
+            <a href={`tel:${etude.telephoneE164}`} className="text-link mt-4">
+              +33 1 40 75 05 55
+            </a>
+            <br />
+            <a className="text-link break-all" href={`mailto:${etude.email}`}>
+              {etude.email}
+            </a>
+            <p className="mt-5 text-sm text-slate-soft">
+              法国巴黎 75116，Flandrin 大道 11 号，3 楼（法式楼层称“2e étage”）
+            </p>
+            <Link href="/contact" className="text-link mt-4">
+              联系表格与交通指引（法语）↗
+            </Link>
+            <p className="mt-5 text-sm text-slate-soft">
+              法律文章及各业务领域的详细介绍目前仅提供法语版本。
             </p>
           </section>
         </div>

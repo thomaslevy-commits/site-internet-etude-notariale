@@ -1,3 +1,4 @@
+import "./langues.css";
 import type { Metadata } from "next";
 import Image from "next/image";
 import Link from "next/link";
@@ -55,7 +56,7 @@ export default function Accueil() {
         </div>
         <div className="site-container signature-baseline">
           <p>{etude.adresse.ligne1} <span>{etude.adresse.codePostal} {etude.adresse.ville}</span></p>
-          <Link href="/international">Français <span aria-hidden="true">/</span> English <span aria-hidden="true">/</span> Deutsch</Link>
+          <Link href="/international">Français <span aria-hidden="true">/</span> English <span aria-hidden="true">/</span> Deutsch <span aria-hidden="true">/</span> <span lang="zh-Hans">中文</span></Link>
           <a href="#domaines">Explorer nos expertises <span aria-hidden="true">↓</span></a>
         </div>
       </section>
@@ -95,8 +96,9 @@ export default function Accueil() {
               <Link href="/international"><span>FR</span><span>Votre projet international</span><span aria-hidden="true">↗</span></Link>
               <Link href="/international#english" lang="en"><span>EN</span><span>Your projects in France</span><span aria-hidden="true">↗</span></Link>
               <Link href="/international#deutsch" lang="de"><span>DE</span><span>Ihre Vorhaben in Frankreich</span><span aria-hidden="true">↗</span></Link>
+              <Link href="/international#zhongwen" lang="zh-Hans"><span>中文</span><span>您在法国的项目</span><span aria-hidden="true">↗</span></Link>
             </nav>
-            <p className="language-note">Informations pratiques en trois langues · Analyses juridiques en français</p>
+            <p className="language-note">Informations pratiques en quatre langues · Analyses juridiques en français</p>
           </div>
         </div>
       </section>
