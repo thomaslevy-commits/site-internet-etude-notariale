@@ -4,6 +4,7 @@ import { JsonLd, schemaNotary } from "@/components/json-ld";
 import { PageIntro } from "@/components/page-intro";
 import { AccessMap } from "@/components/access-map";
 import { CtaRendezVous } from "@/components/cta-rdv";
+import { EcrireEtude } from "@/components/ecrire-etude";
 import { ACCES } from "@/config/acces";
 import { etude } from "@/config/etude";
 
@@ -19,10 +20,8 @@ export default async function PageContact({ searchParams }: { searchParams: Prom
   // Le sujet n'est ni un destinataire ni du HTML : seulement une valeur éditable.
   const sujet = typeof params.sujet === "string" ? params.sujet.replace(/[\r\n]/g, " ").slice(0, 160) : "";
   // Le site n'envoie aucun message lui-même (décision du notaire du
-  // 12 novembre 2026 : suppression du formulaire). Le courriel s'ouvre dans la
-  // messagerie du visiteur, objet prérempli quand la page est appelée avec un sujet.
-  const objet = sujet || "Demande de rendez-vous";
-  const mailto = `mailto:${etude.email}?subject=${encodeURIComponent(objet)}`;
+  // 12 novembre 2026 : suppression du formulaire). Le bloc « Écrire à
+  // l'étude » suit la langue choisie au menu des langues (ecrire-etude.tsx).
   return (
     <main className="contact-page">
       <JsonLd data={schemaNotary()} />
@@ -77,23 +76,12 @@ export default async function PageContact({ searchParams }: { searchParams: Prom
             </a>
           </div>
         </div>
-        <section id="ecrire" className="contact-form-surface">
-          <h2 className="font-serif text-3xl">Écrire à l&apos;étude</h2>
-          {sujet && <p className="mt-5 font-medium">Votre demande : {sujet}</p>}
-          <p className="mb-7 mt-3 text-sm text-slate-soft">
-            Pour demander un rendez-vous, adressez un courriel à l&apos;étude en
-            indiquant l&apos;objet de votre projet et vos disponibilités, ou
-            appelez-nous.
-          </p>
-          <div className="flex flex-wrap items-center gap-x-8 gap-y-4">
-            <a href={mailto} className="button button-primary">
-              Écrire à {etude.email} <span aria-hidden="true">↗</span>
-            </a>
-            <a href={`tel:${etude.telephoneE164}`} className="text-link">
-              {etude.telephone}
-            </a>
-          </div>
-        </section>
+        <EcrireEtude
+          sujet={sujet}
+          email={etude.email}
+          telephone={etude.telephone}
+          telephoneE164={etude.telephoneE164}
+        />
       </div>
       <section id="plan-acces" className="border-t border-line bg-white">
         <div className="site-container page-body">
